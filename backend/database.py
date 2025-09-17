@@ -28,7 +28,7 @@ def get_data():
             data = []
             for x in result:
                 arr = {
-                    "id" : x[0],
+                    "user_id" : x[0],
                     "username" : x[1],
                     "password" : x[2],
                     "email" : x[3]
@@ -57,7 +57,7 @@ def get_from_email(email):
     try:
         db = ConnectorMysql()
         cursor = db.cursor(dictionary=True)
-        cursor.execute("SELECT id, username, email FROM user WHERE email=%s", (email,))
+        cursor.execute("SELECT user_id, username, email FROM user WHERE email=%s", (email,))
         user = cursor.fetchone()
         cursor.close()
         return user
@@ -75,7 +75,7 @@ def login_db(email , password):
         if len(result) > 0:
             for x in result:
                 arr = {
-                    "id" : x[0],
+                    "user_id" : x[0],
                     "username" : x[1],
                     "password" : x[2],
                     "email" : x[3]
@@ -86,3 +86,4 @@ def login_db(email , password):
         return jsonify({"error": "Email doesn't exist!"}), 401
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
+    
