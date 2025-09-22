@@ -1,10 +1,12 @@
-from flask import Flask , request , jsonify , make_response
+from flask import Flask, request, jsonify, make_response
 from datetime import timedelta
 from flask_cors import CORS
-import database #
+import database
+
 import traceback
 import secrets
 
+from authlib.integrations.flask_client import OAuth
 from flask_jwt_extended import (
     JWTManager, create_access_token, jwt_required,
     get_jwt_identity, set_access_cookies, unset_jwt_cookies
@@ -16,26 +18,33 @@ CORS(
     app,
     resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}},
     supports_credentials=True,
-) # this cors code by chatgpt
+)  # this cors code by chatgpt
 
 app.secret_key = secrets.token_hex(32)
 app.config["JWT_SECRET_KEY"] = secrets.token_hex(32)
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-app.config["JWT_COOKIE_SAMESITE"] = "Lax" # code by chatgpt
+app.config["JWT_COOKIE_SAMESITE"] = "Lax"  # code by chatgpt
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 jwt = JWTManager(app)
+oauth = OAuth(app)
 
-# for test api is working?
+# For test api is working?
 @app.route('/')
-def hello_world():  
-   return 'API is working' 
+def hello_world():
+    """
+    Test API is working
+    """
+    return 'API is working'
 
-# example of get_data method
-@app.route('/data' , methods=['GET'])
+# Example of get_data method
+@app.route('/data', methods=['GET'])
 def data():
+    """
+    Get data from database
+    """
     try:
         jsonData = database.get_data()
         return jsonify(jsonData)
@@ -43,28 +52,34 @@ def data():
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
-# register api use function register_db from ./database.py (finished)
-@app.route('/register' , methods=["POST"])
+# Register API use function register_db from ./database.py (finished)
+@app.route('/register', methods=["POST"])
 def register():
+    """
+    Register API use function register_db from ./database.py
+    """
     try:
-        data = request.get_json() # get data from header (json file)
+        data = request.get_json()  # get data from header (json file)
         username = data.get("username")
         password = data.get("password")
         email = data.get("email")
-        result = database.register_db(username,password,email)
+        result = database.register_db(username, password, email)
         return result
     except Exception as err:
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
-# login method use fuction login_db from ./database.py (not finished)
-@app.route('/login' , methods=["POST"])
+# Login method use function login_db from ./database.py (not finished)
+@app.route('/login', methods=["POST"])
 def login():
+    """
+    Login method use function login_db from ./database.py
+    """
     try:
-        data = request.get_json() # get data from header (json file)
-        email = data.get("email").strip().lower()
+        data = request.get_json()  # get data from header (json file)
+        email = data.get("email").strip()
         password = data.get("password")
-        result = database.login_db(email,password)
+        result = database.login_db(email, password)
         if result[1] == 200:
             user_email = result[0]
             access_token = create_access_token(identity=user_email)
@@ -76,33 +91,67 @@ def login():
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
-# this function code by chatgpt
+# This function code by chatgpt
 @app.route("/auth", methods=["GET"])
 @jwt_required()
 def auth():
+    """
+    Auth method use function get_from_email from ./database.py
+    """
     try:
         email = get_jwt_identity()
         user = database.get_from_email(email)
         if not user:
-            return jsonify({"authenticated": False}),200
+            return jsonify({"authenticated": False}), 200
         return jsonify({"authenticated": True, "user": user}), 200
     except Exception as err:
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
-# logout method
+# Logout method
 @app.route("/logout", methods=["GET"])
 def logout():
+    """
+    Logout method
+    """
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
 
-# protected method for use auth you login (this function code by chatgpt)
+# Protected method for use auth you login (this function code by chatgpt)
 @app.route("/protected")
 @jwt_required()
 def protected():
+    """
+    Protected method for use auth you login
+    """
     return jsonify(foo="bar")
 
-# running file
+@app.route("/google")
+def google():
+    google_client_id = ""
+    google_client_secreat = ""
+
+    CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+    oauth.register(
+        name='google',
+        client_id=google_client_id,
+        client_secret=google_client_secreat,
+        server_metadata_url=CONF_URL,
+        client_kwargs={
+            'scope': 'openid email profile'
+        }
+    )
+    # Redirect to google_auth function
+    redirect_uri = url_for('google_auth', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+@app.route('/google/auth/')
+def google_auth():
+    token = oauth.google.authorize_access_token()
+    user = oauth.google.parse_id_token(token)
+    print(" Google User ", user)
+    return redirect('/')
+# Running file
 if __name__ == '__main__':
-   app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
