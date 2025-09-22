@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, url_for, redirect, session
 from datetime import timedelta
 from flask_cors import CORS
 import database
@@ -146,11 +146,22 @@ def google():
     redirect_uri = url_for('google_auth', _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
 
-@app.route('/google/auth/')
+@app.route('/google/auth')
 def google_auth():
     token = oauth.google.authorize_access_token()
-    user = oauth.google.parse_id_token(token)
-    print(" Google User ", user)
+    nonce = session.pop('google_nonce', None)   # get stored nonce
+    user = oauth.google.parse_id_token(token, nonce=nonce)
+    # print(" Google User ", user)
+    if not database.check_user(user["email"]):
+        result = database.register(user["name"], user["sub"], user["email"])
+    result = database.login_db(user["email"], user["sub"])
+    if result[1] == 200:
+            user_email = result[0]
+            access_token = create_access_token(identity=user_email)
+            resp = jsonify({"success": "login successful", "expires_in_sec": 3600})
+            set_access_cookies(resp, access_token)
+            return resp, 200
+    return result
     return redirect('/')
 # Running file
 if __name__ == '__main__':
