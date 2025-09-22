@@ -43,7 +43,7 @@ def check_user(email):
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
-        cursor.execute("SELECT * WHERE email=%s", (email,))
+        cursor.execute("SELECT * FROM user WHERE email=%s", (email,))
         user = cursor.fetchone()
         cursor.close()
         return user

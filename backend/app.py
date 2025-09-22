@@ -151,9 +151,8 @@ def google_auth():
     token = oauth.google.authorize_access_token()
     nonce = session.pop('google_nonce', None)   # get stored nonce
     user = oauth.google.parse_id_token(token, nonce=nonce)
-    # print(" Google User ", user)
     if not database.check_user(user["email"]):
-        result = database.register(user["name"], user["sub"], user["email"])
+        result = database.register_db(user["name"], user["sub"], user["email"])
     result = database.login_db(user["email"], user["sub"])
     if result[1] == 200:
             user_email = result[0]
@@ -162,7 +161,7 @@ def google_auth():
             set_access_cookies(resp, access_token)
             return resp, 200
     return result
-    return redirect('/')
+    # return redirect('/')
 # Running file
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
