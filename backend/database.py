@@ -86,4 +86,3 @@ def login_db(email , password):
         return jsonify({"error": "Email doesn't exist!"}), 401
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
-    
