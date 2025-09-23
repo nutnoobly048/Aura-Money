@@ -2,6 +2,7 @@
 CREATE TABLE `track` (
   `track_id` int(11) NOT NULL,
   `type` varchar(100) DEFAULT NULL,
+  `date` DATE DEFAULT NULL,
   `price` float DEFAULT NULL,
   `total` float DEFAULT NULL,
   `balance` float DEFAULT NULL,
