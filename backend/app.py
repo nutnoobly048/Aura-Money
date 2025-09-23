@@ -118,15 +118,6 @@ def logout():
     unset_jwt_cookies(response)
     return response
 
-# Protected method for use auth you login (this function code by chatgpt)
-@app.route("/protected")
-@jwt_required()
-def protected():
-    """
-    Protected method for use auth you login
-    """
-    return jsonify(foo="bar")
-
 @app.route("/google")
 def google():
     google_client_id = ""
@@ -148,20 +139,25 @@ def google():
 
 @app.route('/google/auth')
 def google_auth():
-    token = oauth.google.authorize_access_token()
-    nonce = session.pop('google_nonce', None)   # get stored nonce
-    user = oauth.google.parse_id_token(token, nonce=nonce)
-    if not database.check_user(user["email"]):
-        result = database.register_db(user["name"], user["sub"], user["email"])
-    result = database.login_db(user["email"], user["sub"])
-    if result[1] == 200:
-            user_email = result[0]
-            access_token = create_access_token(identity=user_email)
-            resp = jsonify({"success": "login successful", "expires_in_sec": 3600})
-            set_access_cookies(resp, access_token)
-            return resp, 200
-    return result
-    # return redirect('/')
+    try:
+        token = oauth.google.authorize_access_token()
+        nonce = session.pop('google_nonce', None)   # get stored nonce
+        user = oauth.google.parse_id_token(token, nonce=nonce)
+        if not database.check_user(user["email"]):
+            result = database.register_db(user["name"], user["sub"], user["email"])
+        result = database.login_db(user["email"], user["sub"])
+        if result[1] == 200:
+                user_email = result[0]
+                access_token = create_access_token(identity=user_email)
+                # resp = jsonify({"success": "login successful", "expires_in_sec": 3600})
+                resp = make_response(redirect("http://localhost:5173/main"))
+                set_access_cookies(resp, access_token)
+                return resp
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
 # Running file
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
