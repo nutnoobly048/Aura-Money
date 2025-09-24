@@ -158,6 +158,7 @@ def google_auth():
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
+
 # Running file
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)

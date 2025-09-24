@@ -5,7 +5,6 @@ CREATE TABLE `track` (
   `date` DATE DEFAULT NULL,
   `price` float DEFAULT NULL,
   `total` float DEFAULT NULL,
-  `balance` float DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

@@ -100,3 +100,45 @@ def login_db(email , password):
         return jsonify({"error": "Email doesn't exist!"}), 401
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
+
+def get_track(user_id):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "SELECT * FROM track WHERE user_id=%s"
+        cursor.execute(stmt,(user_id,))
+        result = cursor.fetchall()
+        if len(result) > 0:
+            data = []
+            for x in result:
+                arr = {
+                    "track_id": x[0],
+                    "date": x[1],
+                    "amount": x[2],
+                    "catagory": x[3],
+                    "account": x[4],
+                    "note": x[5],
+                    "total": x[6],
+                    "user_id": x[7]
+                }
+                data.append(arr)
+        return data
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
+
+def post_data(date, amount, catagory, account, note, user_id):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "INSERT INTO user (date, amount, catagory, total,  account, note, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        if catagory == "income":
+            calculate = get_track(user_id)[-1][total] + amount
+        else:
+            calculate = get_track(user_id)[-1][total] - amount
+        payload = (date, amount, category, calculate ,  account, note, user_id)
+        cursor.execute(stmt,payload)
+        db.commit()
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
