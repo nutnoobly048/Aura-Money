@@ -1,9 +1,11 @@
 
 CREATE TABLE `track` (
   `track_id` int(11) NOT NULL,
-  `type` varchar(100) DEFAULT NULL,
   `date` DATE DEFAULT NULL,
-  `price` float DEFAULT NULL,
+  `amount` float DEFAULT NULL,
+  `catagory` varchar(100) DEFAULT NULL,
+  `account` varchar(100) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
   `total` float DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
