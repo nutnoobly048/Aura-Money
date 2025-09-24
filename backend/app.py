@@ -158,6 +158,25 @@ def google_auth():
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
+@app.route('/post_data')
+def post_data():
+    try:
+        data = request.get_json()
+        date = data.get("date")
+        amount = data.get("amount")
+        catagory = data.get("catagory")
+        account = data.get("account")
+        note = data.get("note")
+        email = get_jwt_identity()
+        user_id= database.get_from_email(email)[0]
+        result = database.post_data(date, amount, catagory, account, note, user_id)
+        if result[1] == 200:
+            return jsonify({'message' : 'success'}) , 200
+        return jsonify({'message' : 'error'}) , 401
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
 
 # Running file
 if __name__ == '__main__':

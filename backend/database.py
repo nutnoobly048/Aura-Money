@@ -133,12 +133,13 @@ def post_data(date, amount, catagory, account, note, user_id):
         cursor = db.cursor()
         stmt = "INSERT INTO user (date, amount, catagory, total,  account, note, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         if catagory == "income":
-            calculate = get_track(user_id)[-1][total] + amount
+            calculate = get_track(user_id)[-1]["total"] + amount
         else:
-            calculate = get_track(user_id)[-1][total] - amount
-        payload = (date, amount, category, calculate ,  account, note, user_id)
+            calculate = get_track(user_id)[-1]["total"] - amount
+        payload = (date, amount, catagory, calculate ,  account, note, user_id)
         cursor.execute(stmt,payload)
         db.commit()
+        return jsonify({'message' : "success"}) , 200
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
