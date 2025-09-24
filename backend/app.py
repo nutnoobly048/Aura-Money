@@ -158,7 +158,8 @@ def google_auth():
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
-@app.route('/post_data')
+@app.route('/post_data', methods=["POST"])
+@jwt_required()
 def post_data():
     try:
         data = request.get_json()
@@ -168,7 +169,7 @@ def post_data():
         account = data.get("account")
         note = data.get("note")
         email = get_jwt_identity()
-        user_id= database.get_from_email(email)[0]
+        user_id = database.get_from_email(email)['user_id']
         result = database.post_data(date, amount, catagory, account, note, user_id)
         if result[1] == 200:
             return jsonify({'message' : 'success'}) , 200

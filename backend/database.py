@@ -108,8 +108,8 @@ def get_track(user_id):
         stmt = "SELECT * FROM track WHERE user_id=%s"
         cursor.execute(stmt,(user_id,))
         result = cursor.fetchall()
+        data = []
         if len(result) > 0:
-            data = []
             for x in result:
                 arr = {
                     "track_id": x[0],
@@ -129,14 +129,21 @@ def get_track(user_id):
 
 def post_data(date, amount, catagory, account, note, user_id):
     try:
+        amount = float(amount)
         db = ConnectorMysql()
         cursor = db.cursor()
-        stmt = "INSERT INTO user (date, amount, catagory, total,  account, note, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        if catagory == "income":
-            calculate = get_track(user_id)[-1]["total"] + amount
+        stmt = "INSERT INTO track (date, amount, catagory, account, note, total, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        if catagory.lower() == "income":
+            if not get_track(user_id):
+                calculate = amount
+            else:
+                calculate = get_track(user_id)[-1]["total"] + amount
         else:
-            calculate = get_track(user_id)[-1]["total"] - amount
-        payload = (date, amount, catagory, calculate ,  account, note, user_id)
+            if not get_track(user_id):
+                calculate = amount*(-1)
+            else:
+                calculate = get_track(user_id)[-1]["total"] - amount
+        payload = (date, amount, catagory, account, note, calculate, user_id)
         cursor.execute(stmt,payload)
         db.commit()
         return jsonify({'message' : "success"}) , 200
