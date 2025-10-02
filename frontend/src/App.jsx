@@ -16,16 +16,16 @@ function App() {
       </div>
       {/*------------------left bar section----------------*/}
       {/*------------------right big text----------------*/}
-      <div className='h-full relative flex-1 bg-white'>
+      <div className='h-full relative flex-1 overflow-auto bg-white'>
           <img src='/home-bg.png' alt='home-bg' className='min-h-2/4 absolute top-0 right-0 object-cover'/>
-          <div className='h-6/10 w-full bg-white absolute bottom-0 right-0
+          <div className='h-6/10 w-full flex-wrap bg-white absolute bottom-0 right-0
           items-centerborder-white rounded-3xl flex justify-center items-center'>
             <div className='flex flex-col m-10'>
               <h2 className='text-4xl font-bold'>What is <span className='text-[#70aa82]'>Aura Money ?</span></h2>
-              <p className='text-2xl'>An idea for an auto money-saving visualizer and planner is proposed,
+              <p className='text-2xl '>An idea for an auto money-saving visualizer and planner is proposed,
               emphasizing its importance, though specific reasons and supporting data are yet to be provided.</p>
+              <img src='/home-money.png' alt='home-money' className='w-30 h-auto'/>
             </div>
-            <img src='/home-money.png' alt='home-money' className='w-30 h-auto mr-10'/>
           </div>
       </div>
       {/*------------------right big text----------------*/}
