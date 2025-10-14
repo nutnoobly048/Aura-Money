@@ -19,3 +19,8 @@
         display: none;
     }
 }
+
+@theme {
+    --color-ui-green1: #62b79c;
+    --color-ui-green2: #70aa82;
+}
