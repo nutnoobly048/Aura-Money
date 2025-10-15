@@ -1,6 +1,6 @@
 import React from 'react'
 import '../../src/App.css'
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
 function landingpage() {
   return (
@@ -26,7 +26,7 @@ function landingpage() {
       <div className='hidden sm:flex! w-160 space-x-10 text-xl font-bold'>
         <Link to='/register' className='flex-1 border rounded-3xl border-white text-white text-center px-3 py-1 
         cursor-pointer hover:bg-white hover:text-ui-green1 hover:scale-110 transition duration-150 ease-in-out'>Signup</Link>
-        <Link to='/login' button className='flex-1 rounded-3xl bg-white text-ui-green1 text-center px-3 py-1 
+        <Link to='/login' className='flex-1 rounded-3xl bg-white text-ui-green1 text-center px-3 py-1 
         cursor-pointer hover:bg-transparent hover:text-white hover:border hover:scale-110 hover:border-white transition 
         duration-150 ease-in-out'>Login</Link>
       </div>

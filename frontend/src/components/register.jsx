@@ -4,7 +4,7 @@ function register() {
   return (
     <div>
         <div className=''>
-            
+            register
         </div>
     </div>
   )
