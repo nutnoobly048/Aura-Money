@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import Dashboard from './components/dashboard'
 
 axios.defaults.withCredentials = true;
 
@@ -32,7 +33,7 @@ function App() {
   return (
     <div className="">
       {/* <button onClick={logout}>logout</button> */}
-
+      <Dashboard/>
     </div>
   );
 }
