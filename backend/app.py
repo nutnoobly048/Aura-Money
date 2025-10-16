@@ -151,7 +151,7 @@ def google_auth():
                 user_email = result[0]
                 access_token = create_access_token(identity=user_email)
                 # resp = jsonify({"success": "login successful", "expires_in_sec": 3600})
-                resp = make_response(redirect("http://localhost:5173/main"))
+                resp = make_response(redirect("http://localhost:5173/"))
                 set_access_cookies(resp, access_token)
                 return resp
         return result
