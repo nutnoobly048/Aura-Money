@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import '../../src/App.css'
-import { Link } from "react-router-dom"
+import React, { useState, useEffect } from 'react';
+import '../../src/App.css';
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 function login() {
 
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
 
@@ -19,6 +23,18 @@ function login() {
       }));
     }
   };
+
+  const loginform = async () => {
+    try {
+      const { data } = await axios.post('http://localhost:5000/login', {
+        email: values.email,
+        password: values.password
+      })
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleSubmit = () => {
     const newErrors = {};
@@ -34,11 +50,14 @@ function login() {
     setErrors(newErrors);
 
     if (!newErrors.email && !newErrors.password) {
+      loginform();
       console.log('logged in.')
     }
   }
 
-
+  const googleLogin = () => {
+    window.location.href = "http://localhost:5000/google";
+  }
 
   return (
     <div className="relative flex justify-center items-center w-screen h-screen bg-gradient-to-br 
@@ -62,7 +81,7 @@ function login() {
             placeholder={`${errors.email ? `${errors.email}` : 'Username / Email'}`}
             onChange={(e) => handleChange(e)} />
           <input className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer ${errors.password ? 'bg-red-100 border border-red-500' : 'bg-gray-200'}`}
-            type='password' name="password" 
+            type='password' name="password"
             placeholder={`${errors.password ? `${errors.password}` : 'Password'}`}
             onChange={(e) => handleChange(e)} />
         </div>
@@ -84,7 +103,7 @@ function login() {
             <p className='bg-white text-zinc-400 p-2 pb-3'>or login with</p>
           </div>
           <img src='google.svg'
-           className='w-10 sm:w-15 border-zinc-400 border-2 rounded-full hover:drop-shadow-sm hover:drop-shadow-black/50' />
+            className='w-10 sm:w-15 border-zinc-400 border-2 rounded-full hover:drop-shadow-sm hover:drop-shadow-black/50' onClick={googleLogin}/>
         </div>
 
       </div>
