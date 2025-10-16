@@ -57,11 +57,11 @@ function login() {
         </div>
 
         <div className='flex flex-col w-full justify-center gap-y-5'>
-          <input className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer ${errors.email ? 'bg-red-100' : 'bg-gray-200'}`}
+          <input className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer ${errors.email ? 'bg-red-100 border border-red-500' : 'bg-gray-200'}`}
             type='text' name="email"
             placeholder={`${errors.email ? `${errors.email}` : 'Username / Email'}`}
             onChange={(e) => handleChange(e)} />
-          <input className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer ${errors.password ? 'bg-red-100' : 'bg-gray-200'}`}
+          <input className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer ${errors.password ? 'bg-red-100 border border-red-500' : 'bg-gray-200'}`}
             type='password' name="password" 
             placeholder={`${errors.password ? `${errors.password}` : 'Password'}`}
             onChange={(e) => handleChange(e)} />
@@ -83,7 +83,8 @@ function login() {
           <div className='w-full flex justify-center items-center bg-zinc-300 h-0.5'>
             <p className='bg-white text-zinc-400 p-2 pb-3'>or login with</p>
           </div>
-          <img src='google.svg' className='w-10 sm:w-15 border-zinc-400 border-2 rounded-full' />
+          <img src='google.svg'
+           className='w-10 sm:w-15 border-zinc-400 border-2 rounded-full hover:drop-shadow-sm hover:drop-shadow-black/50' />
         </div>
 
       </div>
