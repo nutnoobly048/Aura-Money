@@ -1,16 +1,18 @@
 # database management zone
 from flask import jsonify
 import mysql.connector
+from dotenv import load_dotenv
 import bcrypt
+import os
 
 # db connector
 def ConnectorMysql():
     try:
         db = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                passwd="",
-                database="automoney",
+                host=os.getenv("SQL_HOST"),
+                user=os.getenv("SQL_USER"),
+                passwd=os.getenv("SQL_PASSWORD"),
+                database=os.getenv("DATABASE_NAME"),
         )
         return db
     except Exception as err:

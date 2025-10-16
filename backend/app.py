@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify, make_response, url_for, redirect, session
 from datetime import timedelta
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
 import database
 
 import traceback
-import secrets
 
 from authlib.integrations.flask_client import OAuth
 from flask_jwt_extended import (
@@ -20,8 +21,8 @@ CORS(
     supports_credentials=True,
 )  # this cors code by chatgpt
 
-app.secret_key = secrets.token_hex(32)
-app.config["JWT_SECRET_KEY"] = secrets.token_hex(32)
+app.secret_key = os.getenv("SECRET_KEY")
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_SAMESITE"] = "Lax"  # code by chatgpt
@@ -120,8 +121,8 @@ def logout():
 
 @app.route("/google")
 def google():
-    google_client_id = ""
-    google_client_secreat = ""
+    google_client_id = os.getenv("GOOGLE_CLIENT_ID")
+    google_client_secreat = os.getenv("GOOGLE_CLIENT_SECRET")
 
     CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
     oauth.register(

@@ -20,6 +20,7 @@ mysql-connector-python==9.4.0
 platformdirs==4.4.0
 pycparser==2.23
 PyJWT==2.10.1
+python-dotenv==1.1.1
 requests==2.32.5
 urllib3==2.5.0
 virtualenv==20.34.0
