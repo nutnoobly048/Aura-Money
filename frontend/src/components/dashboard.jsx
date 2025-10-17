@@ -5,10 +5,9 @@ import { faBars, faUser, faPlus, faXmark } from '@fortawesome/free-solid-svg-ico
 function dashboard() {
 
   const [isPopupOpen, setPopupOpen] = useState(false);
-
-
+  const payloads = {}
   return (
-    <div className='w-screen h-screen flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
+    <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
       <nav className='flex justify-between items-center p-2'>
         <Hamburger/>
         <img src='logo.png' className='w-[12vh]' />
@@ -56,6 +55,7 @@ const HistoryBoard = () => {
     </div>
   );
 }
+
 const SummationBoard = () => {
   return (
     <div className='flex justify-evenly border-2 border-zinc-200 rounded-2xl p-1'>
@@ -103,12 +103,12 @@ const AddContentPopup = ({ isPopupOpen }) => {
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>
           <label for='Date'>Date :</label>
-          <input id='Date' className='flex-1' />
+          <input id='Date' type='date' className='flex-1' />
         </div>
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>
           <label for='Amount'>Amount :</label>
-          <input id='Amount' className='flex-1' />
+          <input id='Amount' type='number' className='flex-1' />
         </div>
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 function landingpage() {
   return (
-    <div className="relative flex flex-col justify-center items-center w-screen h-screen bg-gradient-to-br 
+    <div className="relative flex flex-col justify-center items-center w-screen h-dvh bg-gradient-to-br 
     from-[#62b79c] to-[#afd1a1]">
       <nav className='absolute top-0 left-0 w-full flex justify-between sm:justify-center! items-center p-3'>
         <img src='logo.png' className='w-[15vh] sm:w-[20vh]!'/>

@@ -60,7 +60,7 @@ function login() {
   }
 
   return (
-    <div className="relative flex justify-center items-center w-screen h-screen bg-gradient-to-br 
+    <div className="relative flex justify-center items-center w-screen h-dvh bg-gradient-to-br 
     from-[#62b79c] to-[#afd1a1]">
       <div className='absolute top-0 left-1/2 -translate-x-1/2'>
         <img src='logo.png' className='w-[15vh] m-5' />
