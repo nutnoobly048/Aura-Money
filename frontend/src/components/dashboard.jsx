@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faUser, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser, faPlus, faEye } from '@fortawesome/free-solid-svg-icons';
 
 function dashboard() {
 
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const payloads = {}
+  const [addContentType, setAddContentType] = useState('Expense');
+
   return (
     <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
-      <nav className='flex justify-between items-center p-2'>
-        <Hamburger/>
+      <nav className='flex justify-between items-center mb-1'>
+        <Hamburger />
         <img src='logo.png' className='w-[12vh]' />
         <User />
       </nav>
@@ -26,7 +27,7 @@ function dashboard() {
       <div onClick={() => setPopupOpen(false)} className={`fixed inset-0 bg-black z-10 transition-all
        ease-in-out duration-200 ${isPopupOpen ? 'block opacity-50' : 'invisible opacity-0'}`}></div>
       <AddContentBtn isPopupOpen={isPopupOpen} setPopupOpen={setPopupOpen} />
-      <AddContentPopup isPopupOpen={isPopupOpen} />
+      <AddContentPopup isPopupOpen={isPopupOpen} addContentType={addContentType} setAddContentType={setAddContentType}/>
     </div>
   )
 }
@@ -39,7 +40,7 @@ const Hamburger = ({ size = '2xl' }) => {
 
 const User = ({ size = '2xl' }) => {
   return (
-    <FontAwesomeIcon size={size} icon={faUser} className='text-white sm:hidden!'/>
+    <FontAwesomeIcon size={size} icon={faUser} className='text-white sm:hidden!' />
   );
 }
 
@@ -81,24 +82,35 @@ const SummationBoard = () => {
 
 const AddContentBtn = ({ isPopupOpen, setPopupOpen }) => {
   return (
-      <button onClick={() => setPopupOpen(!isPopupOpen)}>
-        <FontAwesomeIcon icon={faPlus} size="md" className={`fixed bottom-0 right-0 text-white px-3 py-3.5 m-5 
+    <button onClick={() => setPopupOpen(!isPopupOpen)}>
+      <FontAwesomeIcon icon={faPlus} size="md" className={`fixed bottom-0 right-0 text-white px-3 py-3.5 m-5 
         rounded-full duration-200 ${isPopupOpen ? 'z-30 rotate-405 bg-rose-500' : 'bg-ui-green2'}`} />
-      </button>
+    </button>
   );
 }
 
-const AddContentPopup = ({ isPopupOpen }) => {
+const AddContentPopup = ({ isPopupOpen, addContentType, setAddContentType }) => {
+
+  const typeSelectColor = {
+    'Income': 'left-0! text-black',
+    'Expense': 'left-1/3! text-black',
+    'Transfer': 'left-2/3! text-black'
+  }
+
   return (
-    <div className={`top-1/2 left-1/2 absolute w-[calc(100%-24px)] -translate-y-1/2 -translate-x-1/2 bg-white rounded-2xl
-     z-20 ease-in-out duration-200 ${isPopupOpen ? 'block scale-100' : 'invisible scale-0'}`}>
-      <nav className='flex justify-evenly items-center rounded-t-2xl bg-gradient-to-r from-[#62b79c] to-[#afd1a1] p-4'>
-        <p>Income</p>
-        <p>Expenses</p>
-        <p>Transfer</p>
+    <div className={`top-1/2 left-1/2 absolute w-[calc(100%-24px)] -translate-y-1/2 -translate-x-1/2 bg-white 
+    rounded-2xl z-20 ease-in-out duration-200 ${isPopupOpen ? 'block scale-100' : 'invisible scale-0'}`}>
+      
+      <nav className='relative flex justify-evenly items-center rounded-t-2xl bg-gradient-to-r from-[#62b79c] 
+      to-[#afd1a1] p-4'>
+        <div className={`absolute top-0 left-1/3 ${typeSelectColor[addContentType]} bg-white w-1/3 h-[calc(100%+1px)] 
+        rounded-t-2xl duration-250`}/>
+        <button onClick={() => setAddContentType('Income')} className={`z-0 ${addContentType === 'Income' ? 'text-black' : 'text-white'}`}>Income</button>
+        <button onClick={() => setAddContentType('Expense')} className={`z-0 ${addContentType === 'Expense' ? 'text-black' : 'text-white!'}`}>Expense</button>
+        <button onClick={() => setAddContentType('Transfer')} className={`z-0 ${addContentType === 'Transfer' ? 'text-black' : 'text-white'}`}>Transfer</button>
       </nav>
 
-      <h1 className='text-2xl font-bold text-center p-2'>Income</h1>
+      <h1 className='text-2xl font-bold text-center p-2'>{addContentType}</h1>
       <div className='flex flex-col justify-center items-centerv p-3 gap-y-2'>
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>
