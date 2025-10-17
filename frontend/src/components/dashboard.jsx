@@ -8,25 +8,24 @@ function dashboard() {
 
 
   return (
-    <div className='w-screen min-h-screen bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3'>
+    <div className='w-screen h-screen flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
       <nav className='flex justify-between items-center p-2'>
-        <Hamburger />
-        <img src='logo.png' className='w-[15vh]' />
+        <Hamburger/>
+        <img src='logo.png' className='w-[12vh]' />
         <User />
       </nav>
 
-      <div className='bg-white rounded-2xl'>
+      <div className='bg-white flex-1 rounded-2xl'>
         <img src='aurora.png' className='pt-10' />
         <div className='flex flex-col p-4 gap-y-2'>
           <h1 className='text-xl'>Sep 2025</h1>
           <SummationBoard />
           <HistoryBoard />
-          <div></div>
         </div>
       </div>
 
       <div onClick={() => setPopupOpen(false)} className={`fixed inset-0 bg-black z-10 transition-all
-       ease-in-out duration-300 ${isPopupOpen ? 'block opacity-50' : 'invisible opacity-0'}`}></div>
+       ease-in-out duration-200 ${isPopupOpen ? 'block opacity-50' : 'invisible opacity-0'}`}></div>
       <AddContentBtn isPopupOpen={isPopupOpen} setPopupOpen={setPopupOpen} />
       <AddContentPopup isPopupOpen={isPopupOpen} />
     </div>
@@ -35,13 +34,13 @@ function dashboard() {
 
 const Hamburger = ({ size = '2xl' }) => {
   return (
-    <FontAwesomeIcon size={size} icon={faBars} style={{ color: "#ffffff", }} />
+    <FontAwesomeIcon size={size} icon={faBars} className='text-white sm:hidden!' />
   );
 }
 
 const User = ({ size = '2xl' }) => {
   return (
-    <FontAwesomeIcon size={size} icon={faUser} style={{ color: "#ffffff", }} />
+    <FontAwesomeIcon size={size} icon={faUser} className='text-white sm:hidden!'/>
   );
 }
 
@@ -84,7 +83,7 @@ const AddContentBtn = ({ isPopupOpen, setPopupOpen }) => {
   return (
       <button onClick={() => setPopupOpen(!isPopupOpen)}>
         <FontAwesomeIcon icon={faPlus} size="md" className={`fixed bottom-0 right-0 text-white px-3 py-3.5 m-5 
-        rounded-full duration-300 ${isPopupOpen ? 'z-30 rotate-405 bg-rose-500' : 'bg-ui-green2'}`} />
+        rounded-full duration-200 ${isPopupOpen ? 'z-30 rotate-405 bg-rose-500' : 'bg-ui-green2'}`} />
       </button>
   );
 }
@@ -92,7 +91,7 @@ const AddContentBtn = ({ isPopupOpen, setPopupOpen }) => {
 const AddContentPopup = ({ isPopupOpen }) => {
   return (
     <div className={`top-1/2 left-1/2 absolute w-[calc(100%-24px)] -translate-y-1/2 -translate-x-1/2 bg-white rounded-2xl
-     z-20 ease-in-out duration-300 ${isPopupOpen ? 'block scale-100' : 'invisible scale-0'}`}>
+     z-20 ease-in-out duration-200 ${isPopupOpen ? 'block scale-100' : 'invisible scale-0'}`}>
       <nav className='flex justify-evenly items-center rounded-t-2xl bg-gradient-to-r from-[#62b79c] to-[#afd1a1] p-4'>
         <p>Income</p>
         <p>Expenses</p>
