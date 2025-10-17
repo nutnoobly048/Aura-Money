@@ -64,7 +64,8 @@ function login_register() {
   const [page, setPage] = useState(false);
 
   return (
-    <div className="relative flex justify-center items-center w-screen h-dvh bg-gradient-to-br from-[#62b79c] to-[#afd1a1]">
+    <div className="relative flex justify-center items-baseline w-screen h-dvh bg-gradient-to-br from-[#62b79c] to-[#afd1a1]">
+      <img src="logo.png" alt="auramoney" className="h-[10vh] m-2" />
       <LoginPage handleChange={handleChange} handleSubmit={handleSubmit} googleLogin={googleLogin} errors={errors} page={page} setPage={setPage}/>
       <RegisterPage isPasswordVisible={isPasswordVisible} setPasswordVisible={setPasswordVisible} googleLogin={googleLogin} page={page} setPage={setPage}/>
     </div>
