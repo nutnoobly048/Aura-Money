@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faUser, faPlus, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 
 function dashboard() {
 
@@ -9,16 +9,19 @@ function dashboard() {
 
   return (
     <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
-      <nav className='flex justify-between items-center mb-1'>
+      <nav className='relative flex justify-between items-center mb-1 sm:flex-col sm:justify-center!'>
         <Hamburger />
-        <img src='logo.png' className='w-[12vh]' />
+        <img src='logo.svg' className='w-[12vh] sm:absolute sm:top-0 sm:left-0 sm:pr-2' />
+        <button className='relative hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><span className='absolute top-1/2 -left-[12px] -translate-y-1/2 h-[calc(100%-10px)] w-1 bg-white rounded-tr-sm rounded-br-sm'></span><FontAwesomeIcon size='xl' icon={faSackDollar}/><p className='text-xl'>Account</p></button>
+        <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
+        <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
         <User />
       </nav>
 
       <div className='bg-white flex-1 rounded-2xl'>
-        <img src='aurora.png' className='pt-10' />
+        <img src='aurora.png' className='pt-10 max-h-[120px] w-full' />
         <div className='flex flex-col p-4 gap-y-2'>
-          <h1 className='text-xl'>Sep 2025</h1>
+          <h1 className='text-[clamp(20px,5vw,30px)] font-semibold'>Sep 2025</h1>
           <SummationBoard />
           <HistoryBoard />
         </div>
@@ -99,42 +102,42 @@ const AddContentPopup = ({ isPopupOpen, addContentType, setAddContentType }) => 
 
   return (
     <div className={`top-1/2 left-1/2 absolute w-[calc(100%-24px)] -translate-y-1/2 -translate-x-1/2 bg-white 
-    rounded-2xl z-20 ease-in-out duration-200 ${isPopupOpen ? 'block scale-100' : 'invisible scale-0'}`}>
+    rounded-2xl z-20 ease-in-out duration-200 max-w-2xl ${isPopupOpen ? 'block scale-100' : 'invisible scale-0'}`}>
       
-      <nav className='relative flex justify-evenly items-center rounded-t-2xl bg-gradient-to-r from-[#62b79c] 
-      to-[#afd1a1] p-4'>
-        <div className={`absolute top-0 left-1/3 ${typeSelectColor[addContentType]} bg-white w-1/3 h-[calc(100%+1px)] 
-        rounded-t-2xl duration-250`}/>
-        <button onClick={() => setAddContentType('Income')} className={`z-0 ${addContentType === 'Income' ? 'text-black' : 'text-white'}`}>Income</button>
-        <button onClick={() => setAddContentType('Expense')} className={`z-0 ${addContentType === 'Expense' ? 'text-black' : 'text-white!'}`}>Expense</button>
-        <button onClick={() => setAddContentType('Transfer')} className={`z-0 ${addContentType === 'Transfer' ? 'text-black' : 'text-white'}`}>Transfer</button>
+      <nav className='relative rounded-t-2xl bg-gradient-to-r from-[#62b79c] to-[#afd1a1]'>
+        <div className={`absolute top-0 left-1/3 ${typeSelectColor[addContentType]} bg-white w-1/3 h-[calc(100%+1px)] rounded-t-2xl duration-250 overflow-hidden`}>
+          <div className='absolute bottom-0 w-full h-1 bg-ui-green2'></div>
+        </div>
+        <button onClick={() => setAddContentType('Income')} className={`relative py-4 w-1/3 h-full font-semibold ${addContentType === 'Income' ? 'text-black' : 'text-white'}`}>Income</button>
+        <button onClick={() => setAddContentType('Expense')} className={`relative py-4 w-1/3 h-full font-semibold ${addContentType === 'Expense' ? 'text-black' : 'text-white!'}`}>Expense</button>
+        <button onClick={() => setAddContentType('Transfer')} className={`relative py-4 w-1/3 h-full font-semibold ${addContentType === 'Transfer' ? 'text-black' : 'text-white'}`}>Transfer</button>
       </nav>
 
       <h1 className='text-2xl font-bold text-center p-2'>{addContentType}</h1>
       <div className='flex flex-col justify-center items-centerv p-3 gap-y-2'>
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>
-          <label for='Date'>Date :</label>
+          <label htmlFor='Date'>Date :</label>
           <input id='Date' type='date' className='flex-1' />
         </div>
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>
-          <label for='Amount'>Amount :</label>
+          <label htmlFor='Amount'>Amount :</label>
           <input id='Amount' type='number' className='flex-1' />
         </div>
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>
-          <label for='Catagory'>Catagory :</label>
+          <label htmlFor='Catagory'>Catagory :</label>
           <input id='Catagory' className='flex-1' />
         </div>
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>
-          <label for='Account'>Account :</label>
+          <label htmlFor='Account'>Account :</label>
           <input id='Account' className='flex-1' />
         </div>
         <span className='h-0.5 w-full bg-zinc-300'></span>
         <div className='w-full flex'>
-          <label for='Note'>Note :</label>
+          <label htmlFor='Note'>Note :</label>
           <input id='Note' className='flex-1' />
         </div>
         <span className='h-0.5 w-full bg-zinc-300'></span>

@@ -64,10 +64,21 @@ function login_register() {
   const [page, setPage] = useState(false);
 
   return (
-    <div className="relative flex justify-center items-baseline w-screen h-dvh bg-gradient-to-br from-[#62b79c] to-[#afd1a1]">
+    <div className="relative flex justify-center items-baseline w-screen h-dvh bg-gradient-to-br from-[#62b79c] to-[#afd1a1] overflow-hidden">
       <img src="logo.png" alt="auramoney" className="h-[10vh] m-2" />
-      <LoginPage handleChange={handleChange} handleSubmit={handleSubmit} googleLogin={googleLogin} errors={errors} page={page} setPage={setPage}/>
-      <RegisterPage isPasswordVisible={isPasswordVisible} setPasswordVisible={setPasswordVisible} googleLogin={googleLogin} page={page} setPage={setPage}/>
+      <LoginPage 
+       handleChange={handleChange} 
+       handleSubmit={handleSubmit} 
+       googleLogin={googleLogin} 
+       errors={errors} 
+       page={page} 
+       setPage={setPage}/>
+      <RegisterPage 
+       isPasswordVisible={isPasswordVisible} 
+       setPasswordVisible={setPasswordVisible} 
+       googleLogin={googleLogin} 
+       page={page} 
+       setPage={setPage}/>
     </div>
   );
 }
@@ -118,11 +129,11 @@ const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPa
             <div className="w-full flex justify-between p-3">
               <div className="flex justify-between items-center gap-x-2">
                 <input
-                  id="isRemember"
+                  id="isRememberLogin"
                   type="checkbox"
                   className="w-4 h-4 accent-ui-green1"
                 ></input>
-                <label for="isRemember">Remember Me</label>
+                <label htmlFor="isRememberLogin">Remember Me</label>
               </div>
               <p className="text-ui-green1 underline cursor-pointer hover:scale-110">
                 Forgot Password?
@@ -200,13 +211,13 @@ const RegisterPage = ({setPasswordVisible, isPasswordVisible, googleLogin, page,
             <div className="w-full flex justify-between p-3">
               <div className="flex justify-between items-center gap-x-2">
                 <input
-                  id="isRemember"
+                  id="isRememberRegister"
                   type="checkbox"
                   className="w-4 h-4 accent-ui-green1 cursor-pointer"
                 ></input>
-                <label for="isRemember" className="cursor-pointer">Remember Me</label>
+                <label htmlFor="isRememberRegister" className="cursor-pointer">Remember Me</label>
               </div>
-              <p className="text-ui-green1 underline cursor-pointer hover:scale-102">
+              <p className="text-ui-green1 underline cursor-pointer">
                 Forgot Password?
               </p>
             </div>
