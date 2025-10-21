@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Profile from './profile';
 
 function dashboard() {
 
@@ -22,12 +23,20 @@ function dashboard() {
 
       <div className='bg-white flex-1 rounded-2xl'>
         <img src='aurora.png' className='pt-10 max-h-[120px] w-full' />
-        <div className='flex flex-col p-4 gap-y-2'>
+        
+        {/* <div className='flex flex-col p-4 gap-y-2'>
           <h1 className='text-[clamp(20px,5vw,30px)] font-semibold'>Sep 2025</h1>
           <SummationBoard />
-          <HistoryBoard />
+          <History
+          8Board />
+        </div> */}
+
+          <div>
+          <Profile />
         </div>
       </div>
+
+      
 
       <BgBlurPopup setPopupOpen={setPopupOpen} isPopupOpen={isPopupOpen} />
       <BgBlurLogout isUserMenuOpen={isUserMenuOpen} setUserMenuOpen={setUserMenuOpen} />
