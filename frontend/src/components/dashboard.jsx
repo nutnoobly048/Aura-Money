@@ -5,12 +5,15 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Profile from './profile';
 import AccountSetting from './AccountSetting';
+import Accountboard from './accountboard';
 
 function dashboard() {
 
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [addContentType, setAddContentType] = useState('Expense');
-  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+  const [isProfileContextMenuOpen, setProfileContextMenuOpen] = useState(false);
+  const [pageOpen, setPageOpen] = useState('account');
+
   return (
     <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
       <nav className='relative flex justify-between items-center mb-1 sm:flex-col sm:justify-center!'>
@@ -19,7 +22,7 @@ function dashboard() {
         <button className='relative hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><span className='absolute top-1/2 -left-[12px] -translate-y-1/2 h-[calc(100%-10px)] w-1 bg-white rounded-tr-sm rounded-br-sm'></span><FontAwesomeIcon size='xl' icon={faSackDollar}/><p className='text-xl'>Account</p></button>
         <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
         <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
-        <User isUserMenuOpen={isUserMenuOpen} setUserMenuOpen={setUserMenuOpen}/>
+        <User isProfileContextMenuOpen={isProfileContextMenuOpen} setProfileContextMenuOpen={setProfileContextMenuOpen}/>
       </nav>
 
       <div className='bg-white flex-1 rounded-2xl'>
@@ -40,13 +43,12 @@ function dashboard() {
           </div>
       </div>
 
-      
 
       <BgBlurPopup setPopupOpen={setPopupOpen} isPopupOpen={isPopupOpen} />
-      <BgBlurLogout isUserMenuOpen={isUserMenuOpen} setUserMenuOpen={setUserMenuOpen} />
+      <BgBlurProfileContextMenu isProfileContextMenuOpen={isProfileContextMenuOpen} setProfileContextMenuOpen={setProfileContextMenuOpen} />
       <AddContentBtn isPopupOpen={isPopupOpen} setPopupOpen={setPopupOpen} />
       <AddContentPopup isPopupOpen={isPopupOpen} addContentType={addContentType} setAddContentType={setAddContentType}/>
-      <LogoutBtn isUserMenuOpen={isUserMenuOpen}/>
+      <ProfileContextMenu isProfileContextMenuOpen={isProfileContextMenuOpen} setProfileContextMenuOpen={setProfileContextMenuOpen} setPageOpen={setPageOpen}/>
     </div>
   )
 }
@@ -58,10 +60,10 @@ const BgBlurPopup = ({setPopupOpen, isPopupOpen}) => {
   );
 }
 
-const BgBlurLogout = ({isUserMenuOpen, setUserMenuOpen}) => {
+const BgBlurProfileContextMenu = ({isProfileContextMenuOpen, setProfileContextMenuOpen}) => {
   return (
-    <div onClick={() => setUserMenuOpen(!isUserMenuOpen)} className={`fixed inset-0 bg-black z-10 transition-all
-     ease-in-out duration-200 ${isUserMenuOpen ? 'block opacity-50' : 'invisible opacity-0'}`} />
+    <div onClick={() => setProfileContextMenuOpen(!isProfileContextMenuOpen)} className={`fixed inset-0 bg-black z-10 transition-all
+     ease-in-out duration-200 ${isProfileContextMenuOpen ? 'block opacity-50' : 'invisible opacity-0'}`} />
   );
 }
 
@@ -71,13 +73,30 @@ const Hamburger = ({ size = '2xl' }) => {
   );
 }
 
-const User = ({ size = '2xl', isUserMenuOpen, setUserMenuOpen }) => {
+const User = ({ size = '2xl', isProfileContextMenuOpen, setProfileContextMenuOpen }) => {
   return (
-    <FontAwesomeIcon size={size} icon={faUser} className='text-white cursor-pointer sm:hidden!' onClick={() => setUserMenuOpen(!isUserMenuOpen)}/>
+    <FontAwesomeIcon size={size} icon={faUser} className='text-white cursor-pointer sm:hidden!' onClick={() => setProfileContextMenuOpen(!isProfileContextMenuOpen)}/>
   );
 }
 
-const LogoutBtn = ({isUserMenuOpen}) => {
+const ProfileContextMenu = ({isProfileContextMenuOpen, setProfileContextMenuOpen, setPageOpen}) => {
+  return (
+    <div className={`fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-20 duration-200 ease-in-out flex flex-col gap-y-5
+     ${isProfileContextMenuOpen ? 'block scale-100' : 'invisible scale-0'}`} >
+      <ProfileBtn setPageOpen={setPageOpen} setProfileContextMenuOpen={setProfileContextMenuOpen} />
+      <LogoutBtn />
+    </div>
+  );
+}
+
+const ProfileBtn = ({setPageOpen, setProfileContextMenuOpen}) => {
+  return (
+    <button className='z-30 px-8 py-1 font-bold text-xl rounded-2xl bg-transparent text-white border border-white'
+     onClick={() => {setPageOpen('profile');setProfileContextMenuOpen(false)}}>Profile</button>
+  );
+}
+
+const LogoutBtn = ({isProfileContextMenuOpen}) => {
   const navigate = useNavigate();
   const Logout = async () => {
     try {
@@ -89,45 +108,7 @@ const LogoutBtn = ({isUserMenuOpen}) => {
   };
 
   return (
-    <button className={`fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-20 px-8 py-1 font-bold text-2xl rounded-2xl bg-white duration-200 ease-in-out
-     ${isUserMenuOpen ? 'block scale-100' : 'invisible scale-0'}`} 
-     onClick={Logout}>Logout?</button>
-  );
-}
-
-const HistoryBoard = () => {
-  let dummies = [1, 2, 3, 4, 5];
-  return (
-    <div className='flex flex-col justify-evenly px-4 py-2 border-2 border-zinc-300 rounded-2xl space-y-2'>
-      {dummies.map((dummy) => (
-        <div key={dummy} className='h-8 bg-zinc-200 rounded-2xl'>
-          <p>{dummy}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const SummationBoard = () => {
-  return (
-    <div className='flex justify-evenly border-2 border-zinc-200 rounded-2xl p-1'>
-      <div className='flex flex-col justify-center items-center'>
-        <p>Income</p>
-        <p>-</p>
-      </div>
-      <div className='flex flex-col justify-center items-center'>
-        <p>Expenses</p>
-        <p>-</p>
-      </div>
-      <div className='flex flex-col justify-center items-center'>
-        <p>Total</p>
-        <p>-</p>
-      </div>
-      <div className='flex flex-col justify-center items-center'>
-        <p>Balance</p>
-        <p>-</p>
-      </div>
-    </div>
+    <button className='z-30 px-8 py-1 font-bold text-xl rounded-2xl bg-white text-ui-green1' onClick={Logout}>Logout</button>
   );
 }
 

@@ -101,8 +101,8 @@ def auth():
     """
     try:
         email = get_jwt_identity()
-        user = database.get_from_email(email)
-        if not user:
+        user_id = database.get_from_email(email)
+        if not user_id:
             return jsonify({"authenticated": False}), 200
         return jsonify({"authenticated": True, "user": user}), 200
     except Exception as err:
@@ -150,7 +150,6 @@ def google_auth():
         if result[1] == 200:
                 user_email = result[0]
                 access_token = create_access_token(identity=user_email)
-                # resp = jsonify({"success": "login successful", "expires_in_sec": 3600})
                 resp = make_response(redirect("http://localhost:5173/"))
                 set_access_cookies(resp, access_token)
                 return resp
@@ -166,8 +165,8 @@ def create_category():
         data = request.get_json()  # get data from header (json file)
         category_name = data.get("category_name")
         email = get_jwt_identity()
-        user = database.get_from_email(email)
-        result = database.create_category(category_name, user)
+        user_id = database.get_from_email(email)
+        result = database.create_category(category_name, user_id)
         return result
     except Exception as err:
         traceback.print_exc()
@@ -201,8 +200,8 @@ def update_category():
 def get_category():
     try:
         email = get_jwt_identity()
-        user = database.get_from_email(email)
-        result = database.get_category(user)
+        user_id = database.get_from_email(email)
+        result = database.get_category(user_id)
         return result
     except Exception as err:
         traceback.print_exc()
@@ -216,8 +215,8 @@ def create_account():
         account_name = data.get("account_name")
         balance = data.get("balance")
         email = get_jwt_identity()
-        user = database.get_from_email(email)
-        result = database.create_account(account_name, balance, user)
+        user_id = database.get_from_email(email)
+        result = database.create_account(account_name, balance, user_id)
         return result
     except Exception as err:
         traceback.print_exc()
@@ -252,12 +251,126 @@ def update_account():
 def get_account():
     try:
         email = get_jwt_identity()
-        user = database.get_from_email(email)
-        result = database.get_account(user)
+        user_id = database.get_from_email(email)
+        result = database.get_account(user_id)
         return result
     except Exception as err:
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
+
+@app.route("/create_transfer", methods=["POST"])
+@jwt_required()
+def create_transfer():
+    try:
+        email = get_jwt_identity()
+        user_id = database.get_from_email(email)
+        data = request.get_json()
+        from_account_id = data.get("from_account_id")
+        to_account_id = data.get("to_account_id")
+        amount = data.get("amount")
+        result = database.create_transfer(from_account_id, to_account_id, amount, user_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+    
+@app.route('/delete_transfer', methods=["POST"])
+def delete_transfer():
+    try:
+        data = request.get_json()  # get data from header (json file)
+        transfer_id = data.get("transfer_id")
+        result = database.delete_transfer(transfer_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route("/update_transfer", methods=["POST"])
+def update_transfer():
+    try:
+        data = request.get_json()
+        transfer_id = data.get("transfer_id")
+        from_account_id = data.get("from_account_id")
+        to_account_id = data.get("to_account_id")
+        amount = data.get("amount")
+        result = database.update_transfer(transfer_id, from_account_id, to_account_id, amount)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route('/get_transfer', methods=["GET"])
+@jwt_required()
+def get_transfer():
+    try:
+        email = get_jwt_identity()
+        user_id = database.get_from_email(email)
+        result = database.get_transfer(user_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route("/create_iore", methods=["POST"])
+@jwt_required()
+def create_iore():
+    try:
+        email = get_jwt_identity()
+        user_id = database.get_from_email(email)
+        data = request.get_json()
+        date = data.get("date")
+        types = data.get("types")
+        account_id = data.get("account_id")
+        category_id = data.get("category_id")
+        amount = data.get("amount")
+        note = data.get("note")
+        result = database.create_iore(date, types, account_id, category_id, amount, note, user_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route('/delete_iore', methods=["POST"])
+def delete_iore():
+    try:
+        data = request.get_json()  # get data from header (json file)
+        track_id = data.get("track_id")
+        result = database.delete_transfer(track_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route("/update_iore", methods=["POST"])
+@jwt_required()
+def update_iore():
+    try:
+        data = request.get_json()
+        track_id = data.get("track_id")
+        date = data.get("date")
+        types = data.get("types")
+        account_id = data.get("account_id")
+        category_id = data.get("category_id")
+        amount = data.get("amount")
+        note = data.get("note")
+        result = database.update_account(track_id, date, types, account_id, category_id, amount, note)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route('/get_iore', methods=["GET"])
+@jwt_required()
+def get_transfer():
+    try:
+        email = get_jwt_identity()
+        user_id = database.get_from_email(email)
+        result = database.get_iore(user_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
 # Running file
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
