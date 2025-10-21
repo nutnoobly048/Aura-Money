@@ -4,6 +4,7 @@ import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis } from 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Profile from './profile';
+import AccountSetting from './AccountSetting';
 
 function dashboard() {
 
@@ -32,8 +33,11 @@ function dashboard() {
         </div> */}
 
           <div>
-          <Profile />
+            {/* <Profile /> */}
         </div>
+          <div>
+            <AccountSetting />
+          </div>
       </div>
 
       
