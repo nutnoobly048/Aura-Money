@@ -19,10 +19,7 @@ function login_register() {
     setValues({ ...values, [name]: value });
 
     if (errors[name]) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: "",
-      }));
+      setErrors((prevErrors) => ({...prevErrors,[name]: "",}));
     }
   };
 
@@ -67,7 +64,72 @@ function login_register() {
   const [page, setPage] = useState(false);
   // ----------------------------Register Validations-------------------------------
   const [isRegisterPasswordVisible, setRegisterPasswordVisible] = useState(false);
+  const [registerValues, setRegisterValues] = useState({username:'',email:'',password:'',confirmPassword:''});
+  const [registerErrors, setRegisterErrors] = useState({username:'',email:'',password:'',confirmPassword:''});
   
+  // const registerForm = async () => {
+  //   try {
+  //     const { data } = await axios.post("http://localhost:5000/register", {
+  //       username:
+  //       email: values.email,
+  //       password: values.password,
+  //     });
+  //     navigate("/");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleChangeRegister = (e) => {
+    const { name, value } = e.target;
+    setRegisterValues({ ...registerValues, [name]: value });
+
+    if (registerErrors[name]) {
+      setRegisterErrors((prevErrors) => ({...prevErrors,[name]: "",}));
+    }
+  };
+
+  const handleRegisterSubmit = () => {
+    const newErrors = {};
+
+    console.log(registerValues);
+
+    // ----------check if inputs are filled or not--------
+    if (!registerValues.username) {
+      newErrors.username = 'Username is required!';
+    }
+    if (!registerValues.email) {
+      newErrors.email = "Email / username is required!";
+    }
+    if (!registerValues.password) {
+      newErrors.password = "Password is required!";
+    }
+    if (!registerValues.confirmPassword) {
+      newErrors.confirmPassword = "You need to confirm your password!";
+    }
+    
+    //---------------check if email is in correct format----------
+    if (!registerValues.email.includes("@")) {
+      newErrors.email = "Email is not valid!";
+    }
+
+    //----------check if username == email / except the case if both havn't filled yet---------
+    if (registerValues.username === registerValues.email && registerValues.username && registerValues.email) {
+      newErrors.username = "username and email must not be the same!";
+      newErrors.email = "username and email must not be the same!";
+    }
+
+    //----------check if confirm password valid or not-------------
+    if (registerValues.password != registerValues.confirmPassword) {
+      newErrors.confirmPassword = "Password filled is not correct."
+    }
+    setRegisterErrors(newErrors);
+
+    if (!newErrors.email && !newErrors.username && !newErrors.password && !newErrors.confirmPassword) {
+      // loginform();
+      console.log("Registered.");
+    }
+  };
 
   return (
     <div className="relative flex justify-center items-baseline w-screen h-dvh bg-gradient-to-br from-[#62b79c] to-[#afd1a1] overflow-hidden">
@@ -86,14 +148,24 @@ function login_register() {
        setRegisterPasswordVisible={setRegisterPasswordVisible} 
        googleLogin={googleLogin} 
        page={page} 
-       setPage={setPage}/>
+       setPage={setPage}
+       handleChangeRegister={handleChangeRegister}
+       handleRegisterSubmit={handleRegisterSubmit}
+       registerErrors={registerErrors}/>
     </div>
   );
 }
 
 export default login_register;
 
-const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPage, isLoginPasswordVisible, setLoginPasswordVisible}) => {
+const LoginPage = ({handleChange, 
+                    handleSubmit, 
+                    googleLogin, 
+                    errors, 
+                    page, 
+                    setPage, 
+                    isLoginPasswordVisible, 
+                    setLoginPasswordVisible}) => {
   return (
     <div className={`absolute flex justify-center items-center w-screen h-dvh bg-transparent duration-500 ${page ? 'translate-x-0' : 'translate-x-full'}`}>
       <div className="w-full flex flex-col justify-between items-center max-w-[640px] bg-white py-10 px-5 m-5 rounded-2xl gap-y-10">
@@ -108,9 +180,8 @@ const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPa
         <div className="flex flex-col w-full justify-center gap-y-5">
           <input
             className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer ${
-              errors.email ? "bg-red-100 border border-red-500" : "bg-gray-200"
-            }`}
-            type="text"
+              errors.email ? "bg-red-100 border border-red-500" : "bg-gray-200"}`}
+            type="email"
             name="email"
             placeholder={`${
               errors.email ? `${errors.email}` : "Username / Email"
@@ -119,10 +190,12 @@ const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPa
           />
           <div className="relative">
             <input
-              className="bg-gray-200 rounded-2xl p-2 pl-4.5 cursor-pointer w-full"
+              className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer w-full ${
+              errors.password ? "bg-red-100 border border-red-500" : "bg-gray-200"}`}
               type={`${isLoginPasswordVisible ? 'text' : 'password'}`}
-              name="Password"
-              placeholder="Password"
+              name="password"
+              placeholder={errors.password ? errors.password : "Password"}
+              onChange={handleChange}
             />
             <FontAwesomeIcon onClick={() => setLoginPasswordVisible(!isLoginPasswordVisible)} icon={faEye} className="absolute right-0 mr-3 top-1/2 -translate-y-1/2 text-zinc-400 cursor-pointer hover:scale-120"/>
           </div>
@@ -165,7 +238,14 @@ const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPa
   );
 };
 
-const RegisterPage = ({setRegisterPasswordVisible, isRegisterPasswordVisible, googleLogin, page, setPage}) => {
+const RegisterPage = ({setRegisterPasswordVisible,
+                       isRegisterPasswordVisible, 
+                       googleLogin, 
+                       page, 
+                       setPage,
+                       handleChangeRegister,
+                       handleRegisterSubmit,
+                       registerErrors}) => {
   return (
     <div className={`absolute flex justify-center items-center w-screen h-dvh bg-transparent duration-500 ${page ? '-translate-x-full' : 'translate-x-0'}`}>
       <div className="items-center max-w-[640px] bg-white py-4 px-5 m-5 rounded-2xl gap-y-2 w-full flex flex-col justify-between">
@@ -179,32 +259,44 @@ const RegisterPage = ({setRegisterPasswordVisible, isRegisterPasswordVisible, go
 
         <div className="flex flex-col w-full justify-center gap-y-4.5">
           <input
-            className="bg-gray-200 rounded-2xl p-2 pl-4.5 cursor-pointer"
+            className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer w-full ${
+              registerErrors.username ? "bg-red-100 border border-red-500" : "bg-gray-200"}`}
             type="text"
-            name="Username"
-            placeholder="Username"
+            name="username"
+            placeholder={`${
+              registerErrors.username ? `${registerErrors.username}` : "Username"}`}
+            onChange={handleChangeRegister}
           />
           <input
-            className="bg-gray-200 rounded-2xl p-2 pl-4.5 cursor-pointer"
+            className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer w-full ${
+              registerErrors.email ? "bg-red-100 border border-red-500" : "bg-gray-200"}`}
             type="text"
-            name="Email"
-            placeholder="Email"
+            name="email"
+            placeholder={`${
+              registerErrors.email ? `${registerErrors.email}` : "email"}`}
+            onChange={handleChangeRegister}
           />
           <div className="relative">
             <input
-              className="bg-gray-200 rounded-2xl p-2 pl-4.5 cursor-pointer w-full"
+              className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer w-full ${
+                registerErrors.password ? "bg-red-100 border border-red-500" : "bg-gray-200"}`}
               type={`${isRegisterPasswordVisible ? 'text' : 'password'}`}
-              name="Password"
-              placeholder="Password"
+              name="password"
+              placeholder={`${
+                registerErrors.password ? `${registerErrors.password}` : "Password"}`}
+              onChange={handleChangeRegister}
             />
             <FontAwesomeIcon onClick={() => setRegisterPasswordVisible(!isRegisterPasswordVisible)} icon={faEye} className="absolute right-0 mr-3 top-1/2 -translate-y-1/2 text-zinc-400 cursor-pointer hover:scale-120"/>
           </div>
           <div className="relative">
             <input
-              className="bg-gray-200 rounded-2xl p-2 pl-4.5 cursor-pointer w-full"
+              className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer w-full ${
+                registerErrors.confirmPassword ? "bg-red-100 border border-red-500" : "bg-gray-200"}`}
               type={`${isRegisterPasswordVisible ? 'text' : 'password'}`}
               name="confirmPassword"
-              placeholder="Confirm Password"
+              placeholder={`${
+                registerErrors.confirmPassword ? `${registerErrors.confirmPassword}` : "Confirm Password"}`}
+              onChange={handleChangeRegister}
             />
             <FontAwesomeIcon onClick={() => setRegisterPasswordVisible(!isRegisterPasswordVisible)} icon={faEye} className="absolute right-0 mr-3 top-1/2 -translate-y-1/2 text-zinc-400 cursor-pointer hover:scale-120"/>
           </div>
@@ -227,7 +319,8 @@ const RegisterPage = ({setRegisterPasswordVisible, isRegisterPasswordVisible, go
             </div>
             <button
               className="w-full bg-ui-green2 rounded-2xl p-2 cursor-pointer text-white hover:border-ui-green2 
-            hover:opacity-50 duration-150"
+              hover:opacity-50 duration-150"
+              onClick={handleRegisterSubmit}
             >
               Create Account
             </button>

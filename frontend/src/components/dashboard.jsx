@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function dashboard() {
 
@@ -11,7 +13,7 @@ function dashboard() {
     <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
       <nav className='relative flex justify-between items-center mb-1 sm:flex-col sm:justify-center!'>
         <Hamburger />
-        <img src='logo.svg' className='w-[12vh] sm:absolute sm:top-0 sm:left-0 sm:pr-2' />
+        <img src='logo.svg' className='w-[12vh] sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2' />
         <button className='relative hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><span className='absolute top-1/2 -left-[12px] -translate-y-1/2 h-[calc(100%-10px)] w-1 bg-white rounded-tr-sm rounded-br-sm'></span><FontAwesomeIcon size='xl' icon={faSackDollar}/><p className='text-xl'>Account</p></button>
         <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
         <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
@@ -42,8 +44,30 @@ const Hamburger = ({ size = '2xl' }) => {
 }
 
 const User = ({ size = '2xl' }) => {
+  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   return (
-    <FontAwesomeIcon size={size} icon={faUser} className='text-white sm:hidden!' />
+    <div>
+      <FontAwesomeIcon size={size} icon={faUser} 
+       className='text-white relative sm:hidden!' onClick={() => setUserMenuOpen(!isUserMenuOpen)}/>
+      <LogoutBtn isUserMenuOpen={isUserMenuOpen}/>
+    </div>
+  );
+}
+
+const LogoutBtn = (isUserMenuOpen) => {
+  const navigate = useNavigate();
+  const Logout = async () => {
+    try {
+      const data = await axios.get('http://localhost:5000/logout')
+      navigate('/login_register');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <button className={`bg-white border border-zinc-300 rounded-sm ${isUserMenuOpen ? 'absolute bottom-0 left-0' : 'hidden'}`} 
+     onClick={Logout}>Logout</button>
   );
 }
 
