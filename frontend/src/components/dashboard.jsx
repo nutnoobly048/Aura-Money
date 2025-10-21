@@ -8,7 +8,7 @@ function dashboard() {
 
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [addContentType, setAddContentType] = useState('Expense');
-
+  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   return (
     <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
       <nav className='relative flex justify-between items-center mb-1 sm:flex-col sm:justify-center!'>
@@ -17,7 +17,7 @@ function dashboard() {
         <button className='relative hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><span className='absolute top-1/2 -left-[12px] -translate-y-1/2 h-[calc(100%-10px)] w-1 bg-white rounded-tr-sm rounded-br-sm'></span><FontAwesomeIcon size='xl' icon={faSackDollar}/><p className='text-xl'>Account</p></button>
         <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
         <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
-        <User />
+        <User isUserMenuOpen={isUserMenuOpen} setUserMenuOpen={setUserMenuOpen}/>
       </nav>
 
       <div className='bg-white flex-1 rounded-2xl'>
@@ -29,12 +29,27 @@ function dashboard() {
         </div>
       </div>
 
-      <div onClick={() => setPopupOpen(false)} className={`fixed inset-0 bg-black z-10 transition-all
-       ease-in-out duration-200 ${isPopupOpen ? 'block opacity-50' : 'invisible opacity-0'}`}></div>
+      <BgBlurPopup setPopupOpen={setPopupOpen} isPopupOpen={isPopupOpen} />
+      <BgBlurLogout isUserMenuOpen={isUserMenuOpen} setUserMenuOpen={setUserMenuOpen} />
       <AddContentBtn isPopupOpen={isPopupOpen} setPopupOpen={setPopupOpen} />
       <AddContentPopup isPopupOpen={isPopupOpen} addContentType={addContentType} setAddContentType={setAddContentType}/>
+      <LogoutBtn isUserMenuOpen={isUserMenuOpen}/>
     </div>
   )
+}
+
+const BgBlurPopup = ({setPopupOpen, isPopupOpen}) => {
+  return (
+    <div onClick={() => setPopupOpen(false)} className={`fixed inset-0 bg-black z-10 transition-all
+     ease-in-out duration-200 ${isPopupOpen ? 'block opacity-50' : 'invisible opacity-0'}`} />
+  );
+}
+
+const BgBlurLogout = ({isUserMenuOpen, setUserMenuOpen}) => {
+  return (
+    <div onClick={() => setUserMenuOpen(!isUserMenuOpen)} className={`fixed inset-0 bg-black z-10 transition-all
+     ease-in-out duration-200 ${isUserMenuOpen ? 'block opacity-50' : 'invisible opacity-0'}`} />
+  );
 }
 
 const Hamburger = ({ size = '2xl' }) => {
@@ -43,18 +58,13 @@ const Hamburger = ({ size = '2xl' }) => {
   );
 }
 
-const User = ({ size = '2xl' }) => {
-  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+const User = ({ size = '2xl', isUserMenuOpen, setUserMenuOpen }) => {
   return (
-    <div>
-      <FontAwesomeIcon size={size} icon={faUser} 
-       className='text-white relative sm:hidden!' onClick={() => setUserMenuOpen(!isUserMenuOpen)}/>
-      <LogoutBtn isUserMenuOpen={isUserMenuOpen}/>
-    </div>
+    <FontAwesomeIcon size={size} icon={faUser} className='text-white cursor-pointer sm:hidden!' onClick={() => setUserMenuOpen(!isUserMenuOpen)}/>
   );
 }
 
-const LogoutBtn = (isUserMenuOpen) => {
+const LogoutBtn = ({isUserMenuOpen}) => {
   const navigate = useNavigate();
   const Logout = async () => {
     try {
@@ -66,8 +76,9 @@ const LogoutBtn = (isUserMenuOpen) => {
   };
 
   return (
-    <button className={`bg-white border border-zinc-300 rounded-sm ${isUserMenuOpen ? 'absolute bottom-0 left-0' : 'hidden'}`} 
-     onClick={Logout}>Logout</button>
+    <button className={`fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-20 px-8 py-1 font-bold text-2xl rounded-2xl bg-white duration-200 ease-in-out
+     ${isUserMenuOpen ? 'block scale-100' : 'invisible scale-0'}`} 
+     onClick={Logout}>Logout?</button>
   );
 }
 

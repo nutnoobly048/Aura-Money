@@ -67,18 +67,18 @@ function login_register() {
   const [registerValues, setRegisterValues] = useState({username:'',email:'',password:'',confirmPassword:''});
   const [registerErrors, setRegisterErrors] = useState({username:'',email:'',password:'',confirmPassword:''});
   
-  // const registerForm = async () => {
-  //   try {
-  //     const { data } = await axios.post("http://localhost:5000/register", {
-  //       username:
-  //       email: values.email,
-  //       password: values.password,
-  //     });
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const registerForm = async () => {
+    try {
+      const { data } = await axios.post("http://localhost:5000/register", {
+        username: registerValues.username,
+        email: registerValues.email,
+        password: registerValues.password,
+      });
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleChangeRegister = (e) => {
     const { name, value } = e.target;
@@ -126,7 +126,7 @@ function login_register() {
     setRegisterErrors(newErrors);
 
     if (!newErrors.email && !newErrors.username && !newErrors.password && !newErrors.confirmPassword) {
-      // loginform();
+      registerForm();
       console.log("Registered.");
     }
   };
