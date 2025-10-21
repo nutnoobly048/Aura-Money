@@ -1,3 +1,4 @@
+
 CREATE TABLE `account` (
   `account_id` int(11) NOT NULL,
   `account_name` varchar(255) DEFAULT NULL,
@@ -7,7 +8,7 @@ CREATE TABLE `account` (
 
 CREATE TABLE `category` (
   `category_id` int(11) NOT NULL,
-  `category` varchar(255) NOT NULL,
+  `category_name` varchar(255) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -15,17 +16,18 @@ CREATE TABLE `iore` (
   `track_id` int(11) NOT NULL,
   `date` date NOT NULL,
   `types` varchar(255) NOT NULL,
-  `account_name` varchar(255) NOT NULL,
-  `category` varchar(255) DEFAULT 'Other',
+  `account_id` int(255) NOT NULL,
+  `category_id` int(255) DEFAULT NULL,
   `amount` float NOT NULL,
+  `note` text NOT NULL,
   `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `transfer` (
   `transfer_id` int(11) NOT NULL,
   `date` date NOT NULL,
-  `from` varchar(255) NOT NULL,
-  `to` varchar(255) NOT NULL,
+  `from_account_id` int(255) NOT NULL,
+  `to_account_id` int(255) NOT NULL,
   `amount` float NOT NULL,
   `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -69,7 +71,7 @@ ALTER TABLE `transfer`
   MODIFY `transfer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 ALTER TABLE `account`
   ADD CONSTRAINT `account_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
