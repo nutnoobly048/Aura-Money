@@ -103,52 +103,114 @@ def login_db(email , password):
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
-def get_track(user_id):
+def create_category(category_name, user_id):
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
-        stmt = "SELECT * FROM track WHERE user_id=%s"
+        stmt = "INSERT INTO category (category_name, user_id) VALUES (%s, %s)"
+        payload = (category_name, user_id)
+        cursor.execute(stmt,payload)
+        db.commit()
+        return jsonify({"Message": "Success"}), 200
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
+def delete_category(category_id):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "DELETE FROM category WHERE category_id=%s"
+        cursor.execute(stmt,(category_id,))
+        db.commit()
+        return jsonify({"Message": "Success"}), 200
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
+def update_category(category_id, category_name):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "UPDATE category SET category_name=%s WHERE category_id=%s"
+        payload = (category_name, category_id)
+        cursor.execute(stmt,payload)
+        db.commit()
+        return jsonify({"Message": "Success"}), 200
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
+def get_category(user_id):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "SELECT * FROM category WHERE user_id=%s"
         cursor.execute(stmt,(user_id,))
         result = cursor.fetchall()
-        data = []
         if len(result) > 0:
+            data = []
             for x in result:
                 arr = {
-                    "track_id": x[0],
-                    "date": x[1],
-                    "amount": x[2],
-                    "catagory": x[3],
-                    "account": x[4],
-                    "note": x[5],
-                    "total": x[6],
-                    "user_id": x[7]
+                    "user_id" : x[0],
+                    "username" : x[1],
+                    "password" : x[2],
+                    "email" : x[3]
                 }
                 data.append(arr)
         return data
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
-
-def post_data(date, amount, catagory, account, note, user_id):
+def create_account(account_name, balance , user_id):
     try:
-        amount = float(amount)
         db = ConnectorMysql()
         cursor = db.cursor()
-        stmt = "INSERT INTO track (date, amount, catagory, account, note, total, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        if catagory.lower() == "income":
-            if not get_track(user_id):
-                calculate = amount
-            else:
-                calculate = get_track(user_id)[-1]["total"] + amount
-        else:
-            if not get_track(user_id):
-                calculate = amount*(-1)
-            else:
-                calculate = get_track(user_id)[-1]["total"] - amount
-        payload = (date, amount, catagory, account, note, calculate, user_id)
+        stmt = "INSERT INTO account (account_name, balance , user_id) VALUES (%s, %s, %s)"
+        payload = (account_name, balance , user_id)
         cursor.execute(stmt,payload)
         db.commit()
-        return jsonify({'message' : "success"}) , 200
+        return jsonify({"Message": "Success"}), 200
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
+def delete_account(account_id):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "DELETE FROM account WHERE account_id=%s"
+        cursor.execute(stmt,(account_id,))
+        db.commit()
+        return jsonify({"Message": "Success"}), 200
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
+def update_account(account_id, account_name, balance):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "UPDATE account SET account_name=%s, balance=%s WHERE account_id=%s"
+        payload = (account_id, account_name, balance)
+        cursor.execute(stmt,payload)
+        db.commit()
+        return jsonify({"Message": "Success"}), 200
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
+def get_account(user_id):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "SELECT * FROM account WHERE user_id=%s"
+        cursor.execute(stmt,(user_id,))
+        result = cursor.fetchall()
+        if len(result) > 0:
+            data = []
+            for x in result:
+                arr = {
+                    "user_id" : x[0],
+                    "username" : x[1],
+                    "password" : x[2],
+                    "email" : x[3]
+                }
+                data.append(arr)
+        return data
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")

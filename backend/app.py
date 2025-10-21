@@ -159,27 +159,105 @@ def google_auth():
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
-@app.route('/post_data', methods=["POST"])
+@app.route('/create_category', methods=["POST"])
 @jwt_required()
-def post_data():
+def create_category():
     try:
-        data = request.get_json()
-        date = data.get("date")
-        amount = data.get("amount")
-        catagory = data.get("catagory")
-        account = data.get("account")
-        note = data.get("note")
+        data = request.get_json()  # get data from header (json file)
+        category_name = data.get("category_name")
         email = get_jwt_identity()
-        user_id = database.get_from_email(email)['user_id']
-        result = database.post_data(date, amount, catagory, account, note, user_id)
-        if result[1] == 200:
-            return jsonify({'message' : 'success'}) , 200
-        return jsonify({'message' : 'error'}) , 401
+        user = database.get_from_email(email)
+        result = database.create_category(category_name, user)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+    
+@app.route('/delete_category', methods=["POST"])
+def delete_category():
+    try:
+        data = request.get_json()  # get data from header (json file)
+        category_id = data.get("category_id")
+        result = database.delete_category(category_id)
+        return result
     except Exception as err:
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
+@app.route('/update_category', methods=["POST"])
+def update_category():
+    try:
+        data = request.get_json()  # get data from header (json file)
+        category_id = data.get("category_id")
+        category_name = data.get("category_name")
+        result = database.update_category(category_id, category_name)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
 
+@app.route('/get_category', methods=["GET"])
+@jwt_required()
+def get_category():
+    try:
+        email = get_jwt_identity()
+        user = database.get_from_email(email)
+        result = database.get_category(user)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route('/create_account', methods=["POST"])
+@jwt_required()
+def create_account():
+    try:
+        data = request.get_json()  # get data from header (json file)
+        account_name = data.get("account_name")
+        balance = data.get("balance")
+        email = get_jwt_identity()
+        user = database.get_from_email(email)
+        result = database.create_account(account_name, balance, user)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+    
+@app.route('/delete_account', methods=["POST"])
+def delete_account():
+    try:
+        data = request.get_json()  # get data from header (json file)
+        account_id = data.get("account_id")
+        result = database.delete_account(account_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route('/update_account', methods=["POST"])
+def update_account():
+    try:
+        data = request.get_json()  # get data from header (json file)
+        account_id = data.get("account_id")
+        account_name = data.get("account_name")
+        balance = data.get("balance")
+        result = database.update_account(account_id, account_name, balance)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route('/get_account', methods=["GET"])
+@jwt_required()
+def get_account():
+    try:
+        email = get_jwt_identity()
+        user = database.get_from_email(email)
+        result = database.get_account(user)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
 # Running file
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
