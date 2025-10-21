@@ -9,6 +9,7 @@ axios.defaults.withCredentials = true;
 
 function login_register() {
 
+  // ----------------------------Login Validations-------------------------------
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
   const navigate = useNavigate();
@@ -60,8 +61,13 @@ function login_register() {
     window.location.href = "http://localhost:5000/google";
   };
 
-  const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [isLoginPasswordVisible, setLoginPasswordVisible] = useState(false);
+  // ----------------------------Login Validations-------------------------------
+  // Page Switch
   const [page, setPage] = useState(false);
+  // ----------------------------Register Validations-------------------------------
+  const [isRegisterPasswordVisible, setRegisterPasswordVisible] = useState(false);
+  
 
   return (
     <div className="relative flex justify-center items-baseline w-screen h-dvh bg-gradient-to-br from-[#62b79c] to-[#afd1a1] overflow-hidden">
@@ -72,10 +78,12 @@ function login_register() {
        googleLogin={googleLogin} 
        errors={errors} 
        page={page} 
-       setPage={setPage}/>
+       setPage={setPage}
+       isLoginPasswordVisible={isLoginPasswordVisible}
+       setLoginPasswordVisible={setLoginPasswordVisible}/>
       <RegisterPage 
-       isPasswordVisible={isPasswordVisible} 
-       setPasswordVisible={setPasswordVisible} 
+       isRegisterPasswordVisible={isRegisterPasswordVisible} 
+       setRegisterPasswordVisible={setRegisterPasswordVisible} 
        googleLogin={googleLogin} 
        page={page} 
        setPage={setPage}/>
@@ -85,7 +93,7 @@ function login_register() {
 
 export default login_register;
 
-const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPage}) => {
+const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPage, isLoginPasswordVisible, setLoginPasswordVisible}) => {
   return (
     <div className={`absolute flex justify-center items-center w-screen h-dvh bg-transparent duration-500 ${page ? 'translate-x-0' : 'translate-x-full'}`}>
       <div className="w-full flex flex-col justify-between items-center max-w-[640px] bg-white py-10 px-5 m-5 rounded-2xl gap-y-10">
@@ -109,19 +117,15 @@ const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPa
             }`}
             onChange={(e) => handleChange(e)}
           />
-          <input
-            className={`bg-gray-200 rounded-2xl p-2 pl-3 cursor-pointer ${
-              errors.password
-                ? "bg-red-100 border border-red-500"
-                : "bg-gray-200"
-            }`}
-            type="password"
-            name="password"
-            placeholder={`${
-              errors.password ? `${errors.password}` : "Password"
-            }`}
-            onChange={(e) => handleChange(e)}
-          />
+          <div className="relative">
+            <input
+              className="bg-gray-200 rounded-2xl p-2 pl-4.5 cursor-pointer w-full"
+              type={`${isLoginPasswordVisible ? 'text' : 'password'}`}
+              name="Password"
+              placeholder="Password"
+            />
+            <FontAwesomeIcon onClick={() => setLoginPasswordVisible(!isLoginPasswordVisible)} icon={faEye} className="absolute right-0 mr-3 top-1/2 -translate-y-1/2 text-zinc-400 cursor-pointer hover:scale-120"/>
+          </div>
         </div>
 
         <div className="flex flex-col items-center w-full gap-y-6">
@@ -152,7 +156,7 @@ const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPa
           </div>
           <img
             src="google.svg"
-            className="w-10 sm:w-15 border-zinc-400 border-2 rounded-full hover:drop-shadow-sm hover:drop-shadow-black/50"
+            className="w-10 sm:w-15 hover:drop-shadow-sm hover:drop-shadow-black/50 duration-250 cursor-pointer"
             onClick={googleLogin}
           />
         </div>
@@ -161,7 +165,7 @@ const LoginPage = ({handleChange, handleSubmit, googleLogin, errors, page, setPa
   );
 };
 
-const RegisterPage = ({setPasswordVisible, isPasswordVisible, googleLogin, page, setPage}) => {
+const RegisterPage = ({setRegisterPasswordVisible, isRegisterPasswordVisible, googleLogin, page, setPage}) => {
   return (
     <div className={`absolute flex justify-center items-center w-screen h-dvh bg-transparent duration-500 ${page ? '-translate-x-full' : 'translate-x-0'}`}>
       <div className="items-center max-w-[640px] bg-white py-4 px-5 m-5 rounded-2xl gap-y-2 w-full flex flex-col justify-between">
@@ -189,20 +193,20 @@ const RegisterPage = ({setPasswordVisible, isPasswordVisible, googleLogin, page,
           <div className="relative">
             <input
               className="bg-gray-200 rounded-2xl p-2 pl-4.5 cursor-pointer w-full"
-              type={`${isPasswordVisible ? 'text' : 'password'}`}
+              type={`${isRegisterPasswordVisible ? 'text' : 'password'}`}
               name="Password"
               placeholder="Password"
             />
-            <FontAwesomeIcon onClick={() => setPasswordVisible(!isPasswordVisible)} icon={faEye} className="absolute right-0 mr-3 top-1/2 -translate-y-1/2 text-zinc-400 cursor-pointer hover:scale-120"/>
+            <FontAwesomeIcon onClick={() => setRegisterPasswordVisible(!isRegisterPasswordVisible)} icon={faEye} className="absolute right-0 mr-3 top-1/2 -translate-y-1/2 text-zinc-400 cursor-pointer hover:scale-120"/>
           </div>
           <div className="relative">
             <input
               className="bg-gray-200 rounded-2xl p-2 pl-4.5 cursor-pointer w-full"
-              type={`${isPasswordVisible ? 'text' : 'password'}`}
+              type={`${isRegisterPasswordVisible ? 'text' : 'password'}`}
               name="confirmPassword"
               placeholder="Confirm Password"
             />
-            <FontAwesomeIcon onClick={() => setPasswordVisible(!isPasswordVisible)} icon={faEye} className="absolute right-0 mr-3 top-1/2 -translate-y-1/2 text-zinc-400 cursor-pointer hover:scale-120"/>
+            <FontAwesomeIcon onClick={() => setRegisterPasswordVisible(!isRegisterPasswordVisible)} icon={faEye} className="absolute right-0 mr-3 top-1/2 -translate-y-1/2 text-zinc-400 cursor-pointer hover:scale-120"/>
           </div>
         </div>
 
