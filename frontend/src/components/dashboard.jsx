@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { Pencil } from 'lucide-react';
+import { Pencil, User, LogOut } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Profile from './profile';
 import AccountSetting from './AccountSetting';
 import Accountboard from './accountboard';
+import { motion } from 'framer-motion';
 
-function dashboard() {
+export default function dashboard() {
 
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [addContentType, setAddContentType] = useState('Expense');
@@ -18,13 +19,13 @@ function dashboard() {
   return (
     <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
       <nav className='relative flex justify-between items-center mb-1 sm:pr-2 sm:flex-col sm:justify-center!'>
-        <Hamburger />
+        <FontAwesomeIcon size='2xl' icon={faBars} className='text-white sm:hidden!' />
         <img src='logo.svg' className='w-[12vh] sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2' />
-        <AccountSelectBtn setPageOpen={setPageOpen} />
+        <AccountSelectBtn />
         <button onClick={() => setPageOpen('account')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faSackDollar} /><p className='text-xl'>Account</p></button>
         <button onClick={() => setPageOpen('Stats')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
         <button onClick={() => setPageOpen('More')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
-        <User isProfileContextMenuOpen={isProfileContextMenuOpen} setProfileContextMenuOpen={setProfileContextMenuOpen}/>
+        <FontAwesomeIcon size='2xl' icon={faUser} className='text-white cursor-pointer sm:hidden!' onClick={() => setProfileContextMenuOpen(!isProfileContextMenuOpen)}/>
       </nav>
 
       <div className='relative bg-white flex-1 flex flex-col rounded-2xl'>
@@ -45,33 +46,101 @@ function dashboard() {
   )
 }
 
-const AccountSelectBtn = ({setPageOpen}) => {
+const AccountSelectBtn = () => {
   const [isAccountListOpen, setAccountListOpen] = useState(false);
+
+  const iconVariants = {
+  rest: {
+    y: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 15 },
+  },
+  hover: {
+    y: -3,
+    transition: {
+      type: 'spring',
+      stiffness: 400,
+      damping: 10,
+      repeat: Infinity,
+      repeatType: 'reverse',
+      duration: 0.4,
+      },
+    },
+  };
+
   return (
-    <div onClick={() => setAccountListOpen(!isAccountListOpen)}
-     className='hidden relative sm:flex! items-center text-white font-bold gap-x-1 border-2 border-white rounded-full px-2 py-1 cursor-pointer -translate-y-2/1'>
+    <motion.div 
+      onClick={() => setAccountListOpen(!isAccountListOpen)}
+      className='hidden relative sm:flex! items-center text-white font-bold gap-x-1 border-2 border-white rounded-full px-2 py-1 cursor-pointer -translate-y-2/1'
+      whileTap={{ scale: 0.95 }}
+      initial="rest"
+      whileHover="hover">
       <p>AccountName #1</p>
-      <FontAwesomeIcon icon={faCaretDown} />
+      <motion.div variants={iconVariants}>
+        <FontAwesomeIcon icon={faCaretDown} />
+      </motion.div>
       <AccountList isAccountListOpen={isAccountListOpen} />
-    </div>
+    </motion.div>
   );
 }
 
 const AccountList = ({isAccountListOpen}) => {
   const accounts = ['Account #1', 'Account #2', 'Account #3','Account #4']
+
+  const containerVariants = {
+    hidden: {
+      opacity: 0,
+      transition: {
+        staggerChildren: 0.03,
+        staggerDirection: -1,
+      },
+      transitionEnd: { pointerEvents: 'none' },
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+      },
+      pointerEvents: 'auto',
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: -15,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 20,
+      },
+    },
+  };
+
   return (
-    <div className={`absolute top-[calc(100%+3px)] left-0 w-full flex flex-col justify-center items-center duration-200
-     ${isAccountListOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0 pointer-events-none'}`}>
+    <motion.div 
+      className='absolute top-[calc(100%+5px)] left-0 w-full flex flex-col justify-center items-center'
+      variants={containerVariants}
+      initial='hidden'
+      animate={isAccountListOpen ? 'visible' : 'hidden'}
+    >
       {accounts.map((name, index) => (
-        <div key={index} className={`text-black p-3 w-full flex justify-between  bg-white hover:bg-zinc-200 px-3
-         ${!index ? 'rounded-t-xl' : index == accounts.length - 1 ? 'rounded-b-xl' : 'rounded-none'}`}>
+        <motion.div 
+          variants={itemVariants}
+          key={index} 
+          className={`text-black p-3 w-full flex justify-between  bg-white hover:bg-zinc-200 px-3
+         ${!index ? 'rounded-t-xl' : index == accounts.length - 1 ? 'rounded-b-xl' : 'rounded-none'}`}
+        >
           {name}
           <button onClick={() => console.log('clicked')} className='bg-ui-green1 rounded-full px-1 hover:scale-120 hover:bg-white'>
             <Pencil className='size-4 text-white hover:text-ui-green1'/>
           </button>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }
 
@@ -93,14 +162,78 @@ const DesktopProfileIcon = ({ setPageOpen }) => {
 }
 
 const DPIContextMenu = ({isDesktopProfileContextMenuOpen, setPageOpen}) => {
+  const containerVariants = {
+    hidden: {
+      opacity: 0,
+      y: -10,
+      scaleY: 0.95,
+      transition: {
+        type: 'spring',
+        stiffness: 400,
+        damping: 30,
+        staggerChildren: 0.03,
+        staggerDirection: -1,
+      },
+      transitionEnd: { pointerEvents: 'none' },
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scaleY: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 400,
+        damping: 30,
+        staggerChildren: 0.05,
+      },
+      pointerEvents: 'auto',
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: -10,
+    },
+    visible: {
+      opacity: 1,
+      y: 0, 
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 24,
+      },
+    },
+  };
+
+  const menuItems = [
+    { name: 'Profile', icon: User, action: () => setPageOpen('profile') },
+    { name: 'Logout', icon: LogOut, action: () => console.log('Logout clicked') },
+  ];
+
   return (
-    <div className={`absolute w-full top-full left-1/2 -translate-x-1/2 flex flex-col justify-center border border-zinc-300 divide-y-2 divide-zinc-300/50
-     rounded-xl m-1 duration-200 ease-in-out ${isDesktopProfileContextMenuOpen ? '-translate-y-0' : 'translate-y-[80dvh] invisible pointer-events-none'}`}>
-      <p onClick={() => setPageOpen('profile')} className='p-1 bg-white hover:bg-zinc-300 rounded-t-xl'>Profile</p>
-      <p className='p-1 bg-white hover:bg-zinc-300 rounded-b-xl'>Logout</p>
-    </div>
+    <motion.div
+      className='absolute w-full top-[calc(100%+5px)] left-1/2 -translate-x-1/2 flex flex-col justify-center rounded-xl'
+      variants={containerVariants}
+      initial='hidden'
+      animate={isDesktopProfileContextMenuOpen ? 'visible' : 'hidden'}
+    >
+      {menuItems.map((item, index) => (
+        <motion.div
+          key={index}
+          variants={itemVariants}
+          onClick={item.action}
+          className={`flex justify-center items-center gap-x-3 p-2 bg-zinc-100 hover:bg-zinc-300 cursor-pointer
+            ${index === 0 ? 'rounded-t-xl' : ''}
+            ${index === menuItems.length - 1 ? 'rounded-b-xl' : ''}`}
+        >
+          <item.icon />
+          <p>{item.name}</p>
+        </motion.div>
+      ))}
+    </motion.div>
   );
-}
+};
 
 const BgBlurPopup = ({setPopupOpen, isPopupOpen}) => {
   return (
@@ -113,18 +246,6 @@ const BgBlurProfileContextMenu = ({isProfileContextMenuOpen, setProfileContextMe
   return (
     <div onClick={() => setProfileContextMenuOpen(!isProfileContextMenuOpen)} className={`fixed inset-0 bg-black z-10 transition-all
      ease-in-out duration-200 ${isProfileContextMenuOpen ? 'block opacity-50' : 'invisible opacity-0'}`} />
-  );
-}
-
-const Hamburger = ({ size = '2xl' }) => {
-  return (
-    <FontAwesomeIcon size={size} icon={faBars} className='text-white sm:hidden!' />
-  );
-}
-
-const User = ({ size = '2xl', isProfileContextMenuOpen, setProfileContextMenuOpen }) => {
-  return (
-    <FontAwesomeIcon size={size} icon={faUser} className='text-white cursor-pointer sm:hidden!' onClick={() => setProfileContextMenuOpen(!isProfileContextMenuOpen)}/>
   );
 }
 
@@ -228,5 +349,3 @@ const AddContentPopup = ({ isPopupOpen, addContentType, setAddContentType }) => 
     </div>
   );
 }
-
-export default dashboard
