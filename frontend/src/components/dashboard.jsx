@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Profile from './profile';
@@ -18,14 +18,15 @@ function dashboard() {
       <nav className='relative flex justify-between items-center mb-1 sm:flex-col sm:justify-center!'>
         <Hamburger />
         <img src='logo.svg' className='w-[12vh] sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2' />
-        <button className='relative hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><span className='absolute top-1/2 -left-[12px] -translate-y-1/2 h-[calc(100%-10px)] w-1 bg-white rounded-tr-sm rounded-br-sm'></span><FontAwesomeIcon size='xl' icon={faSackDollar}/><p className='text-xl'>Account</p></button>
+        <button onClick={() => setPageOpen('account')} className='relative hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><span className='absolute top-1/2 -left-[12px] -translate-y-1/2 h-[calc(100%-10px)] w-1 bg-white rounded-tr-sm rounded-br-sm'></span><FontAwesomeIcon size='xl' icon={faSackDollar}/><p className='text-xl'>Account</p></button>
         <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
         <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
         <User isProfileContextMenuOpen={isProfileContextMenuOpen} setProfileContextMenuOpen={setProfileContextMenuOpen}/>
       </nav>
 
-      <div className='bg-white flex-1 rounded-2xl'>
-        <img src='aurora.png' className='pt-10 max-h-[120px] w-full' />
+      <div className='relative bg-white flex-1 flex flex-col rounded-2xl'>
+        <DesktopProfileIcon setPageOpen={setPageOpen} />
+        <img src='aurora.png' className=' max-h-[60px] w-full pt-10 sm:pt-0' />
         <Accountboard pageOpen={pageOpen}/>
         <Profile pageOpen={pageOpen}/>
       </div>
@@ -38,6 +39,33 @@ function dashboard() {
       <ProfileContextMenu isProfileContextMenuOpen={isProfileContextMenuOpen} setProfileContextMenuOpen={setProfileContextMenuOpen} setPageOpen={setPageOpen}/>
     </div>
   )
+}
+
+const DesktopProfileIcon = ({ setPageOpen }) => {
+  const [isDesktopProfileContextMenuOpen, setDesktopProfileContextMenu] = useState(false);
+  return (
+    <div className='hidden w-full justify-end items-center sm:flex!'>
+      <button className='relative flex justify-between items-center border-2 border-zinc-400 rounded-3xl py-1 px-1 gap-x-5 m-2 cursor-pointer' 
+       onClick={() => setDesktopProfileContextMenu(!isDesktopProfileContextMenuOpen)}>
+        <div className='flex justify-center items-center gap-x-2 cursor-pointer'>
+          <img src="Profile.jpg" className='w-[3vh] rounded-full'/>
+          <label className='cursor-pointer'>yeaimningning</label>
+        </div>
+        <FontAwesomeIcon icon={faCaretDown} />
+        <DPIContextMenu isDesktopProfileContextMenuOpen={isDesktopProfileContextMenuOpen} setPageOpen={setPageOpen}/>
+      </button>
+    </div>
+  );
+}
+
+const DPIContextMenu = ({isDesktopProfileContextMenuOpen, setPageOpen}) => {
+  return (
+    <div className={`absolute w-full top-full left-1/2 -translate-x-1/2 flex flex-col justify-center border border-zinc-300 divide-y-2 divide-zinc-300/50
+     rounded-xl m-1 duration-200 ease-in-out ${isDesktopProfileContextMenuOpen ? '-translate-y-0' : 'translate-y-[80dvh] invisible pointer-events-none'}`}>
+      <p onClick={() => setPageOpen('profile')} className='p-1 bg-white hover:bg-zinc-300 rounded-t-xl'>Profile</p>
+      <p className='p-1 bg-white hover:bg-zinc-300 rounded-b-xl'>Logout</p>
+    </div>
+  );
 }
 
 const BgBlurPopup = ({setPopupOpen, isPopupOpen}) => {
@@ -83,7 +111,7 @@ const ProfileBtn = ({setPageOpen, setProfileContextMenuOpen}) => {
   );
 }
 
-const LogoutBtn = ({isProfileContextMenuOpen}) => {
+const LogoutBtn = () => {
   const navigate = useNavigate();
   const Logout = async () => {
     try {
