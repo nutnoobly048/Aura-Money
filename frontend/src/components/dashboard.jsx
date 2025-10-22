@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis, faCaretDown, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { Pencil } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Profile from './profile';
@@ -45,11 +46,31 @@ function dashboard() {
 }
 
 const AccountSelectBtn = ({setPageOpen}) => {
+  const [isAccountListOpen, setAccountListOpen] = useState(false);
   return (
-    <div onClick={() => setPageOpen("accountSetting")}
-     className='hidden sm:flex! items-center text-white font-bold gap-x-1 border-2 border-white rounded-full px-2 py-1 cursor-pointer'>
+    <div onClick={() => setAccountListOpen(!isAccountListOpen)}
+     className='hidden relative sm:flex! items-center text-white font-bold gap-x-1 border-2 border-white rounded-full px-2 py-1 cursor-pointer -translate-y-2/1'>
       <p>AccountName #1</p>
       <FontAwesomeIcon icon={faCaretDown} />
+      <AccountList isAccountListOpen={isAccountListOpen} />
+    </div>
+  );
+}
+
+const AccountList = ({isAccountListOpen}) => {
+  const accounts = ['Account #1', 'Account #2', 'Account #3','Account #4']
+  return (
+    <div className={`absolute top-[calc(100%+3px)] left-0 w-full flex flex-col justify-center items-center duration-200
+     ${isAccountListOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0 pointer-events-none'}`}>
+      {accounts.map((name, index) => (
+        <div key={index} className={`text-black p-3 w-full flex justify-between  bg-white hover:bg-zinc-200 px-3
+         ${!index ? 'rounded-t-xl' : index == accounts.length - 1 ? 'rounded-b-xl' : 'rounded-none'}`}>
+          {name}
+          <button onClick={() => console.log('clicked')} className='bg-ui-green1 rounded-full px-1 hover:scale-120 hover:bg-white'>
+            <Pencil className='size-4 text-white hover:text-ui-green1'/>
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
