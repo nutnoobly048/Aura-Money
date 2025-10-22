@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis, faCaretDown, faPen } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Profile from './profile';
@@ -16,12 +16,13 @@ function dashboard() {
 
   return (
     <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
-      <nav className='relative flex justify-between items-center mb-1 sm:flex-col sm:justify-center!'>
+      <nav className='relative flex justify-between items-center mb-1 sm:pr-2 sm:flex-col sm:justify-center!'>
         <Hamburger />
         <img src='logo.svg' className='w-[12vh] sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2' />
-        <button onClick={() => setPageOpen('account')} className='relative hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><span className='absolute top-1/2 -left-[12px] -translate-y-1/2 h-[calc(100%-10px)] w-1 bg-white rounded-tr-sm rounded-br-sm'></span><FontAwesomeIcon size='xl' icon={faSackDollar}/><p className='text-xl'>Account</p></button>
-        <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
-        <button className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
+        <AccountSelectBtn setPageOpen={setPageOpen} />
+        <button onClick={() => setPageOpen('account')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faSackDollar} /><p className='text-xl'>Account</p></button>
+        <button onClick={() => setPageOpen('Stats')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
+        <button onClick={() => setPageOpen('More')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
         <User isProfileContextMenuOpen={isProfileContextMenuOpen} setProfileContextMenuOpen={setProfileContextMenuOpen}/>
       </nav>
 
@@ -30,6 +31,7 @@ function dashboard() {
         <img src='aurora.png' className=' max-h-[60px] w-full pt-10 sm:pt-0' />
         <Accountboard pageOpen={pageOpen}/>
         <Profile pageOpen={pageOpen}/>
+        <AccountSetting pageOpen={pageOpen} />
       </div>
 
 
@@ -40,6 +42,16 @@ function dashboard() {
       <ProfileContextMenu isProfileContextMenuOpen={isProfileContextMenuOpen} setProfileContextMenuOpen={setProfileContextMenuOpen} setPageOpen={setPageOpen}/>
     </div>
   )
+}
+
+const AccountSelectBtn = ({setPageOpen}) => {
+  return (
+    <div onClick={() => setPageOpen("accountSetting")}
+     className='hidden sm:flex! items-center text-white font-bold gap-x-1 border-2 border-white rounded-full px-2 py-1 cursor-pointer'>
+      <p>AccountName #1</p>
+      <FontAwesomeIcon icon={faCaretDown} />
+    </div>
+  );
 }
 
 const DesktopProfileIcon = ({ setPageOpen }) => {

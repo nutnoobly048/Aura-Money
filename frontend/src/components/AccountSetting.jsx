@@ -2,9 +2,9 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 
-function AccountSetting() {
+function AccountSetting({ pageOpen }) {
   return (
-        <div className="flex flex-col p-4">
+        <div className={`flex flex-col p-4 ${pageOpen === 'accountSetting' ? 'block' : 'hidden'}`}>
             <h1 className="text-[clamp(20px,5vw,30px)] font-semibold">
             Account Setting
             </h1>
