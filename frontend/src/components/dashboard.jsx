@@ -21,14 +21,14 @@ export default function dashboard() {
       <nav className='relative flex justify-between items-center mb-1 sm:pr-2 sm:flex-col sm:justify-center!'>
         <FontAwesomeIcon size='2xl' icon={faBars} className='text-white sm:hidden!' />
         <img src='logo.svg' className='w-[12vh] sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2' />
-        <AccountSelectBtn />
+        <AccountSelectBtn setPageOpen={setPageOpen} />
         <button onClick={() => setPageOpen('account')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faSackDollar} /><p className='text-xl'>Account</p></button>
         <button onClick={() => setPageOpen('Stats')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
         <button onClick={() => setPageOpen('More')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faEllipsis} /><p className='text-xl'>More</p></button>
         <FontAwesomeIcon size='2xl' icon={faUser} className='text-white cursor-pointer sm:hidden!' onClick={() => setProfileContextMenuOpen(!isProfileContextMenuOpen)}/>
       </nav>
 
-      <div className='relative bg-white flex-1 flex flex-col rounded-2xl'>
+      <div className='relative bg-white flex-1 flex flex-col rounded-2xl overflow-y-auto'>
         <DesktopProfileIcon setPageOpen={setPageOpen} />
         <img src='aurora.png' className=' max-h-[60px] w-full pt-10 sm:pt-0' />
         <Accountboard pageOpen={pageOpen}/>
@@ -46,7 +46,7 @@ export default function dashboard() {
   )
 }
 
-const AccountSelectBtn = () => {
+const AccountSelectBtn = ({setPageOpen}) => {
   const [isAccountListOpen, setAccountListOpen] = useState(false);
 
   const iconVariants = {
@@ -78,13 +78,17 @@ const AccountSelectBtn = () => {
       <motion.div variants={iconVariants}>
         <FontAwesomeIcon icon={faCaretDown} />
       </motion.div>
-      <AccountList isAccountListOpen={isAccountListOpen} />
+      <AccountList isAccountListOpen={isAccountListOpen} setPageOpen={setPageOpen} />
     </motion.div>
   );
 }
 
-const AccountList = ({isAccountListOpen}) => {
-  const accounts = ['Account #1', 'Account #2', 'Account #3','Account #4']
+const AccountList = ({isAccountListOpen, setPageOpen}) => {
+  const accounts = [{name: 'Account #1', fn: () => setPageOpen('accountSetting')},
+                    {name: 'Account #2', fn: () => setPageOpen('accountSetting')},
+                    {name: 'Account #3', fn: () => setPageOpen('accountSetting')},
+                    {name: 'Account #4', fn: () => setPageOpen('accountSetting')},
+                   ]
 
   const containerVariants = {
     hidden: {
@@ -127,15 +131,16 @@ const AccountList = ({isAccountListOpen}) => {
       initial='hidden'
       animate={isAccountListOpen ? 'visible' : 'hidden'}
     >
-      {accounts.map((name, index) => (
+      {accounts.map((item, index) => (
         <motion.div 
           variants={itemVariants}
           key={index} 
           className={`text-black p-3 w-full flex justify-between  bg-white hover:bg-zinc-200 px-3
-         ${!index ? 'rounded-t-xl' : index == accounts.length - 1 ? 'rounded-b-xl' : 'rounded-none'}`}
+          ${!index ? 'rounded-t-xl' : index == accounts.length - 1 ? 'rounded-b-xl' : 'rounded-none'}`}
+          onClick={item.fn}
         >
-          {name}
-          <button onClick={() => console.log('clicked')} className='bg-ui-green1 rounded-full px-1 hover:scale-120 hover:bg-white'>
+          {item.name}
+          <button onClick={(e) => {console.log('clicked at', item.name);e.stopPropagation()}} className='bg-ui-green1 rounded-full px-1 hover:scale-120 hover:bg-white'>
             <Pencil className='size-4 text-white hover:text-ui-green1'/>
           </button>
         </motion.div>
@@ -223,7 +228,7 @@ const DPIContextMenu = ({isDesktopProfileContextMenuOpen, setPageOpen}) => {
           key={index}
           variants={itemVariants}
           onClick={item.action}
-          className={`flex justify-center items-center gap-x-3 p-2 bg-zinc-100 hover:bg-zinc-300 cursor-pointer
+          className={`flex justify-center items-center gap-x-3 p-2 bg-white shadow-md hover:bg-zinc-300 cursor-pointer
             ${index === 0 ? 'rounded-t-xl' : ''}
             ${index === menuItems.length - 1 ? 'rounded-b-xl' : ''}`}
         >

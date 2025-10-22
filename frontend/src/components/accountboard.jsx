@@ -2,7 +2,7 @@ import React from 'react'
 
 function Accountboard({pageOpen}) {
   return (
-    <div className={`flex flex-col p-4 gap-y-2 ${pageOpen === 'account' ? 'block' : 'hidden'}`}>
+    <div className={`h-full overflow-y-auto flex flex-col p-4 gap-y-2 ${pageOpen === 'account' ? 'block' : 'hidden'}`}>
       <h1 className='text-[clamp(20px,5vw,30px)] font-semibold'>Sep 2025</h1>
       <SummationBoard />
       <HistoryBoard />
@@ -13,12 +13,41 @@ function Accountboard({pageOpen}) {
 export default Accountboard
 
 const HistoryBoard = () => {
-  let dummies = [1, 2, 3, 4, 5];
+  let dummies = [{cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                 {cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},
+                 {cat: 'Girlfriend', acc:'Account 101', date:'18/20/25', amount:'-49000฿'},
+                ];
   return (
-    <div className='flex flex-col justify-evenly px-4 py-2 border-2 border-zinc-300 rounded-2xl space-y-2'>
-      {dummies.map((dummy) => (
-        <div key={dummy} className='h-8 bg-zinc-200 rounded-2xl'>
-          <p>{dummy}</p>
+    <div className='overflow-y-auto flex flex-col px-4 py-4 border-2 border-zinc-300 rounded-2xl space-y-2'>
+      {dummies.map((item, index) => (
+        <div key={index} className='w-full flex justify-between items-center border-2 border-zinc-200 shadow-sm rounded-xl px-4 py-1'>
+          <p>{item.cat}</p>
+          <div className='flex flex-col justify-center items-center'>
+            <p>{item.acc}</p>
+            <p>{item.date}</p>
+          </div>
+          <p>{item.amount}</p>
         </div>
       ))}
     </div>
