@@ -20,7 +20,7 @@ export default function dashboard() {
     <div className='w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!'>
       <nav className='relative flex justify-between items-center mb-1 sm:pr-2 sm:flex-col sm:justify-center!'>
         <FontAwesomeIcon size='2xl' icon={faBars} className='text-white sm:hidden!' />
-        <img src='logo.svg' className='w-[12vh] sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2' />
+        <img src='logo.svg' className='w-[12vh] md:w-[calc(100%-50px)]! sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2' />
         <AccountSelectBtn setPageOpen={setPageOpen} />
         <button onClick={() => setPageOpen('account')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faSackDollar} /><p className='text-xl'>Account</p></button>
         <button onClick={() => setPageOpen('Stats')} className='hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer'><FontAwesomeIcon size='xl' icon={faChartSimple} /><p className='text-xl'>Stats</p></button>
