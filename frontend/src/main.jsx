@@ -4,14 +4,12 @@ import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Landingpage from './components/landingpage.jsx'
-import Profile from './components/profile.jsx'
 import Login_register from './components/login_register.jsx'
 
 
 const router = createBrowserRouter([
   {path:"/", element:<App />},
   {path:"/landingpage", element:<Landingpage />},
-  {path:"/profile", element:<Profile/>},
   {path:"/login_register", element:<Login_register/>}
 ])
 

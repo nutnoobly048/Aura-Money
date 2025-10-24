@@ -1,6 +1,4 @@
-import React from 'react'
-
-function Accountboard({pageOpen}) {
+export default function AccountBoard({pageOpen}) {
   return (
     <div className={`h-full overflow-y-auto flex flex-col p-4 gap-y-2 ${pageOpen === 'account' ? 'block' : 'hidden'}`}>
       <h1 className='text-[clamp(20px,5vw,30px)] font-semibold'>Sep 2025</h1>
@@ -9,8 +7,6 @@ function Accountboard({pageOpen}) {
     </div>
   )
 }
-
-export default Accountboard
 
 const HistoryBoard = () => {
   let dummies = [{cat: 'Food', acc:'Account 101', date:'19/20/25', amount:'-295฿'},

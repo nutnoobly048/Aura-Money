@@ -4,10 +4,10 @@ import { faBars, faUser, faPlus, faSackDollar, faChartSimple, faEllipsis, faCare
 import { Pencil, User, LogOut } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Profile from './profile';
-import AccountSetting from './AccountSetting';
-import Accountboard from './accountboard';
 import { motion } from 'framer-motion';
+import AccountBoard from './DashBoardComponents/accountboard';
+import AccountSetting from './DashBoardComponents/AccountSetting';
+import Profile from './DashBoardComponents/profile';
 
 export default function dashboard() {
 
@@ -31,7 +31,7 @@ export default function dashboard() {
       <div className='relative bg-white flex-1 flex flex-col rounded-2xl overflow-y-auto'>
         <DesktopProfileIcon setPageOpen={setPageOpen} />
         <img src='aurora.png' className=' max-h-[60px] w-full pt-10 sm:pt-0' />
-        <Accountboard pageOpen={pageOpen}/>
+        <AccountBoard pageOpen={pageOpen}/>
         <Profile pageOpen={pageOpen}/>
         <AccountSetting pageOpen={pageOpen} />
       </div>
@@ -102,7 +102,7 @@ const AccountList = ({isAccountListOpen, setPageOpen}) => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.025,
       },
       pointerEvents: 'auto',
     },
