@@ -5,7 +5,7 @@ import {
   faChartSimple,
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
-import { AccountSelectBtn } from "./Navbar";
+import { AccountSelectBtn } from "./AccountSelectBtn";
 
 const containerVariants = {
   hidden: { opacity: 0, y: -8 },
@@ -37,7 +37,7 @@ const itemVariants = {
   },
 };
 
-function MobileSideBar({ setPageOpen, isMSBOpen}) {
+function MobileSideBar({ setPageOpen, isMSBOpen, setMSBOpen}) {
   return (
     <AnimatePresence>
       {isMSBOpen && (
@@ -53,38 +53,38 @@ function MobileSideBar({ setPageOpen, isMSBOpen}) {
             variants={itemVariants}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setPageOpen("account")}
+            onClick={() => {setPageOpen("account");setMSBOpen(false)}}
             className="flex items-center gap-x-2 py-3 px-3"
           >
             <FontAwesomeIcon size="xl" icon={faSackDollar} className="text-ui-green2" />
-            <p className="text-xl font-semibold">Account</p>
+            <p className="font-semibold">Account</p>
           </motion.button>
 
           <motion.button
             variants={itemVariants}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setPageOpen("Stats")}
+            onClick={() => {setPageOpen("Stats");setMSBOpen(false)}}
             className="flex items-center gap-x-2 py-3 px-3"
           >
             <FontAwesomeIcon size="xl" icon={faChartSimple} className="text-ui-green2" />
-            <p className="text-xl font-semibold">Stats</p>
+            <p className="font-semibold">Stats</p>
           </motion.button>
 
           <motion.button
             variants={itemVariants}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setPageOpen("More")}
+            onClick={() => {setPageOpen("More");setMSBOpen(false)}}
             className="flex items-center gap-x-2 py-3 px-3"
           >
             <FontAwesomeIcon size="xl" icon={faEllipsis} className="text-ui-green2" />
-            <p className="text-xl font-semibold">More</p>
+            <p className="font-semibold">More</p>
           </motion.button>
 
 
-          <motion.div variants={itemVariants} className="m-2 border-ui-green2">
-            <AccountSelectBtn setPageOpen={setPageOpen} />
+          <motion.div variants={itemVariants} className="m-2">
+            <AccountSelectBtn setPageOpen={setPageOpen} className='border-2 text-white bg-ui-green1' />
           </motion.div>
         </motion.nav>
       )}

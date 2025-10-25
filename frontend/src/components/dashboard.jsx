@@ -6,13 +6,11 @@ import AddContentPopup from "./DashBoardComponents/AddContentPopup";
 import AddContentBtn from "./DashBoardComponents/AddContentBtn";
 import Navbar from "./Navbar/Navbar";
 import DesktopProfileIcon from "./DashBoardComponents/DesktopProfileIcon";
-import ProfileContextMenu from "./Navbar/ProfileContextMenu";
 import DarkBgPopup from "./DashBoardComponents/DarkBgPopup";
 
 export default function dashboard() {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [addContentType, setAddContentType] = useState("Expense");
-  const [isProfileContextMenuOpen, setProfileContextMenuOpen] = useState(false);
   const [pageOpen, setPageOpen] = useState("account");
   const [isDarkBgPopupOpen, setDarkBgPopupOpen] = useState(false);
 
@@ -20,8 +18,6 @@ export default function dashboard() {
     <div className="w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!">
       <Navbar
         setPageOpen={setPageOpen}
-        isProfileContextMenuOpen={isProfileContextMenuOpen}
-        setProfileContextMenuOpen={setProfileContextMenuOpen}
       />
 
       <div className="relative bg-white flex-1 flex flex-col rounded-2xl overflow-y-auto">
@@ -32,11 +28,11 @@ export default function dashboard() {
         <AccountSetting pageOpen={pageOpen} />
       </div>
 
+
       <DarkBgPopup
         isDarkBgPopupOpen={isDarkBgPopupOpen}
         setDarkBgPopupOpen={setDarkBgPopupOpen}
         setPopupOpen={setPopupOpen}
-        setProfileContextMenuOpen={setProfileContextMenuOpen}
       />
       <AddContentBtn isPopupOpen={isPopupOpen} setPopupOpen={setPopupOpen} isDarkBgPopupOpen={isDarkBgPopupOpen} setDarkBgPopupOpen={setDarkBgPopupOpen}/>
       <AddContentPopup
@@ -44,11 +40,7 @@ export default function dashboard() {
         addContentType={addContentType}
         setAddContentType={setAddContentType}
       />
-      <ProfileContextMenu
-        isProfileContextMenuOpen={isProfileContextMenuOpen}
-        setProfileContextMenuOpen={setProfileContextMenuOpen}
-        setPageOpen={setPageOpen}
-      />
+      
     </div>
   );
 }
