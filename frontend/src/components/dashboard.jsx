@@ -30,13 +30,13 @@ export default function dashboard() {
 
 
       <DarkBgPopup
-        isDarkBgPopupOpen={isDarkBgPopupOpen}
-        setDarkBgPopupOpen={setDarkBgPopupOpen}
+        isPopupOpen={isPopupOpen}
         setPopupOpen={setPopupOpen}
       />
       <AddContentBtn isPopupOpen={isPopupOpen} setPopupOpen={setPopupOpen} isDarkBgPopupOpen={isDarkBgPopupOpen} setDarkBgPopupOpen={setDarkBgPopupOpen}/>
       <AddContentPopup
         isPopupOpen={isPopupOpen}
+        setPopupOpen={setPopupOpen}
         addContentType={addContentType}
         setAddContentType={setAddContentType}
       />

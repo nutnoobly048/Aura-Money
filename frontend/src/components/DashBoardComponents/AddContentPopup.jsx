@@ -1,4 +1,30 @@
-export default function AddContentPopup({ isPopupOpen, addContentType, setAddContentType }) {
+import { useState, useRef, useEffect } from "react";
+import CategoryContainer from "./PopupComponents/CategoryContainer";
+import AccountContainer from "./PopupComponents/AccountContainer";
+
+export default function AddContentPopup({ isPopupOpen, setPopupOpen, addContentType, setAddContentType }) {
+
+  const [isCategoryOpen, setCategoryOpen] = useState(false);
+  const catRef = useRef();
+
+  const [isAccountOpen, setAccountOpen] = useState(false);
+  const accountRef = useRef();
+
+  useEffect(() => {
+    if (!isCategoryOpen && !isAccountOpen) return;
+    const handler = (e) => {
+      if (!catRef.current.contains(e.target)) {
+        setCategoryOpen(false);
+      }
+      if (!accountRef.current.contains(e.target)) {
+        setAccountOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+    }
+  }, [isCategoryOpen, isAccountOpen]);
 
   const typeSelectColor = {
     'Income': 'left-0! text-black',
@@ -20,37 +46,28 @@ export default function AddContentPopup({ isPopupOpen, addContentType, setAddCon
       </nav>
 
       <h1 className='text-2xl font-bold text-center p-2'>{addContentType}</h1>
-      <div className='flex flex-col justify-center items-centerv p-3 gap-y-2'>
-        <span className='h-0.5 w-full bg-zinc-300'></span>
-        <div className='w-full flex'>
-          <label htmlFor='Date'>Date :</label>
-          <input id='Date' type='date' className='flex-1' />
-        </div>
-        <span className='h-0.5 w-full bg-zinc-300'></span>
-        <div className='w-full flex'>
-          <label htmlFor='Amount'>Amount :</label>
-          <input id='Amount' type='number' className='flex-1' />
-        </div>
-        <span className='h-0.5 w-full bg-zinc-300'></span>
-        <div className='w-full flex'>
-          <label htmlFor='Catagory'>Catagory :</label>
-          <input id='Catagory' className='flex-1' />
-        </div>
-        <span className='h-0.5 w-full bg-zinc-300'></span>
-        <div className='w-full flex'>
-          <label htmlFor='Account'>Account :</label>
-          <input id='Account' className='flex-1' />
-        </div>
-        <span className='h-0.5 w-full bg-zinc-300'></span>
-        <div className='w-full flex'>
-          <label htmlFor='Note'>Note :</label>
-          <input id='Note' className='flex-1' />
-        </div>
-        <span className='h-0.5 w-full bg-zinc-300'></span>
+      <div className='flex flex-col justify-center items-center p-3 divide-y-2 divide-zinc-300'>
+        <label className="w-full flex p-3">Date :<input type='datetime-local' className="flex-1 pl-3 focus:outline-none"/></label>
 
-        <div className='flex flex-col justify-center items-center gap-y-2 m-1'>
-          <button className='bg-gradient-to-r from-[#62b79c] to-[#afd1a1] text-white font-bold rounded-2xl min-w-3/4 py-1'>Save</button>
-          <button className='border rounded-2xl min-w-3/4 py-1'>Continue</button>
+        <label className="w-full flex p-3">Amount :<input type='number' className="flex-1 pl-3 focus:outline-none" /></label>
+        
+        <label ref={catRef} onClick={() => setCategoryOpen(true)} className="relative w-full flex p-3">
+          Category :
+          <div className="flex-1 pl-3" ></div>
+          <CategoryContainer isCategoryOpen={isCategoryOpen} setCategoryOpen={setCategoryOpen} />
+        </label>
+        
+        <label ref={accountRef} onClick={() => setAccountOpen(true)} className="relative w-full flex p-3">
+          Account :
+          <div className="flex-1 pl-3" ></div>
+          <AccountContainer isAccountOpen={isAccountOpen} />
+        </label>
+        
+        <label className="w-full flex p-3">Note :<input type='text' className="flex-1 pl-3 focus:outline-none"/></label>
+
+        <div className='w-full flex justify-center items-center gap-x-2 m-1 mt-4'>
+          <button className='flex-1 bg-gradient-to-r from-[#62b79c] to-[#afd1a1] text-white font-bold rounded-2xl py-1'>Save</button>
+          <button onClick={() => setPopupOpen(false)} className='flex-1 border rounded-2xl py-1'>Cancel</button>
         </div>
       </div>
     </div>

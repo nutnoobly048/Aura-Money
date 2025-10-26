@@ -16,8 +16,8 @@ const containerVariants = {
       type: "spring",
       stiffness: 260,
       damping: 22,
-      staggerChildren: 0.08,
-      delayChildren: 0.05,
+      staggerChildren: 0.04,
+      delayChildren: 0.025,
     },
   },
   exit: {
@@ -42,7 +42,6 @@ function MobileSideBar({ setPageOpen, isMSBOpen, setMSBOpen}) {
     <AnimatePresence>
       {isMSBOpen && (
         <motion.nav
-          key="mobile-sidebar"
           variants={containerVariants}
           initial="hidden"
           animate="show"

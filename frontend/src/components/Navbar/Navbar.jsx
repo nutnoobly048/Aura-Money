@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -16,20 +16,54 @@ export default function Navbar({ setPageOpen }) {
   const [isMSBOpen, setMSBOpen] = useState(false);
   const [isMBProfileOpen, setMBProfileOpen] = useState(false);
 
+  const MobileSideBarRef = useRef(null);
+  const ProfileContextMenuRef = useRef(null);
+  
+  useEffect(() => {
+    if (!isMSBOpen) return;
+    const handler = (e) => {
+      if (!MobileSideBarRef.current) return;
+      if (!MobileSideBarRef.current.contains(e.target)) {
+        setMSBOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handler);
+    return() => {
+      document.removeEventListener('mousedown', handler);
+    };
+  }, [isMSBOpen]);
+
+  useEffect(() => {
+    if (!isMBProfileOpen) return;
+    const handler = (e) => {
+      if (!ProfileContextMenuRef.current) return;
+      if (!ProfileContextMenuRef.current.contains(e.target)) {
+        setMBProfileOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handler);
+    return() => {
+      document.removeEventListener('mousedown', handler);
+    };
+  }, [isMBProfileOpen]);
+
   return (
     <nav className="relative flex justify-between items-center mb-1 sm:pr-2 sm:flex-col sm:justify-center!">
-      <MobileSideBar isMSBOpen={isMSBOpen} setMSBOpen={setMSBOpen} setPageOpen={setPageOpen} />
-
-      <motion.div
-        onClick={() => setMSBOpen(!isMSBOpen)}
-        whileTap={{ scale: 0.8 }}
-      >
-        <FontAwesomeIcon
-          size="2xl"
-          icon={faBars}
-          className="text-white sm:hidden!"
-        />
-      </motion.div>
+      <div ref={MobileSideBarRef}>
+        <MobileSideBar isMSBOpen={isMSBOpen} setMSBOpen={setMSBOpen} setPageOpen={setPageOpen} />
+        <motion.div
+          onClick={() => setMSBOpen(!isMSBOpen)}
+          whileTap={{ scale: 0.8 }}
+        >
+          <FontAwesomeIcon
+            size="2xl"
+            icon={faBars}
+            className="text-white sm:hidden!"
+          />
+        </motion.div>
+      </div>
       <img
         src="logo.svg"
         className="w-[12vh] md:w-[calc(100%-50px)]! sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2"
@@ -60,24 +94,26 @@ export default function Navbar({ setPageOpen }) {
         <p className="text-xl">More</p>
       </button>
 
-      <motion.div
-        whileTap={{ scale: 0.8 }}
-      >
-        <FontAwesomeIcon
-          size="2xl"
-          icon={faUser}
-          onClick={() => setMBProfileOpen((prev) => !prev)}
-          className="text-white cursor-pointer sm:hidden!"
-        />
-      </motion.div>
-      <AnimatePresence>
-        {isMBProfileOpen && (
-          <ProfileContextMenu
-            setMBProfileOpen={setMBProfileOpen}
-            setPageOpen={setPageOpen}
+      <div ref={ProfileContextMenuRef}>
+        <motion.div
+          whileTap={{ scale: 0.8 }}
+        >
+          <FontAwesomeIcon
+            size="2xl"
+            icon={faUser}
+            onClick={() => setMBProfileOpen((prev) => !prev)}
+            className="text-white cursor-pointer sm:hidden!"
           />
-        )}
-      </AnimatePresence>
+        </motion.div>
+        <AnimatePresence>
+          {isMBProfileOpen && (
+            <ProfileContextMenu
+              setMBProfileOpen={setMBProfileOpen}
+              setPageOpen={setPageOpen}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </nav>
   );
 }
