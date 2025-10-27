@@ -37,7 +37,45 @@ def hello_world():
     """
     Test API is working
     """
-    return 'API is working'
+    return "API is working on PORT 5000"
+
+@app.route("/get_user" , methods=["GET"])
+@jwt_required()
+def get_user():
+    user_id = get_jwt_identity()
+    result = database.get_user(user_id)
+    return result
+
+@app.route("/reset_password" , methods=["POST"])
+def reset_password():
+    try:
+        data = request.get_json()
+        email = data.get("email")
+        new_password = data.get("new_password")
+        result = database.forgetPassword(email, new_password)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route("/update_profile" , methods=["POST"])
+@jwt_required()
+def update_profile():
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+        email = data.get("email")
+        username = data.get("username")
+        new_password = data.get("new_password")
+        old_password = data.get("old_password")
+        birthday = data.get("birthday")
+        gender = data.get("gender")
+        profile_img = data.get("profile_img")
+        result = database.update_profile_user(user_id, username, email, old_password, new_password, birthday, gender, profile_img)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
 
 # Register API use function register_db from ./database.py (finished)
 @app.route('/register', methods=["POST"])
@@ -349,6 +387,19 @@ def get_iore():
     try:
         user_id = get_jwt_identity()
         result = database.get_iore(user_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route('/get_info' , methods=["POST"])
+@jwt_required()
+def get_info():
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+        month = data.get("month")
+        result = database.get_iore_for_graph(user_id , month)
         return result
     except Exception as err:
         traceback.print_exc()
