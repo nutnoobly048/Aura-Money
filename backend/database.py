@@ -63,6 +63,12 @@ def register_db(username , password , email):
             payload = (username , hashed , email)
             cursor.execute(stmt,payload)
             db.commit()
+            # create account
+            stmt_fetch = "SELECT user_id FROM user WHERE email=%s"
+            cursor.execute(stmt_fetch,(email,))
+            user_id = cursor.fetchone()
+            cursor.close()
+            create_account("Cash",0,user_id[0])
             return jsonify({"success": "Registered successfull"}), 200
         return jsonify({"errror": "Already has user"}), 401
     except Exception as err:

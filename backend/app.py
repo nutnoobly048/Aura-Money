@@ -361,7 +361,7 @@ def update_iore():
 
 @app.route('/get_iore', methods=["GET"])
 @jwt_required()
-def get_transfer():
+def get_iore():
     try:
         email = get_jwt_identity()
         user_id = database.get_from_email(email)
