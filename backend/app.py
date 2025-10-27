@@ -65,7 +65,10 @@ def register():
         password = data.get("password")
         email = data.get("email")
         result = database.register_db(username, password, email)
-        return result
+        access_token = create_access_token(identity=email)
+        resp = jsonify({"success": "login successful", "expires_in_sec": 3600})
+        set_access_cookies(resp, access_token)
+        return resp, 200
     except Exception as err:
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
