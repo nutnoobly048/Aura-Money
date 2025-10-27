@@ -18,30 +18,20 @@ def ConnectorMysql():
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
-# method for fetch all data from database
-def get_data():
+# check user is exist?
+
+def check_username(username):
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
-        stmt = "SELECT * FROM user"
-        cursor.execute(stmt)
-        result = cursor.fetchall()
-        if len(result) > 0:
-            data = []
-            for x in result:
-                arr = {
-                    "user_id" : x[0],
-                    "username" : x[1],
-                    "password" : x[2],
-                    "email" : x[3]
-                }
-                data.append(arr)
-        return data
-    except Exception as err:
+        cursor.execute("SELECT * FROM user WHERE username=%s", (username,))
+        user = cursor.fetchone()
+        cursor.close()
+        return user
+    except RuntimeError as err:
         raise RuntimeError(f"Database error: {err}")
 
-# check user is exist?
-def check_user(email):
+def check_email(email):
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
@@ -57,20 +47,21 @@ def register_db(username , password , email):
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
-        if not check_user(email):
-            hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()) # encrypt password code
-            stmt = "INSERT INTO user (username , password , email) VALUES (%s, %s, %s)"
-            payload = (username , hashed , email)
-            cursor.execute(stmt,payload)
-            db.commit()
-            # create account
-            stmt_fetch = "SELECT user_id FROM user WHERE email=%s"
-            cursor.execute(stmt_fetch,(email,))
-            user_id = cursor.fetchone()
-            cursor.close()
-            create_account("Cash",0,user_id[0])
-            return jsonify({"success": "Registered successfull"}), 200
-        return jsonify({"errror": "Already has user"}), 401
+        if check_username(username):
+            return jsonify({"errror": "Username've already used"}), 401 
+        if check_email(email):
+            return jsonify({"errror": "Email've already used"}), 401   
+        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()) # encrypt password code
+        stmt = "INSERT INTO user (username , password , email) VALUES (%s, %s, %s)"
+        payload = (username , hashed , email)
+        cursor.execute(stmt,payload)
+        db.commit()
+        stmt_fetch = "SELECT user_id FROM user WHERE email=%s"
+        cursor.execute(stmt_fetch,(email,))
+        user_id = cursor.fetchone()
+        cursor.close()
+        create_account("Cash",0,user_id[0])
+        return jsonify({"success": "Registered successfull"}), 200
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
@@ -79,10 +70,10 @@ def get_from_email(email):
     try:
         db = ConnectorMysql()
         cursor = db.cursor(dictionary=True)
-        cursor.execute("SELECT user_id, username, email FROM user WHERE email=%s", (email,))
+        cursor.execute("SELECT user_id FROM user WHERE email=%s", (email,))
         user = cursor.fetchone()
         cursor.close()
-        return user
+        return str(user["user_id"])
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
@@ -91,7 +82,22 @@ def login_db(email , password):
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
-        stmt = "SELECT * FROM user WHERE email=%s"
+        if "@" in email:
+            stmt = "SELECT * FROM user WHERE email=%s"
+            cursor.execute(stmt, [email])
+            result = cursor.fetchall()
+            if len(result) > 0:
+                for x in result:
+                    arr = {
+                        "user_id" : x[0],
+                        "username" : x[1],
+                        "password" : x[2],
+                        "email" : x[3]
+                    }
+                if bcrypt.checkpw(password.encode("utf-8") , arr['password'].encode("utf-8")):
+                    return arr['user_id'], 200
+                return jsonify({"error": "Wrong password!"}), 401
+        stmt = "SELECT * FROM user WHERE username=%s"
         cursor.execute(stmt, [email])
         result = cursor.fetchall()
         if len(result) > 0:
@@ -103,9 +109,9 @@ def login_db(email , password):
                     "email" : x[3]
                 }
             if bcrypt.checkpw(password.encode("utf-8") , arr['password'].encode("utf-8")):
-                return arr['email'], 200
+                return arr['user_id'], 200
             return jsonify({"error": "Wrong password!"}), 401
-        return jsonify({"error": "Email doesn't exist!"}), 401
+        return jsonify({"error": "Email or username doesn't exist!"}), 401
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
@@ -151,8 +157,8 @@ def get_category(user_id):
         stmt = "SELECT * FROM category WHERE user_id=%s"
         cursor.execute(stmt,(user_id,))
         result = cursor.fetchall()
+        data = []
         if len(result) > 0:
-            data = []
             for x in result:
                 arr = {
                     "category_id" : x[0],
@@ -205,8 +211,8 @@ def get_account(user_id):
         stmt = "SELECT * FROM account WHERE user_id=%s"
         cursor.execute(stmt,(user_id,))
         result = cursor.fetchall()
+        data = []
         if len(result) > 0:
-            data = []
             for x in result:
                 arr = {
                     "account_id" : x[0],
@@ -309,8 +315,8 @@ def get_transfer(user_id):
         """
         cursor.execute(stmt,(user_id,))
         result = cursor.fetchall()
+        data = []
         if len(result) > 0:
-            data = []
             for x in result:
                 arr = {
                     "transfer_id" : x[0],
@@ -397,8 +403,8 @@ def get_iore(user_id):
         """
         cursor.execute(stmt,(user_id,))
         result = cursor.fetchall()
+        data = []
         if len(result) > 0:
-            data = []
             for x in result:
                 arr = {
                     "track_id" : x[0],

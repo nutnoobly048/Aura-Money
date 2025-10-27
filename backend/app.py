@@ -26,7 +26,6 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_SAMESITE"] = "Lax"  # code by chatgpt
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 jwt = JWTManager(app)
@@ -40,19 +39,6 @@ def hello_world():
     """
     return 'API is working'
 
-# Example of get_data method
-@app.route('/data', methods=['GET'])
-def data():
-    """
-    Get data from database
-    """
-    try:
-        jsonData = database.get_data()
-        return jsonify(jsonData)
-    except Exception as err:
-        traceback.print_exc()
-        return jsonify({"error": str(err)}), 500
-
 # Register API use function register_db from ./database.py (finished)
 @app.route('/register', methods=["POST"])
 def register():
@@ -65,10 +51,13 @@ def register():
         password = data.get("password")
         email = data.get("email")
         result = database.register_db(username, password, email)
-        access_token = create_access_token(identity=email)
-        resp = jsonify({"success": "login successful", "expires_in_sec": 3600})
-        set_access_cookies(resp, access_token)
-        return resp, 200
+        if result[1] == 200:
+            user_id = database.get_from_email(email)
+            access_token = create_access_token(identity=user_id)
+            resp = jsonify({"success": "login successful"})
+            set_access_cookies(resp, access_token)
+            return resp, 200
+        return result
     except Exception as err:
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
@@ -85,9 +74,9 @@ def login():
         password = data.get("password")
         result = database.login_db(email, password)
         if result[1] == 200:
-            user_email = result[0]
-            access_token = create_access_token(identity=user_email)
-            resp = jsonify({"success": "login successful", "expires_in_sec": 3600})
+            user_id = result[0]
+            access_token = create_access_token(identity=user_id)
+            resp = jsonify({"success": "login successful"})
             set_access_cookies(resp, access_token)
             return resp, 200
         return result
@@ -103,11 +92,10 @@ def auth():
     Auth method use function get_from_email from ./database.py
     """
     try:
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id = get_jwt_identity()
         if not user_id:
             return jsonify({"authenticated": False}), 200
-        return jsonify({"authenticated": True, "user": user}), 200
+        return jsonify({"authenticated": True, "user": user_id}), 200
     except Exception as err:
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
@@ -151,8 +139,8 @@ def google_auth():
             result = database.register_db(user["name"], user["sub"], user["email"])
         result = database.login_db(user["email"], user["sub"])
         if result[1] == 200:
-                user_email = result[0]
-                access_token = create_access_token(identity=user_email)
+                user_id = result[0]
+                access_token = create_access_token(identity=user_id)
                 resp = make_response(redirect("http://localhost:5173/"))
                 set_access_cookies(resp, access_token)
                 return resp
@@ -167,8 +155,7 @@ def create_category():
     try:
         data = request.get_json()  # get data from header (json file)
         category_name = data.get("category_name")
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id  = get_jwt_identity()
         result = database.create_category(category_name, user_id)
         return result
     except Exception as err:
@@ -202,8 +189,7 @@ def update_category():
 @jwt_required()
 def get_category():
     try:
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id = get_jwt_identity()
         result = database.get_category(user_id)
         return result
     except Exception as err:
@@ -217,8 +203,7 @@ def create_account():
         data = request.get_json()  # get data from header (json file)
         account_name = data.get("account_name")
         balance = data.get("balance")
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id = get_jwt_identity()
         result = database.create_account(account_name, balance, user_id)
         return result
     except Exception as err:
@@ -253,8 +238,7 @@ def update_account():
 @jwt_required()
 def get_account():
     try:
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id = get_jwt_identity()
         result = database.get_account(user_id)
         return result
     except Exception as err:
@@ -265,8 +249,7 @@ def get_account():
 @jwt_required()
 def create_transfer():
     try:
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id = get_jwt_identity()
         data = request.get_json()
         from_account_id = data.get("from_account_id")
         to_account_id = data.get("to_account_id")
@@ -306,8 +289,7 @@ def update_transfer():
 @jwt_required()
 def get_transfer():
     try:
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id = get_jwt_identity()
         result = database.get_transfer(user_id)
         return result
     except Exception as err:
@@ -318,8 +300,7 @@ def get_transfer():
 @jwt_required()
 def create_iore():
     try:
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id = get_jwt_identity()
         data = request.get_json()
         date = data.get("date")
         types = data.get("types")
@@ -366,8 +347,7 @@ def update_iore():
 @jwt_required()
 def get_iore():
     try:
-        email = get_jwt_identity()
-        user_id = database.get_from_email(email)
+        user_id = get_jwt_identity()
         result = database.get_iore(user_id)
         return result
     except Exception as err:
