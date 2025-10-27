@@ -1,12 +1,22 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { motion } from "framer-motion";
+import { motion} from "framer-motion";
 import { twMerge } from "tailwind-merge";
-import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { Pencil, CirclePlus } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import axios from "axios";
 
 export const AccountSelectBtn = ({ setPageOpen, className }) => {
   const [isAccountListOpen, setAccountListOpen] = useState(false);
+  const [createAccName, setCreateAccName] = useState("");
+  const areaRef = useRef();
+
+  const sendNewAccName = async () => {
+    const { data } = await axios.post("http://localhost:5000/create_account", {
+      account_name: createAccName,
+      balance: 0,
+    })
+  }
 
   const iconVariants = {
     rest: {
@@ -29,14 +39,35 @@ export const AccountSelectBtn = ({ setPageOpen, className }) => {
   const baseClasses =
     "relative flex items-center font-bold gap-x-1 border-2 rounded-full px-2 py-1 cursor-pointer";
 
+
+  useEffect(() => {
+    if (!isAccountListOpen) return;
+    const handler = (e) => {
+      if (!areaRef.current.contains(e.target)) {
+        setAccountListOpen(false);
+      }
+    } 
+    document.addEventListener('mousedown', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+    }
+  }, [isAccountListOpen]);
+
   return (
     <motion.div
-      onClick={() => setAccountListOpen(!isAccountListOpen)}
+      ref={areaRef}
+      onClick={() => setAccountListOpen(true)}
       className={twMerge(baseClasses, className)}
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.98 }}
       initial="rest"
       whileHover="hover"
     >
+      <CreateAccBtn
+        createAccName={createAccName}
+        setCreateAccName={setCreateAccName}
+        isAccountListOpen={isAccountListOpen}
+        sendNewAccName={sendNewAccName}
+      />
       <p>AccountName #1</p>
       <motion.div variants={iconVariants}>
         <FontAwesomeIcon icon={faCaretDown} />
@@ -124,8 +155,26 @@ const AccountList = ({ isAccountListOpen, setPageOpen }) => {
           </button>
         </motion.div>
       ))}
-
-      <button className="bg-ui-green1 border border-zinc-300 rounded-2xl px-1.5 py-1">Create New Account</button>
     </motion.div>
+  );
+};
+
+const CreateAccBtn = ({ isAccountListOpen, setCreateAccName, sendNewAccName }) => {
+  return (
+    <div
+      className={`absolute bottom-[calc(100%+3px)] left-0 w-full flex justify-evenly items-center bg-white text-black text-xs border border-zinc-400 
+      rounded-xl shadow-xl px-1.5 py-1 mt-2 ${isAccountListOpen ? '' : 'hidden'}`}
+    >
+      <motion.div whileTap={{ scale: 1.1 }}>
+        <CirclePlus onClick={sendNewAccName} className="bg-ui-green1 text-white rounded-full" />
+      </motion.div>
+
+      <input
+        type="text"
+        placeholder="create new account"
+        onChange={(e) => setCreateAccName(e.target.value)}
+        className="w-3/4 focus:outline-none"
+      />
+    </div>
   );
 };

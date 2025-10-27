@@ -1,18 +1,24 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 function AccountContainer({ isAccountOpen, setData }) {
-  const [accountList, setAccountList] = useState([
-    "Account #1",
-    "Account #2",
-    "Account #3",
-    "Account #4",
-  ]);
-  const [selecting, setSelecting] = useState(null);
 
+  const [accountList, setAccountList] = useState([]);
+  const [selecting, setSelecting] = useState(null);
+  
   useEffect(() => {
-    if (!selecting == null) return;
+    if (selecting == null) return;
     setData((prev) => ({...prev, account: selecting}));
   }, [selecting]);
+  
+  useEffect(() => {
+    const fetchAccount = async () => {
+      const accoutFetch = await axios.get("http://localhost:5000/get_account")
+      console.log(accoutFetch.data);
+      setAccountList(accoutFetch.data.map((item) => item.account_name));
+    }
+    fetchAccount()
+  }, []);
 
   return (
     <div
