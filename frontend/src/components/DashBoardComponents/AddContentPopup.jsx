@@ -2,13 +2,30 @@ import { useState, useRef, useEffect } from "react";
 import CategoryContainer from "./PopupComponents/CategoryContainer";
 import AccountContainer from "./PopupComponents/AccountContainer";
 
-export default function AddContentPopup({ isPopupOpen, setPopupOpen, addContentType, setAddContentType }) {
+export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
 
+  const [addContentType, setAddContentType] = useState("Expense");
+
+  const now = new Date();
+  const nowTime = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+
+  const [amount, setAmount] = useState(0);
   const [isCategoryOpen, setCategoryOpen] = useState(false);
   const catRef = useRef();
 
   const [isAccountOpen, setAccountOpen] = useState(false);
   const accountRef = useRef();
+
+  const [data, setData] = useState({date:'', amount:'', category:'', account:'', note:''});
+  console.log(data);
+
+  const typeSelectColor = {
+    'Income': 'left-0! text-black',
+    'Expense': 'left-1/3! text-black',
+    'Transfer': 'left-2/3! text-black'
+  }
+  
+  const amountAddBtn = ['-10', '-5', '-1', '+1', '+5', '+10'];
 
   useEffect(() => {
     if (!isCategoryOpen && !isAccountOpen) return;
@@ -26,12 +43,10 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen, addContentT
     }
   }, [isCategoryOpen, isAccountOpen]);
 
-  const typeSelectColor = {
-    'Income': 'left-0! text-black',
-    'Expense': 'left-1/3! text-black',
-    'Transfer': 'left-2/3! text-black'
-  }
-  
+  useEffect(() => {
+    setData((prev) => ({...prev, amount: amount}));
+  }, [amount]);
+
   return (
     <div className={`top-1/2 left-1/2 absolute w-[calc(100%-24px)] -translate-y-1/2 -translate-x-1/2 bg-white 
     rounded-2xl z-20 ease-in-out duration-200 max-w-2xl ${isPopupOpen ? 'block scale-100' : 'invisible scale-0'}`}>
@@ -47,20 +62,37 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen, addContentT
 
       <h1 className='text-2xl font-bold text-center p-2'>{addContentType}</h1>
       <div className='flex flex-col justify-center items-center p-3 divide-y-2 divide-zinc-300'>
-        <label className="w-full flex p-3">Date :<input type='datetime-local' className="flex-1 pl-3 focus:outline-none"/></label>
 
-        <label className="w-full flex p-3">Amount :<input type='number' className="flex-1 pl-3 focus:outline-none" /></label>
+        <label className="w-full flex p-3">Date :
+          <input type='datetime-local' defaultValue={nowTime} className="flex-1 pl-3 focus:outline-none"/>
+        </label>
+
+        <label className="w-full flex items-center p-3">
+          Amount :
+          <input type='number' className="flex-1 pl-3 focus:outline-none" onChange={(e) => setAmount(Number(e.target.value))} value={data.amount} />
+          <div className="hidden sm:flex! gap-x-2 ">
+            {amountAddBtn.map((item, index) => 
+              <button 
+                key={index}
+                onClick={() => setAmount(p => p + Number(item))}
+                className="bg-gradient-to-br from-[#62b79c] to-[#afd1a1] border border-zinc-200 text-white font-semibold rounded-md shadow-lg px-3 py-0.5"
+              >
+                {item}
+              </button>
+            )}
+          </div>
+        </label>
         
         <label ref={catRef} onClick={() => setCategoryOpen(true)} className="relative w-full flex p-3">
           Category :
-          <div className="flex-1 pl-3" ></div>
-          <CategoryContainer isCategoryOpen={isCategoryOpen} setCategoryOpen={setCategoryOpen} />
+          <div className="flex-1 pl-3" >{data.category}</div>
+          <CategoryContainer isCategoryOpen={isCategoryOpen} setData={setData} />
         </label>
         
         <label ref={accountRef} onClick={() => setAccountOpen(true)} className="relative w-full flex p-3">
           Account :
-          <div className="flex-1 pl-3" ></div>
-          <AccountContainer isAccountOpen={isAccountOpen} />
+          <div className="flex-1 pl-3" >{data.account}</div>
+          <AccountContainer isAccountOpen={isAccountOpen} setData={setData} />
         </label>
         
         <label className="w-full flex p-3">Note :<input type='text' className="flex-1 pl-3 focus:outline-none"/></label>

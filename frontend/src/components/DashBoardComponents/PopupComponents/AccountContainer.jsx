@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function AccountContainer({ isAccountOpen }) {
+function AccountContainer({ isAccountOpen, setData }) {
   const [accountList, setAccountList] = useState([
     "Account #1",
     "Account #2",
     "Account #3",
     "Account #4",
   ]);
-  const [selecting, setSelecting] = useState();
+  const [selecting, setSelecting] = useState(null);
+
+  useEffect(() => {
+    if (!selecting == null) return;
+    setData((prev) => ({...prev, account: selecting}));
+  }, [selecting]);
 
   return (
     <div

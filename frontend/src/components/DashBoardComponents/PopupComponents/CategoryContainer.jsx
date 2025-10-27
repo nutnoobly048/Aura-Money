@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, CirclePlus } from "lucide-react";
 
-function CategoryContainer({ isCategoryOpen, setCategoryOpen }) {
+function CategoryContainer({ isCategoryOpen, setData }) {
   const [categoryList, setCategoryList] = useState(["Food", "Home", "Salary", "Bill", "Transportation"]);
   const [visibleCat, setVisibleCat] = useState([])
   const [filter, setFilter] = useState();
@@ -12,7 +12,12 @@ function CategoryContainer({ isCategoryOpen, setCategoryOpen }) {
       categoryList.map((item) => item.toUpperCase().indexOf(e.target.value.toUpperCase()) > -1 ? "block" : "hidden")
     );
   };
-  
+
+  useEffect(() => {
+    if (selectedCat == null) return;
+    setData((prev) => ({...prev, category: selectedCat}));
+  }, [selectedCat]);
+
   return (
     <div
       className={`z-10 absolute top-full left-1/2 -translate-x-1/2 flex flex-col items-center justify-center rounded-xl p-2 gap-y-2

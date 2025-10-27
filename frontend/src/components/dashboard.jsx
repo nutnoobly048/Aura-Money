@@ -10,7 +10,7 @@ import DarkBgPopup from "./DashBoardComponents/DarkBgPopup";
 
 export default function dashboard() {
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const [addContentType, setAddContentType] = useState("Expense");
+  
   const [pageOpen, setPageOpen] = useState("account");
   const [isDarkBgPopupOpen, setDarkBgPopupOpen] = useState(false);
 
@@ -37,8 +37,6 @@ export default function dashboard() {
       <AddContentPopup
         isPopupOpen={isPopupOpen}
         setPopupOpen={setPopupOpen}
-        addContentType={addContentType}
-        setAddContentType={setAddContentType}
       />
       
     </div>

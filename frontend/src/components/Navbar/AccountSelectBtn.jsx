@@ -124,6 +124,8 @@ const AccountList = ({ isAccountListOpen, setPageOpen }) => {
           </button>
         </motion.div>
       ))}
+
+      <button className="bg-ui-green1 border border-zinc-300 rounded-2xl px-1.5 py-1">Create New Account</button>
     </motion.div>
   );
 };
