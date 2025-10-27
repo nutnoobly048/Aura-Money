@@ -109,7 +109,7 @@ def login_db(email , password):
                     "email" : x[3]
                 }
             if bcrypt.checkpw(password.encode("utf-8") , arr['password'].encode("utf-8")):
-                return arr['user_id'], 200
+                return str(arr['user_id']), 200
             return jsonify({"error": "Wrong password!"}), 401
         return jsonify({"error": "Email or username doesn't exist!"}), 401
     except Exception as err:
