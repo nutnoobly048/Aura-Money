@@ -18,8 +18,74 @@ def ConnectorMysql():
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
-# check user is exist?
+def get_user(user_id):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "SELECT * FROM user WHERE user_id=%s"
+        cursor.execute(stmt,(user_id,))
+        result = cursor.fetchone()
+        cursor.close()
+        data = []
+        print(result , "result")
+        if result:
+            arr = {
+                "user_id": result[0],
+                "username": result[1],
+                "email": result[3],
+                "profile_img": result[4],
+            }
+            data.append(arr)
+        return data
+    except RuntimeError as err:
+        raise RuntimeError(f"Database error: {err}")
 
+def update_profile_user(user_id, username, email, old_password, new_password, birthday, gender, profile_img):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "SELECT * FROM user WHERE user_id=%s"
+        cursor.execute(stmt,(user_id,))
+        result = cursor.fetchone()
+        arr = {
+            "username": result[0],
+            "password": result[1],
+            "email": result[2],
+            "birthday": result[3],
+            "gender": result[4],
+            "profile_img": result[5],
+        }
+        if not username: username = arr["username"]
+        if not new_password: 
+            new_password = arr["password"]
+        else:
+            if not bcrypt.checkpw(old_password.encode("utf-8") , arr['password'].encode("utf-8")):
+                return jsonify({"message" : "wrong password"}), 401
+        if not email: email = arr["email"]
+        if not birthday: birthday = arr["birthday"]
+        if not gender: gender = arr["gender"]
+        if not profile_img: profile_img = arr["profile_img"]
+        stmt = "UPDATE user SET username=%s, password=%s, email=%s, birthday=%s, gender=%s, profile_img=%s WHERE user_id=%s"
+        payload = (username, new_password, email, birthday, gender, profile_img, user_id)
+        cursor.execute(stmt, payload)
+        db.commit()
+        return jsonify({"message": "update profile user successfully"}), 200
+    except RuntimeError as err:
+        raise RuntimeError(f"Database error: {err}")
+
+def forgetPassword(email , new_password):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = "UPDATE user SET password=%s WHERE email=%s"
+        hashed = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
+        cursor.execute(stmt, (hashed, email))
+        db.commit()
+        return jsonify({"message": "reset password successfully"}), 200
+    except RuntimeError as err:
+        raise RuntimeError(f"Database error: {err}")
+
+# check user is exist?
 def check_username(username):
     try:
         db = ConnectorMysql()
@@ -376,6 +442,78 @@ def update_iore(track_id, date, types, account_id, category_id, amount, note):
         cursor.execute(stmt,payload)
         db.commit()
         return jsonify({"message": "update income or expense successfully"}), 200
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
+def DataForGraph(data):
+    income = {}
+    expense = {}
+    info_income = {}
+    info_expense = {}
+    total_income = 0
+    total_expense = 0
+    for row in data:
+        if row['types'] == 'income':
+            if row['category_name'] not in income:
+                income[row['category_name']] = 0
+            income[row['category_name']] += float(row['amount'])
+        elif row['types'] == "expense":
+            if row['category_name'] not in expense:
+                expense[row['category_name']] = 0
+            expense[row['category_name']] += float(row['amount'])
+    for key in income:
+        total_income += income[key]
+    for key in expense:
+        total_expense += expense[key]
+    for key in income:
+        info_income[key] = (income[key]/total_income)*100
+    for key in expense:
+        info_expense[key] = (expense[key]/total_expense)*100
+    return [info_income, info_expense]
+
+def get_iore_for_graph(user_id , month):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor()
+        stmt = """
+            SELECT 
+            i.track_id,
+            i.date,
+            i.types,
+            a.account_name AS account_name,
+            i.account_id,
+            c.category_name AS category_name,
+            i.category_id,
+            i.amount,
+            i.note
+            FROM iore AS i
+            JOIN account AS a
+            ON i.account_id = a.account_id
+            JOIN category AS c 
+            ON i.category_id = c.category_id
+            WHERE i.user_id=%s;
+        """
+        cursor.execute(stmt,(user_id,))
+        result = cursor.fetchall()
+        data = []
+        if len(result) > 0:
+            for x in result:
+                date = str(x[1]).split("-")
+                if int(date[1]) == int(month):
+                    arr = {
+                        "track_id" : x[0],
+                        "date" : x[1],
+                        "types" : x[2],
+                        "account_name" : x[3],
+                        "account_id" : x[4],
+                        "category_name" : x[5],
+                        "category_id" : x[6],
+                        "amount" : x[7],
+                        "note": x[8]
+                    }
+                    data.append(arr)
+        result = DataForGraph(data)
+        return result
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
