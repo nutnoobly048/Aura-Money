@@ -1,17 +1,11 @@
 import axios from "axios";
 import { useEffect, useState, useContext } from "react";
-import { AccountContext } from "../../ContextProvider";
+import { APIContext } from "../../APIProvider";
 
 function AccountContainer({ isAccountOpen, setData }) {
 
-  const [accounts, setAccountList] = useState([]);
   const [selecting, setSelecting] = useState(null);
-  
-  const { accountList } = useContext(AccountContext);
-
-  useEffect(() => {
-    setAccountList(accountList);
-  });
+  const { accountList } = useContext(APIContext);
 
   useEffect(() => {
     if (selecting == null) return;
@@ -25,18 +19,18 @@ function AccountContainer({ isAccountOpen, setData }) {
         isAccountOpen ? "" : "hidden"
       }`}
     >
-      {accounts.map((item, index) => (
+      {accountList.map((item) => (
         <div
-          key={index}
-          onClick={() => setSelecting(item)}
+          key={item.id}
+          onClick={() => setSelecting(item.name)}
           className={`w-full text-center rounded-lg py-1 px-2 shadow-md
           ${
-            selecting == item
+            selecting == item.name
               ? "text-white bg-gradient-to-r from-[#62b79c] to-[#afd1a1]"
               : "bg-white text-ui-green1"
           }`}
         >
-          {item}
+          {item.name}
         </div>
       ))}
     </div>

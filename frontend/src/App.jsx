@@ -1,16 +1,16 @@
 import "./App.css";
 import axios from "axios";
 import Dashboard from "./components/dashboard";
-import { AccountProvider } from "./components/ContextProvider";
+import { APIProvider } from "./components/APIProvider";
 
 axios.defaults.withCredentials = true;
 
 function App() {
   return (
     <div className="">
-      <AccountProvider>
+      <APIProvider>
         <Dashboard />
-      </AccountProvider>
+      </APIProvider>
     </div>
   );
 }

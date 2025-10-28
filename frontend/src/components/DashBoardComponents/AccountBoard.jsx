@@ -1,7 +1,13 @@
+import { ArrowBigLeft, ArrowBigRight } from 'lucide-react';
+
 export default function AccountBoard({pageOpen}) {
   return (
     <div className={`h-full overflow-y-auto flex flex-col p-4 gap-y-2 ${pageOpen === 'account' ? 'block' : 'hidden'}`}>
-      <h1 className='text-[clamp(20px,5vw,30px)] font-semibold'>Sep 2025</h1>
+      <div className="flex items-center gap-x-1">
+        <ArrowBigLeft className='text-ui-green1 '/>
+        <h1 className='text-[clamp(20px,5vw,30px)] font-semibold'>Sep 2025</h1>
+        <ArrowBigRight className='text-ui-green1' />
+      </div>
       <SummationBoard />
       <HistoryBoard />
     </div>
