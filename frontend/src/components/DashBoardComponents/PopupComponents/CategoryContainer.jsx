@@ -1,16 +1,18 @@
 import { useEffect, useState, useContext } from "react";
 import { Search, CirclePlus } from "lucide-react";
 import { APIContext } from "../../APIProvider";
+import axios from "axios";
 
 function CategoryContainer({ isCategoryOpen, setData }) {
-  const [categoryList, setCategoryList] = useState(["Food", "Home", "Salary", "Bill", "Transportation"]);
   const [visibleCat, setVisibleCat] = useState([])
   const [filter, setFilter] = useState();
   const [selectedCat, setSelectedCat] = useState(null);
 
+  const { categoryList } = useContext(APIContext);
+
   const filterFunc = (e) => {
     setVisibleCat(
-      categoryList.map((item) => item.toUpperCase().indexOf(e.target.value.toUpperCase()) > -1 ? "block" : "hidden")
+      categoryList.map((item) => item.category_name.toUpperCase().indexOf(e.target.value.toUpperCase()) > -1 ? "block" : "hidden")
     );
   };
 
@@ -40,37 +42,48 @@ function CategoryContainer({ isCategoryOpen, setData }) {
       </div>
 
       <div className={`w-full flex flex-col gap-y-1 max-h-40 overflow-y-auto`}>
-        {categoryList.map((item, index) => (
+        {categoryList.map((item , index) => (
           <div
-            key={index}
-            onClick={() => setSelectedCat(item)}
+            key={item.category_id}
+            onClick={() => setSelectedCat(item.category_name)}
             className={`w-full text-center rounded-lg py-1 px-2 shadow-md ${
               visibleCat[index]
             }
             ${
-              !(selectedCat == item)
+              !(selectedCat == item.category_name)
                 ? "bg-white text-ui-green1"
                 : "text-white bg-gradient-to-r from-[#62b79c] to-[#afd1a1]"
             }`}
           >
-            {item}
+            {item.category_name}
           </div>
         ))}
       </div>
 
-      <CreateNewCat filter={filter}  categoryList={categoryList} setCategoryList={setCategoryList} />
+      <CreateNewCat filter={filter} />
     </div>
   );
 }
 
 export default CategoryContainer;
 
-const CreateNewCat = ({ filter, categoryList, setCategoryList }) => {
+const CreateNewCat = ({ filter }) => {
+  const { fetchCategory } = useContext(APIContext);
+  const handleCreateCategory = async() => {
+    try {
+        await axios.post("http://localhost:5000/create_category", {
+          category_name: filter
+        });
+        fetchCategory()
+    } catch (error) {
+        console.log(error);
+    }
+  }
   return (
     <button 
-      onClick={() => setCategoryList([...categoryList, filter])}
+      onClick={handleCreateCategory}
       className='w-full flex justify-center items-center px-2 py-1 gap-x-2 bg-white rounded-lg shadow-xl border
-      border-zinc-400'
+      border-zinc-400 cursor-pointer'
     >
       <CirclePlus className="bg-ui-green1 text-white rounded-full"/>
       <p>Create <span>{filter ? filter + ' as a ' : ''}</span>new Category</p>  
