@@ -1,25 +1,23 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AccountContext } from "../../ContextProvider";
 
 function AccountContainer({ isAccountOpen, setData }) {
 
-  const [accountList, setAccountList] = useState([]);
+  const [accounts, setAccountList] = useState([]);
   const [selecting, setSelecting] = useState(null);
   
+  const { accountList } = useContext(AccountContext);
+
+  useEffect(() => {
+    setAccountList(accountList);
+  });
+
   useEffect(() => {
     if (selecting == null) return;
     setData((prev) => ({...prev, account: selecting}));
   }, [selecting]);
   
-  useEffect(() => {
-    const fetchAccount = async () => {
-      const accoutFetch = await axios.get("http://localhost:5000/get_account")
-      console.log(accoutFetch.data);
-      setAccountList(accoutFetch.data.map((item) => item.account_name));
-    }
-    fetchAccount()
-  }, []);
-
   return (
     <div
       className={`absolute top-full left-1/2 -translate-x-1/2 flex flex-col items-center justify-center rounded-xl 
@@ -27,7 +25,7 @@ function AccountContainer({ isAccountOpen, setData }) {
         isAccountOpen ? "" : "hidden"
       }`}
     >
-      {accountList.map((item, index) => (
+      {accounts.map((item, index) => (
         <div
           key={index}
           onClick={() => setSelecting(item)}

@@ -38,7 +38,7 @@ export default function dashboard() {
         isPopupOpen={isPopupOpen}
         setPopupOpen={setPopupOpen}
       />
-      
+
     </div>
   );
 }
