@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { APIContext } from "../../APIProvider";
 

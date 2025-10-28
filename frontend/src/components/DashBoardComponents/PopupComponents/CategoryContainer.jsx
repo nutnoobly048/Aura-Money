@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Search, CirclePlus } from "lucide-react";
+import { APIContext } from "../../APIProvider";
 
 function CategoryContainer({ isCategoryOpen, setData }) {
   const [categoryList, setCategoryList] = useState(["Food", "Home", "Salary", "Bill", "Transportation"]);

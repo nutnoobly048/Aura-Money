@@ -11,8 +11,25 @@ export const APIProvider = ({ children }) => {
       setAccountList(receive.data.map((item) => ({name: item.account_name, id: item.account_id})));
   }
 
+  const fetchCategory = async () => {
+    const receive = await axios.get("http://localhost:5000//get_category");
+    console.log(receive);
+  }
+
+  useEffect(() => {
+    const createCat = async () => {
+      try {
+        await axios.post("http://localhost:5000/create_category", {category_name: 'bill'});
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    createCat();
+  }, [])
+
   useEffect(() => {
     fetchAccount();
+    // fetchCategory();
   }, []);
 
   return (
