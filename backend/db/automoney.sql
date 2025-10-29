@@ -37,7 +37,7 @@ CREATE TABLE `user` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `birthday` date DEFAULT NULL,
+  `birthday` text DEFAULT NULL,
   `gender` varchar(255) DEFAULT NULL,
   `profile_img` varchar(400) NOT NULL DEFAULT 'https://res.cloudinary.com/draadlugd/image/upload/v1761539481/h0hlb3dvrkkeazrlt77y.jpg'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
