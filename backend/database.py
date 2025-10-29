@@ -50,12 +50,12 @@ def update_profile_user(user_id, username, email, old_password, new_password, bi
         cursor.execute(stmt,(user_id,))
         result = cursor.fetchone()
         arr = {
-            "username": result[0],
-            "password": result[1],
-            "email": result[2],
-            "birthday": result[3],
-            "gender": result[4],
-            "profile_img": result[5],
+            "username": result[1],
+            "password": result[2],
+            "email": result[3],
+            "birthday": result[4],
+            "gender": result[5],
+            "profile_img": result[6],
         }
         if not username: username = arr["username"]
         if not new_password: 
