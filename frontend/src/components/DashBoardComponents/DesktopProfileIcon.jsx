@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { User, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
+import { APIContext } from "../APIProvider";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const DesktopProfileIcon = ({ setPageOpen }) => {
   const [isDesktopProfileContextMenuOpen, setDesktopProfileContextMenu] = useState(false);
+  const DPIArea = useRef();
+  const { userData } = useContext(APIContext);
+  
+  useEffect(() => {
+    if (!isDesktopProfileContextMenuOpen) return;
+    const handler = (e) => {
+      if (!DPIArea.current.contains(e.target)) {
+        setDesktopProfileContextMenu(!isDesktopProfileContextMenuOpen);
+      }
+    }
+    document.addEventListener('mousedown', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+    }
+    
+  }, [isDesktopProfileContextMenuOpen]);
+
   return (
-    <div className="hidden w-full justify-end items-center sm:flex!">
+    <div ref={DPIArea} className="hidden w-full justify-end items-center sm:flex!">
       <button
         className="relative flex justify-between items-center border-2 border-zinc-400 rounded-3xl py-1 px-1 gap-x-5 m-2 cursor-pointer"
         onClick={() =>
@@ -15,8 +35,8 @@ const DesktopProfileIcon = ({ setPageOpen }) => {
         }
       >
         <div className="flex justify-center items-center gap-x-2 cursor-pointer">
-          <img src="Profile.jpg" className="w-[3vh] rounded-full" />
-          <label className="cursor-pointer">yeaimningning</label>
+          <img src={userData?.profile_img} className="w-[3vh] rounded-full" />
+          <label className="cursor-pointer">{userData?.username}</label>
         </div>
         <FontAwesomeIcon icon={faCaretDown} />
         <DPIContextMenu
@@ -79,9 +99,19 @@ const DPIContextMenu = ({ isDesktopProfileContextMenuOpen, setPageOpen }) => {
     {
       name: "Logout",
       icon: LogOut,
-      action: () => console.log("Logout clicked"),
+      action: () => Logout(),
     },
   ];
+
+  const navigate = useNavigate();
+  const Logout = async () => {
+    try {
+      const data = await axios.get("http://localhost:5000/logout");
+      navigate("/login_register");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <motion.div

@@ -17,7 +17,6 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
   const accountRef = useRef();
 
   const [data, setData] = useState({date:'', amount:'', category:'', account:'', note:''});
-  console.log(data);
 
   const typeSelectColor = {
     'Income': 'left-0! text-black',

@@ -6,6 +6,7 @@ export const APIContext = createContext()
 export const APIProvider = ({ children }) => {
   const [accountList, setAccountList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
+  const [userData, setUserData] = useState();
 
   const fetchAccount = async () => {
       const receive = await axios.get("http://localhost:5000/get_account");
@@ -13,28 +14,34 @@ export const APIProvider = ({ children }) => {
   }
 
   const fetchCategory = async () => {
-    const receive = await axios.get("http://localhost:5000//get_category");
+    const receive = await axios.get("http://localhost:5000/get_category");
     setCategoryList(receive.data.map((item) => ({category_name: item.category_name, category_id: item.category_id})));
   }
 
-  useEffect(() => {
-    const createCat = async () => {
-      try {
-        await axios.post("http://localhost:5000/create_category", {category_name: 'bill1'});
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    // createCat();
-  }, [])
+  const fetchUser = async () => {
+    const receive = await axios.get("http://localhost:5000/get_user");
+    setUserData(receive.data[0]);
+  }
+
+  // useEffect(() => {
+  //   const createCat = async () => {
+  //     try {
+  //       await axios.post("http://localhost:5000/create_category", {category_name: 'bill1'});
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   // createCat();
+  // }, [])
 
   useEffect(() => {
     fetchAccount();
     fetchCategory();
+    fetchUser();
   }, []);
 
   return (
-    <APIContext.Provider value={{accountList, fetchAccount , categoryList, fetchCategory}}>
+    <APIContext.Provider value={{accountList, fetchAccount , categoryList, fetchCategory, userData}}>
       {children}
     </APIContext.Provider>
   );

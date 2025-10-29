@@ -33,7 +33,9 @@ def get_user(user_id):
                 "user_id": result[0],
                 "username": result[1],
                 "email": result[3],
-                "profile_img": result[4],
+                "birthday":result[4],
+                "gender": result[5],
+                "profile_img": result[6],
             }
             data.append(arr)
         return data

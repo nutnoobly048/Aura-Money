@@ -9,20 +9,20 @@ axios.defaults.withCredentials = true;
 
 
 function App() {
-  // const navigate = useNavigate()
-  // const auth = async () => {
-  //   try{
-  //     const result = await axios.get("http://localhost:5000/auth");
-  //     if (result.status == 200){
-  //       navigate("/")
-  //     }
-  //   }catch (err){
-  //     navigate("/login_register")
-  //   }
-  // }
-  // useEffect(() => {
-  //   auth()
-  // })
+  const navigate = useNavigate()
+  const auth = async () => {
+    try{
+      const result = await axios.get("http://localhost:5000/auth");
+      if (result.status == 200){
+        navigate("/")
+      }
+    }catch (err){
+      navigate("/login_register")
+    }
+  }
+  useEffect(() => {
+    auth()
+  })
 
   return (
     <div className="">
