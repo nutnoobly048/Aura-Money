@@ -41,7 +41,7 @@ export const APIProvider = ({ children }) => {
   }, []);
 
   return (
-    <APIContext.Provider value={{accountList, fetchAccount , categoryList, fetchCategory, userData}}>
+    <APIContext.Provider value={{accountList, fetchAccount , categoryList, fetchCategory, userData, fetchUser}}>
       {children}
     </APIContext.Provider>
   );

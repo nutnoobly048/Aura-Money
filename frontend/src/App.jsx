@@ -22,7 +22,7 @@ function App() {
   }
   useEffect(() => {
     auth()
-  })
+  }, [])
 
   return (
     <div className="">

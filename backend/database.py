@@ -63,6 +63,8 @@ def update_profile_user(user_id, username, email, old_password, new_password, bi
         else:
             if not bcrypt.checkpw(old_password.encode("utf-8") , arr['password'].encode("utf-8")):
                 return jsonify({"message" : "wrong password"}), 401
+            else:
+                new_password = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
         if not email: email = arr["email"]
         if not birthday: birthday = arr["birthday"]
         if not gender: gender = arr["gender"]
