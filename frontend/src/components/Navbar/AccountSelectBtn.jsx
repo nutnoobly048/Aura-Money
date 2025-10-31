@@ -12,16 +12,20 @@ export const AccountSelectBtn = ({ setPageOpen, className }) => {
   const [isAccountListOpen, setAccountListOpen] = useState(false);
   const [createAccName, setCreateAccName] = useState("");
   const areaRef = useRef();
-
   const [popupState, setPopupState] = useState({status: false, text: '', color: ''});
+  const [selectingAcc, setSelectingAcc] = useState();
 
   const { accountList, fetchAccount } = useContext(APIContext);
+
+  useEffect(() => {
+    setSelectingAcc(accountList[0]?.name);
+  }, [accountList]);
 
   const handleSendNewAcc = async () => {
     if (!createAccName) {
       return setPopupState({status: true, text: 'Account name cannot be blank.', color: 'bg-red-500'});
     }
-    else if (accountList.map((item) => item).includes(createAccName)) {
+    else if (accountList.map((item) => item.name).includes(createAccName)) {
       return setPopupState({status: true, text: 'Already has this account.', color: 'bg-red-500'})
     }
 
@@ -79,7 +83,7 @@ export const AccountSelectBtn = ({ setPageOpen, className }) => {
   };
 
   const baseClasses =
-    "relative flex items-center font-bold gap-x-1 border-2 rounded-full px-2 py-1 cursor-pointer";
+    "relative w-full flex items-center justify-between font-bold gap-x-1 border-2 rounded-full px-2 py-1 cursor-pointer";
 
   return (
     <motion.div
@@ -97,7 +101,7 @@ export const AccountSelectBtn = ({ setPageOpen, className }) => {
         isAccountListOpen={isAccountListOpen}
         handleSendNewAcc={handleSendNewAcc}
       />
-      <p>AccountName #1</p>
+      <p>{selectingAcc ? selectingAcc : null}</p>
       <motion.div variants={iconVariants}>
         <FontAwesomeIcon icon={faCaretDown} />
       </motion.div>
@@ -106,12 +110,13 @@ export const AccountSelectBtn = ({ setPageOpen, className }) => {
         setPageOpen={setPageOpen}
         accountList={accountList}
         handleDeleteAcc={handleDeleteAcc}
+        setSelectingAcc={setSelectingAcc}
       />
     </motion.div>
   );
 };
 
-const AccountList = ({ isAccountListOpen, setPageOpen, accountList, handleDeleteAcc }) => {
+const AccountList = ({ isAccountListOpen, setPageOpen, accountList, handleDeleteAcc, setSelectingAcc }) => {
 
   return (
     <div
@@ -129,6 +134,7 @@ const AccountList = ({ isAccountListOpen, setPageOpen, accountList, handleDelete
               ? "rounded-b-xl"
               : "rounded-none"
           }`}
+          onClick={() => setSelectingAcc(item.name)}
         >
           <div className=" ">{item.name}</div>
 

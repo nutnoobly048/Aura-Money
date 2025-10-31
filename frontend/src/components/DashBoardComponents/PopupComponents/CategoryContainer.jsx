@@ -18,7 +18,7 @@ function CategoryContainer({ isCategoryOpen, setData }) {
 
   useEffect(() => {
     if (selectedCat == null) return;
-    setData((prev) => ({...prev, category: selectedCat}));
+    setData((prev) => ({...prev, category_id: selectedCat.id, category: selectedCat.name}));
   }, [selectedCat]);
 
   return (
@@ -45,12 +45,12 @@ function CategoryContainer({ isCategoryOpen, setData }) {
         {categoryList.map((item , index) => (
           <div
             key={item.category_id}
-            onClick={() => setSelectedCat(item.category_name)}
+            onClick={() => setSelectedCat({name: item.category_name, id: item.category_id})}
             className={`w-full text-center rounded-lg py-1 px-2 shadow-md ${
               visibleCat[index]
             }
             ${
-              !(selectedCat == item.category_name)
+              !(selectedCat?.name == item.category_name)
                 ? "bg-white text-ui-green1"
                 : "text-white bg-gradient-to-r from-[#62b79c] to-[#afd1a1]"
             }`}

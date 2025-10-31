@@ -23,17 +23,6 @@ export const APIProvider = ({ children }) => {
     setUserData(receive.data[0]);
   }
 
-  // useEffect(() => {
-  //   const createCat = async () => {
-  //     try {
-  //       await axios.post("http://localhost:5000/create_category", {category_name: 'bill1'});
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  //   // createCat();
-  // }, [])
-
   useEffect(() => {
     fetchAccount();
     fetchCategory();

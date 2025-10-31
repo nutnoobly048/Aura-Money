@@ -8,7 +8,7 @@ function AccountContainer({ isAccountOpen, setData }) {
 
   useEffect(() => {
     if (selecting == null) return;
-    setData((prev) => ({...prev, account: selecting}));
+    setData((prev) => ({...prev, account_id: selecting.id, account: selecting.name}));
   }, [selecting]);
   
   return (
@@ -21,10 +21,10 @@ function AccountContainer({ isAccountOpen, setData }) {
       {accountList.map((item) => (
         <div
           key={item.id}
-          onClick={() => setSelecting(item.name)}
+          onClick={() => setSelecting({name: item.name, id: item.id})}
           className={`w-full text-center rounded-lg py-1 px-2 shadow-md
           ${
-            selecting == item.name
+            selecting?.name == item.name
               ? "text-white bg-gradient-to-r from-[#62b79c] to-[#afd1a1]"
               : "bg-white text-ui-green1"
           }`}
