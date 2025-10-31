@@ -1,12 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import CategoryContainer from "./PopupComponents/CategoryContainer";
 import AccountContainer from "./PopupComponents/AccountContainer";
 import StatusPopup from "./PopupComponents/StatusPopup";
 import { AnimatePresence } from "framer-motion";
+import { APIContext } from "../APIProvider";
 import axios from "axios";
 
 export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
   const [addContentType, setAddContentType] = useState("Expense");
+
+  const { fetchIore } = useContext(APIContext);
 
   const now = new Date();
   const nowTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
@@ -57,6 +60,7 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
       }, 2500);
       clearForm();
       setPopupOpen(false);
+      await fetchIore();
     } catch (error) {
       console.log(error);
       setIsSuccess(false);
@@ -115,7 +119,7 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
           <div className="absolute bottom-0 w-full h-1 bg-ui-green2"></div>
         </div>
         <button
-          onClick={() => setAddContentType("Income")}
+          onClick={() => {setAddContentType("Income");setData(p => ({...p, types: 'income'}))}}
           className={`relative py-4 w-1/3 h-full font-semibold ${
             addContentType === "Income" ? "text-black" : "text-white"
           }`}
@@ -123,7 +127,7 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
           Income
         </button>
         <button
-          onClick={() => setAddContentType("Expense")}
+          onClick={() => {setAddContentType("Expense");setData(p => ({...p, types: 'expense'}))}}
           className={`relative py-4 w-1/3 h-full font-semibold ${
             addContentType === "Expense" ? "text-black" : "text-white!"
           }`}
@@ -131,7 +135,7 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
           Expense
         </button>
         <button
-          onClick={() => setAddContentType("Transfer")}
+          onClick={() => {setAddContentType("Transfer");setData(p => ({...p, types: 'transfer'}))}}
           className={`relative py-4 w-1/3 h-full font-semibold ${
             addContentType === "Transfer" ? "text-black" : "text-white"
           }`}
