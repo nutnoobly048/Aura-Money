@@ -160,6 +160,14 @@ const EditPopup = ({
   valueInput,
   setValueInput,
 }) => {
+
+  const handleEnter = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(valueInput, editSelect[0]);
+      setPopupOpen(false);
+    }
+  }
+
   return (
     <div className="w-3/4 sm:w-1/3! fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center border border-zinc-200 bg-white rounded-xl shadow-xl p-2 gap-2 z-10">
       <p className="text-xl">Edit {editSelect[0]}</p>
@@ -168,6 +176,7 @@ const EditPopup = ({
         placeholder={`Enter New ${editSelect[0]}`}
         type={editSelect[1]}
         onChange={(e) => setValueInput(e.target.value)}
+        onKeyDown={handleEnter}
         className="w-full border border-ui-green1 focus:outline-none pl-1 rounded-lg"
       />
       <div className="w-full flex items-center gap-x-2">
@@ -208,6 +217,12 @@ const PopupEditImg = ({
   handleSubmit,
   setPopupEditImgOpen,
 }) => {
+  const handleEnter = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(valueInput, "profile_img");
+      setPopupEditImgOpen(false);
+    }
+  }
   return (
     <div className="w-3/4 sm:w-1/3! fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center border border-zinc-200 bg-white rounded-xl shadow-xl p-2 gap-2 z-10">
       <p className="text-xl">New Profile Pic</p>
@@ -215,6 +230,7 @@ const PopupEditImg = ({
         placeholder={`Enter New your new profile url`}
         type="text"
         onChange={(e) => setValueInput(e.target.value)}
+        onKeyDown={handleEnter}
         className="w-full border border-ui-green1 focus:outline-none pl-1 rounded-lg"
       />
       <div className="w-full flex items-center gap-x-2">
@@ -244,6 +260,12 @@ const PopupEditPw = ({ setPopupEditPasswordOpen, handleSubmitPassword }) => {
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
 
+  const handleEnter = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmitPassword(oldPass, newPass);
+      setPopupEditPasswordOpen(false);
+    }
+  }
   return (
     <div className="w-3/4 sm:w-1/3! fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center border border-zinc-200 bg-white rounded-xl shadow-xl p-2 gap-2 z-10">
       <p className="text-xl">Change Password</p>
@@ -257,6 +279,7 @@ const PopupEditPw = ({ setPopupEditPasswordOpen, handleSubmitPassword }) => {
         placeholder="Enter New your new password"
         type="text"
         onChange={(e) => setNewPass(e.target.value)}
+        onKeyDown={handleEnter}
         className="w-full border border-ui-green1 focus:outline-none pl-1 rounded-lg"
       />
       <div className="w-full flex items-center gap-x-2">

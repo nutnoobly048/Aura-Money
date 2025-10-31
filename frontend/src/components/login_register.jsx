@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import "../../src/App.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { CircleX } from 'lucide-react';
+import { AnimatePresence, motion } from "framer-motion";
 
 axios.defaults.withCredentials = true;
 
@@ -12,7 +14,15 @@ function login_register() {
   // ----------------------------Login Validations-------------------------------
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [isPWCorrect, setPWCorrect] = useState(true);
   const navigate = useNavigate();
+
+  const handleSetPWCorrect = () => {
+    setPWCorrect(p => !p);
+    setTimeout(() => {
+      setPWCorrect(p => !p);
+    }, 2000);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,10 +42,12 @@ function login_register() {
       navigate("/");
     } catch (error) {
       console.log(error);
+      handleSetPWCorrect();
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const newErrors = {};
 
     console.log(values);
@@ -61,7 +73,7 @@ function login_register() {
   const [isLoginPasswordVisible, setLoginPasswordVisible] = useState(false);
   // ----------------------------Login Validations-------------------------------
   // Page Switch
-  const [page, setPage] = useState(false);
+  const [page, setPage] = useState(true);
   // ----------------------------Register Validations-------------------------------
   const [isRegisterPasswordVisible, setRegisterPasswordVisible] = useState(false);
   const [registerValues, setRegisterValues] = useState({username:'',email:'',password:'',confirmPassword:''});
@@ -89,7 +101,8 @@ function login_register() {
     }
   };
 
-  const handleRegisterSubmit = () => {
+  const handleRegisterSubmit = (e) => {
+    e.preventDefault();
     const newErrors = {};
 
     console.log(registerValues);
@@ -134,6 +147,7 @@ function login_register() {
   return (
     <div className="relative flex justify-center items-baseline w-screen h-dvh bg-gradient-to-br from-[#62b79c] to-[#afd1a1] overflow-hidden">
       <img src="logo.png" alt="auramoney" className="h-[10vh] m-2" />
+      <AnimatePresence mode="wait" initial={false} >{!isPWCorrect && (<Popup />)}</AnimatePresence>
       <LoginPage 
        handleChange={handleChange} 
        handleSubmit={handleSubmit} 
@@ -167,7 +181,7 @@ const LoginPage = ({handleChange,
                     isLoginPasswordVisible, 
                     setLoginPasswordVisible}) => {
   return (
-    <div className={`absolute flex justify-center items-center w-screen h-dvh bg-transparent duration-500 ${page ? 'translate-x-0' : 'translate-x-full'}`}>
+    <form onSubmit={handleSubmit} className={`absolute flex justify-center items-center w-screen h-dvh bg-transparent duration-500 ${page ? 'translate-x-0' : 'translate-x-full'}`}>
       <div className="w-full flex flex-col justify-between items-center max-w-[640px] bg-white py-10 px-5 m-5 rounded-2xl gap-y-10">
         <div className="flex flex-col items-center justify-center">
           <p className="text-3xl">Sign in</p>
@@ -234,7 +248,7 @@ const LoginPage = ({handleChange,
           />
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
@@ -247,7 +261,7 @@ const RegisterPage = ({setRegisterPasswordVisible,
                        handleRegisterSubmit,
                        registerErrors}) => {
   return (
-    <div className={`absolute flex justify-center items-center w-screen h-dvh bg-transparent duration-500 ${page ? '-translate-x-full' : 'translate-x-0'}`}>
+    <form onSubmit={handleRegisterSubmit} className={`absolute flex justify-center items-center w-screen h-dvh bg-transparent duration-500 ${page ? '-translate-x-full' : 'translate-x-0'}`}>
       <div className="items-center max-w-[640px] bg-white py-4 px-5 m-5 rounded-2xl gap-y-2 w-full flex flex-col justify-between">
         <div className="flex flex-col items-center justify-center">
           <p className="text-3xl">Create an account</p>
@@ -335,6 +349,21 @@ const RegisterPage = ({setRegisterPasswordVisible,
           />
         </div>
       </div>
-    </div>
+    </form>
   );
 };
+
+const Popup = () => {
+  return (
+    <motion.div
+      initial={{y: '-100%'}}
+      animate={{y: 20}}
+      exit={{y: '-100%'}}
+      transition={{type: "spring", duration: 0.5}}
+      className="fixed left-1/2 -translate-x-1/2 flex gap-x-2 bg-white rounded-xl shadow-lg p-2 text-center border border-red-500 whitespace-nowrap z-20"
+    >
+      <CircleX className="text-white bg-red-600 rounded-full"/>
+      <p>Password Incorrect. Please Try again</p>
+    </motion.div>
+  );
+}
