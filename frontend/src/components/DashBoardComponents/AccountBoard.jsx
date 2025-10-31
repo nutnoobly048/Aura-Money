@@ -51,9 +51,15 @@ const HistoryItem = ({ item }) => {
     }
   }, [isMenuOpen]);
 
-  const handleDeleteIore = async (e ,id) => {
-    await axios.post("http://localhost:5000/delete_iore", id);
-    console.log('deleted', id);
+  const handleDeleteIore = async (id) => {
+    try {
+      await axios.post("http://localhost:5000/delete_iore", {
+        track_id:id
+      });
+    } catch (error) {
+      console.log('deleted', id);
+      console.log(error);
+    }
   }
 
   return (
