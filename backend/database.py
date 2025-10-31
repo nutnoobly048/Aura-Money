@@ -316,12 +316,12 @@ def update_account_balance(account_id, types, amount):
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
-def create_transfer(from_account_id, to_account_id, amount, user_id):
+def create_transfer(date, from_account_id, to_account_id, amount, user_id):
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
-        stmt = "INSERT INTO transfer (from_account_id, amount, to_account_id, user_id) VALUES (%s, %s, %s, %s)"
-        payload = (from_account_id, to_account_id, amount, user_id)
+        stmt = "INSERT INTO transfer (date, from_account_id, amount, to_account_id, user_id) VALUES (%s, %s, %s, %s, %s)"
+        payload = (date, from_account_id, amount, to_account_id, user_id)
         cursor.execute(stmt,payload)
         db.commit()
         update_account_balance(from_account_id, "expense", amount)

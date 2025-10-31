@@ -290,10 +290,11 @@ def create_transfer():
     try:
         user_id = get_jwt_identity()
         data = request.get_json()
+        date = data.get("date")
         from_account_id = data.get("from_account_id")
         to_account_id = data.get("to_account_id")
         amount = data.get("amount")
-        result = database.create_transfer(from_account_id, to_account_id, amount, user_id)
+        result = database.create_transfer(date, from_account_id, to_account_id, amount, user_id)
         return result
     except Exception as err:
         traceback.print_exc()
