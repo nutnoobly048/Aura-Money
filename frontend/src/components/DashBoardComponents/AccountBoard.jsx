@@ -4,7 +4,7 @@ import { APIContext } from "../APIProvider";
 import axios from "axios";
 
 export default function AccountBoard({ pageOpen }) {
-  const { iore, setIore } = useContext(APIContext);
+  const { iore } = useContext(APIContext);
 
   return (
     <div
@@ -37,6 +37,7 @@ const HistoryBoard = ({ iore }) => {
 const HistoryItem = ({ item }) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const elementArea = useRef(null);
+  const { fetchIore } = useContext(APIContext);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -56,8 +57,9 @@ const HistoryItem = ({ item }) => {
       await axios.post("http://localhost:5000/delete_iore", {
         track_id:id
       });
+      await fetchIore();
+      // console.log('deleted', id);
     } catch (error) {
-      console.log('deleted', id);
       console.log(error);
     }
   }
@@ -107,8 +109,8 @@ const SummationBoard = ({ iore }) => {
         <p>{`${total} ฿`}</p>
       </div>
       <div className="flex flex-col justify-center items-center font-semibold">
-        <p className={`${balance > 0 ? 'text-green-500' : balance < 0 ? 'text-red-500' : ''}`}>Balance</p>
-        <p className={`${balance > 0 ? 'text-green-500' : balance < 0 ? 'text-red-500' : ''}`}>{`${balance} ฿`}</p>
+        <p className={`${balance > 0 ? 'text-green-600' : balance < 0 ? 'text-red-500' : ''}`}>Balance</p>
+        <p className={`${balance > 0 ? 'text-green-600' : balance < 0 ? 'text-red-500' : ''}`}>{`${balance} ฿`}</p>
       </div>
     </div>
   );

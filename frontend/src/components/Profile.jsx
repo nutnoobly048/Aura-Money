@@ -5,7 +5,7 @@ import { APIContext } from "./APIProvider";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Profile({ pageOpen }) {
+export default function Profile() {
   const { userData, fetchUser } = useContext(APIContext);
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [isPopupEditImgOpen, setPopupEditImgOpen] = useState(false);
@@ -57,7 +57,7 @@ export default function Profile({ pageOpen }) {
   }, [userData]);
 
   useEffect(() => {
-    console.log(editedData);
+    // console.log(editedData);
   }, [editedData]);
 
   const elements = [
@@ -69,9 +69,7 @@ export default function Profile({ pageOpen }) {
 
   return (
     <div
-      className={`flex flex-col p-4 ${
-        pageOpen === "profile" ? "block" : "hidden"
-      }`}
+      className={`flex flex-col p-4`}
     >
       <h1 className="text-[clamp(20px,5vw,30px)] font-semibold">
         Profile info

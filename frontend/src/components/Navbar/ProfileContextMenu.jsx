@@ -27,7 +27,7 @@ const ProfileContextMenu = ({ setPageOpen, setMBProfileOpen }) => {
       <motion.button
         variants={itemVariants}
         onClick={() => {
-          setPageOpen("profile");
+          setPageOpen("Profile");
           setMBProfileOpen(prev => !prev);
         }}
         className="flex items-center gap-x-2 p-3"

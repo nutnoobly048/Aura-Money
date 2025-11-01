@@ -7,6 +7,8 @@ import AddContentBtn from "./DashBoardComponents/AddContentBtn";
 import Navbar from "./Navbar/Navbar";
 import DesktopProfileIcon from "./DashBoardComponents/DesktopProfileIcon";
 import DarkBgPopup from "./DashBoardComponents/DarkBgPopup";
+import Stats from "./Stats";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function dashboard() {
   const [isPopupOpen, setPopupOpen] = useState(false);
@@ -24,7 +26,8 @@ export default function dashboard() {
         <DesktopProfileIcon setPageOpen={setPageOpen} />
         <img src="aurora.png" className=" max-h-[60px] w-full pt-10 sm:pt-0" />
         <AccountBoard pageOpen={pageOpen} />
-        <Profile pageOpen={pageOpen} />
+        <AnimatePresence>{pageOpen == 'Stats' && (<Stats />)}</AnimatePresence>
+        <AnimatePresence>{pageOpen == 'Profile' && (<Profile />)}</AnimatePresence>
         <AccountSetting pageOpen={pageOpen} />
       </div>
 
