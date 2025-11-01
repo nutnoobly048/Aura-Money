@@ -13,6 +13,8 @@ from flask_jwt_extended import (
     get_jwt_identity, set_access_cookies, unset_jwt_cookies
 )
 
+port = 5000
+url_web = "http://localhost:5173"
 app = Flask(__name__)
 
 CORS(
@@ -38,14 +40,18 @@ def hello_world():
     """
     Test API is working
     """
-    return "API is working on PORT 5000"
+    return f"API is working on PORT {port}"
 
 @app.route("/get_user" , methods=["GET"])
 @jwt_required()
 def get_user():
-    user_id = get_jwt_identity()
-    result = database.get_user(user_id)
-    return result
+    try:
+        user_id = get_jwt_identity()
+        result = database.get_user(user_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
 
 @app.route("/reset_password" , methods=["POST"])
 def reset_password():
@@ -145,28 +151,36 @@ def logout():
     """
     Logout method
     """
-    response = jsonify({"msg": "logout successful"})
-    unset_jwt_cookies(response)
-    return response
+    try:
+        response = jsonify({"msg": "logout successful"})
+        unset_jwt_cookies(response)
+        return response
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
 
 @app.route("/google")
 def google():
-    google_client_id = os.getenv("GOOGLE_CLIENT_ID")
-    google_client_secreat = os.getenv("GOOGLE_CLIENT_SECRET")
+    try:
+        google_client_id = os.getenv("GOOGLE_CLIENT_ID")
+        google_client_secreat = os.getenv("GOOGLE_CLIENT_SECRET")
 
-    CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
-    oauth.register(
-        name='google',
-        client_id=google_client_id,
-        client_secret=google_client_secreat,
-        server_metadata_url=CONF_URL,
-        client_kwargs={
-            'scope': 'openid email profile'
-        }
-    )
-    # Redirect to google_auth function
-    redirect_uri = url_for('google_auth', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri)
+        CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+        oauth.register(
+            name='google',
+            client_id=google_client_id,
+            client_secret=google_client_secreat,
+            server_metadata_url=CONF_URL,
+            client_kwargs={
+                'scope': 'openid email profile'
+            }
+        )
+        # Redirect to google_auth function
+        redirect_uri = url_for('google_auth', _external=True)
+        return oauth.google.authorize_redirect(redirect_uri)
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
 
 @app.route('/google/auth')
 def google_auth():
@@ -180,7 +194,7 @@ def google_auth():
         if result[1] == 200:
                 user_id = result[0]
                 access_token = create_access_token(identity=user_id)
-                resp = make_response(redirect("http://localhost:5173/"))
+                resp = make_response(redirect(url_web))
                 set_access_cookies(resp, access_token)
                 return resp
         return result
@@ -377,7 +391,7 @@ def update_iore():
         category_id = data.get("category_id")
         amount = data.get("amount")
         note = data.get("note")
-        result = database.update_account(track_id, date, types, account_id, category_id, amount, note)
+        result = database.update_iore(track_id, date, types, account_id, category_id, amount, note)
         return result
     except Exception as err:
         traceback.print_exc()
@@ -409,4 +423,4 @@ def get_info():
 
 # Running file
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=True)
