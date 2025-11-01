@@ -29,7 +29,7 @@ const DesktopProfileIcon = ({ setPageOpen }) => {
   return (
     <div ref={DPIArea} className="hidden w-full justify-end items-center sm:flex!">
       <button
-        className="relative flex justify-between items-center border-2 border-zinc-400 rounded-3xl py-1 px-1 gap-x-5 m-2 cursor-pointer"
+        className="min-w-30 relative flex justify-between items-center border-2 border-zinc-400 rounded-3xl py-1 px-1 gap-x-5 m-2 cursor-pointer"
         onClick={() =>
           setDesktopProfileContextMenu(!isDesktopProfileContextMenuOpen)
         }

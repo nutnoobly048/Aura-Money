@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import CategoryContainer from "./PopupComponents/CategoryContainer";
 import AccountContainer from "./PopupComponents/AccountContainer";
 import StatusPopup from "./PopupComponents/StatusPopup";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { APIContext } from "../APIProvider";
 import axios from "axios";
 
@@ -156,20 +156,22 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
           />
         </label>
 
-        <label className="w-full flex items-center p-3">
-          Amount :
-          <input
-            type="number"
-            className="flex-1 pl-3 focus:outline-none"
-            onChange={(e) => setAmount(Number(e.target.value))}
-            value={data.amount}
-          />
-          <div className="hidden sm:flex! gap-x-2 ">
+        <label className="w-full flex items-center justify-between p-3">
+          <div>
+            Amount :
+            <input
+              type="number"
+              className="ml-2 w-1/2 sm:w-auto! focus:outline-none"
+              onChange={(e) => setAmount(Number(e.target.value))}
+              value={data.amount}
+            />
+          </div>
+          <div className="flex gap-x-1 flex-wrap">
             {amountAddBtn.map((item, index) => (
               <button
                 key={index}
                 onClick={() => setAmount((p) => p + Number(item) >= 0 ? p + Number(item) : 0)}
-                className="bg-gradient-to-br from-[#62b79c] to-[#afd1a1] border border-zinc-200 text-white font-semibold rounded-md shadow-lg px-3 py-0.5"
+                className=" bg-gradient-to-br from-[#62b79c] to-[#afd1a1] border border-zinc-200 text-white font-semibold rounded-md shadow-lg px-2 py-0.5"
               >
                 {item}
               </button>
@@ -204,18 +206,20 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
         </label>
 
         <div className="w-full flex justify-center items-center gap-x-2 m-1 mt-4">
-          <button 
+          <motion.button
+            whileTap={{scale: 0.95}}
             onClick={handlePostData}
             className="flex-1 bg-gradient-to-r from-[#62b79c] to-[#afd1a1] text-white font-bold rounded-2xl py-1"
           >
             Save
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{scale: 0.95}}
             onClick={() => setPopupOpen(false)}
             className="flex-1 border rounded-2xl py-1"
           >
             Cancel
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>

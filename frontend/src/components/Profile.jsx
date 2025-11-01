@@ -270,13 +270,13 @@ const PopupEditPw = ({ setPopupEditPasswordOpen, handleSubmitPassword }) => {
     <div className="w-3/4 sm:w-1/3! fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center border border-zinc-200 bg-white rounded-xl shadow-xl p-2 gap-2 z-10">
       <p className="text-xl">Change Password</p>
       <input
-        placeholder="Enter New your old password"
+        placeholder="Enter your old password"
         type="text"
         onChange={(e) => setOldPass(e.target.value)}
         className="w-full border border-ui-green1 focus:outline-none pl-1 rounded-lg"
       />
       <input
-        placeholder="Enter New your new password"
+        placeholder="Enter your new password"
         type="text"
         onChange={(e) => setNewPass(e.target.value)}
         onKeyDown={handleEnter}

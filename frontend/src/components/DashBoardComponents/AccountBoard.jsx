@@ -60,7 +60,7 @@ const HistoryItem = ({ item }) => {
     <div
       ref={elementArea}
       key={item?.track_id}
-      onClick={() => setMenuOpen(true)}
+      onClick={() => setMenuOpen(p => !p)}
       className="relative w-full flex justify-between items-center border-2 border-zinc-200 shadow-sm rounded-xl px-4 py-2  "
     >
       {isMenuOpen && (

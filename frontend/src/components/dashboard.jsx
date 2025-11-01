@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AccountBoard from "./DashBoardComponents/accountboard";
+import AccountBoard from "./DashBoardComponents/AccountBoard";
 import AccountSetting from "./DashBoardComponents/AccountSetting";
 import Profile from "./Profile";
 import AddContentPopup from "./DashBoardComponents/AddContentPopup";

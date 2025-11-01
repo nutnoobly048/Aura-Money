@@ -66,7 +66,7 @@ export default function Navbar({ setPageOpen }) {
       </div>
       <img
         src="logo.svg"
-        className="w-[12vh] md:w-[calc(100%-50px)]! sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2"
+        className="w-[12vh] md:w-[calc(100%-25px)]! sm:absolute sm:top-0 sm:left-1/2 sm:pr-2 sm:-translate-x-1/2"
       />
       <AccountSelectBtn
         setPageOpen={setPageOpen}

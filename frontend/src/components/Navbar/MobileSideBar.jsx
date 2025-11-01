@@ -46,7 +46,7 @@ function MobileSideBar({ setPageOpen, isMSBOpen, setMSBOpen}) {
           initial="hidden"
           animate="show"
           exit="exit"
-          className="z-10 absolute top-[calc(100%+3px)] left-0 flex flex-col bg-zinc-50 border-2 border-ui-green2 rounded-br-2xl rounded-tl-2xl shadow-md"
+          className="z-10 absolute top-[calc(100%+3px)] w-1/2 left-0 flex flex-col bg-zinc-50 border-2 border-ui-green2 rounded-br-2xl rounded-tl-2xl shadow-md"
         >
           <motion.button
             variants={itemVariants}
