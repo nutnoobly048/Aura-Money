@@ -359,7 +359,7 @@ def delete_iore():
     try:
         data = request.get_json()  # get data from header (json file)
         track_id = data.get("track_id")
-        result = database.delete_transfer(track_id)
+        result = database.delete_iore(track_id)
         return result
     except Exception as err:
         traceback.print_exc()
