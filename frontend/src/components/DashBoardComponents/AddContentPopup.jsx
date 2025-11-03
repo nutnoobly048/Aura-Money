@@ -38,9 +38,9 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
     note: "",
   });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
 
   const typeSelectColor = {
     Income: "left-0! text-black",

@@ -24,12 +24,12 @@ function Stats() {
         month: monthNum + 1,
       });
       setData(receive.data);
-      console.log(receive.data);
+      // console.log(receive.data);
     };
     fetchRecord();
   }, [monthNum]);
 
-  useEffect(() => console.log(data), [data]);
+  // useEffect(() => console.log(data), [data]);
   return (
     <div className="flex flex-col items-center justify-center p-4 gap-y-3">
       <MonthSelector monthNum={monthNum} setMonthNum={setMonthNum} />
@@ -66,7 +66,7 @@ const Chart = ({ data, type }) => {
         data: incomeValues,
         backgroundColor: colorGreen,
         borderColor: "#fff",
-        boderWidth: 2,
+        borderWidth: 2,
         hoverOffset: 8,
       },
     ],
@@ -79,7 +79,7 @@ const Chart = ({ data, type }) => {
         data: expenseValues,
         backgroundColor: colorRed,
         borderColor: "#fff",
-        boderWidth: 2,
+        borderWidth: 2,
         hoverOffset: 8,
       },
     ],
@@ -100,19 +100,21 @@ const Chart = ({ data, type }) => {
   };
 
   return (
-    <div className="h-full w-full flex-1 flex-col items-center justify-center border-2 border-zinc-300 rounded-2xl p-4 lg:w-1/2! lg:h-1/2!">
-      <Pie
-        data={type == "income" ? incomeData : expenseData}
-        options={options}
-      />
+    <div className="h-full w-full flex-1 flex flex-wrap items-center justify-center border-2 border-zinc-300 rounded-2xl p-4">
+      <div className="max-w-lg">
+        <Pie
+          data={type == "income" ? incomeData : expenseData}
+          options={options}
+        />
+      </div>
 
       {type == 'income' ? (
-        <div className="flex-1 flex flex-col  border border-zinc-300 p-2 rounded-xl divide-y divide-zinc-300">
+        <div className="min-w-[290px] flex-1 flex flex-col border border-zinc-300 p-2 rounded-xl divide-y divide-zinc-300">
           {incomeValues.map((item, index) => (
             <div key={index} className="flex justify-between py-2">
               <div className="flex-1/2 flex gap-x-2">
                 <p
-                  className="text-white rounded-sm w-1/4 text-center sm:text-sm! sm:rounded-sm"
+                  className="text-white rounded-sm w-1/4 max-w-[76px] text-center"
                   style={{backgroundColor:  colorGreen[index % colorGreen.length]}}
                 >
                   {item.toFixed(2)}%
@@ -124,12 +126,12 @@ const Chart = ({ data, type }) => {
           ))}
         </div>
         ) : (
-        <div className="flex flex-col border border-zinc-300 p-2 rounded-xl divide-y divide-zinc-300">
+        <div className="min-w-[290px] flex-1 flex flex-col border border-zinc-300 p-2 rounded-xl divide-y divide-zinc-300">
           {expenseValues.map((item, index) => (
             <div key={index} className="flex justify-between py-2">
               <div className="flex-1/2 flex gap-x-2">
                 <p
-                  className="text-white rounded-sm w-1/4 text-center sm:text-sm! sm:rounded-sm"
+                  className="text-white rounded-sm w-1/4 max-w-[76px] text-center"
                   style={{backgroundColor:  colorRed[index % colorRed.length]}}
                 >
                   {item.toFixed(2)}%

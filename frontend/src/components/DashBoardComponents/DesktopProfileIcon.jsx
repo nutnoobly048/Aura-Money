@@ -95,7 +95,7 @@ const DPIContextMenu = ({ isDesktopProfileContextMenuOpen, setPageOpen }) => {
   };
 
   const menuItems = [
-    { name: "Profile", icon: User, action: () => setPageOpen("profile") },
+    { name: "Profile", icon: User, action: () => setPageOpen("Profile") },
     {
       name: "Logout",
       icon: LogOut,
