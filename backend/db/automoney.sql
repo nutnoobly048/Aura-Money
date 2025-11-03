@@ -14,7 +14,7 @@ CREATE TABLE `category` (
 
 CREATE TABLE `iore` (
   `track_id` int(11) NOT NULL,
-  `date` date NOT NULL,
+  `date` varchar(255) NOT NULL,
   `types` varchar(255) NOT NULL,
   `account_id` int(255) NOT NULL,
   `category_id` int(255) DEFAULT NULL,
