@@ -15,6 +15,7 @@ export const APIProvider = ({ children }) => {
       receive.data.map((item) => ({
         name: item.account_name,
         id: item.account_id,
+        balance: item.balance,
       }))
     );
   };

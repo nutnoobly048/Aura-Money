@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export default function dashboard() {
   const [isPopupOpen, setPopupOpen] = useState(false);
-  
+  const [data, setData] = useState(null);
   const [pageOpen, setPageOpen] = useState("account");
   const [isDarkBgPopupOpen, setDarkBgPopupOpen] = useState(false);
 
@@ -20,6 +20,7 @@ export default function dashboard() {
     <div className="w-screen h-dvh flex flex-col bg-gradient-to-b from-[#62b79c] to-[#afd1a1] p-3 sm:flex-row!">
       <Navbar
         setPageOpen={setPageOpen}
+        setData={setData}
       />
 
       <div className="relative bg-white flex-1 flex flex-col rounded-2xl overflow-y-auto">
@@ -28,7 +29,7 @@ export default function dashboard() {
         <AccountBoard pageOpen={pageOpen} />
         <AnimatePresence>{pageOpen == 'Stats' && (<Stats />)}</AnimatePresence>
         <AnimatePresence>{pageOpen == 'Profile' && (<Profile />)}</AnimatePresence>
-        <AccountSetting pageOpen={pageOpen} />
+        <AccountSetting pageOpen={pageOpen} data={data}/>
       </div>
 
 

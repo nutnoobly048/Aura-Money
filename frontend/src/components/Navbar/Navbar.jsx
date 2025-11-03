@@ -12,7 +12,7 @@ import MobileSideBar from "./MobileSideBar";
 import { AccountSelectBtn } from "./AccountSelectBtn";
 import ProfileContextMenu from "./ProfileContextMenu";
 
-export default function Navbar({ setPageOpen }) {
+export default function Navbar({ setPageOpen, setData }) {
   const [isMSBOpen, setMSBOpen] = useState(false);
   const [isMBProfileOpen, setMBProfileOpen] = useState(false);
 
@@ -52,7 +52,7 @@ export default function Navbar({ setPageOpen }) {
   return (
     <nav className="relative flex justify-between items-center mb-1 sm:pr-2 sm:flex-col sm:justify-center!">
       <div ref={MobileSideBarRef}>
-        <MobileSideBar isMSBOpen={isMSBOpen} setMSBOpen={setMSBOpen} setPageOpen={setPageOpen} />
+        <MobileSideBar isMSBOpen={isMSBOpen} setMSBOpen={setMSBOpen} setPageOpen={setPageOpen} setData={setData} />
         <motion.div
           onClick={() => setMSBOpen(!isMSBOpen)}
           whileTap={{ scale: 0.8 }}
@@ -70,6 +70,7 @@ export default function Navbar({ setPageOpen }) {
       />
       <AccountSelectBtn
         setPageOpen={setPageOpen}
+        setData={setData}
         className="hidden sm:flex! text-white border-white -translate-y-2/1"
       />
       <button

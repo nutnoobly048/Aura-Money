@@ -37,7 +37,7 @@ const itemVariants = {
   },
 };
 
-function MobileSideBar({ setPageOpen, isMSBOpen, setMSBOpen}) {
+function MobileSideBar({ setPageOpen, isMSBOpen, setMSBOpen ,setData}) {
   return (
     <AnimatePresence>
       {isMSBOpen && (
@@ -83,7 +83,7 @@ function MobileSideBar({ setPageOpen, isMSBOpen, setMSBOpen}) {
 
 
           <motion.div variants={itemVariants} className="m-2">
-            <AccountSelectBtn setPageOpen={setPageOpen} className='border-2 text-white bg-ui-green1' />
+            <AccountSelectBtn setPageOpen={setPageOpen} setData={setData} className='border-2 text-white bg-ui-green1' />
           </motion.div>
         </motion.nav>
       )}

@@ -8,7 +8,7 @@ import { createPortal } from "react-dom";
 import axios from "axios";
 import { APIContext } from "../APIProvider";
 
-export const AccountSelectBtn = ({ setPageOpen, className }) => {
+export const AccountSelectBtn = ({ setPageOpen, setData, className }) => {
   const [isAccountListOpen, setAccountListOpen] = useState(false);
   const [createAccName, setCreateAccName] = useState("");
   const areaRef = useRef();
@@ -109,6 +109,7 @@ export const AccountSelectBtn = ({ setPageOpen, className }) => {
         isAccountListOpen={isAccountListOpen}
         setPageOpen={setPageOpen}
         accountList={accountList}
+        setData={setData}
         handleDeleteAcc={handleDeleteAcc}
         setSelectingAcc={setSelectingAcc}
       />
@@ -116,7 +117,7 @@ export const AccountSelectBtn = ({ setPageOpen, className }) => {
   );
 };
 
-const AccountList = ({ isAccountListOpen, setPageOpen, accountList, handleDeleteAcc, setSelectingAcc }) => {
+const AccountList = ({ isAccountListOpen, setData, setPageOpen, accountList, handleDeleteAcc, setSelectingAcc }) => {
 
   return (
     <div
@@ -153,6 +154,8 @@ const AccountList = ({ isAccountListOpen, setPageOpen, accountList, handleDelete
             <button
               onClick={(e) => {
                 console.log("clicked at", item.name, 'id:', item.id);
+                setPageOpen("accountSetting")
+                setData(item)
                 e.stopPropagation();
               }}
               className="bg-ui-green1 rounded-full px-1 hover:bg-white text-white hover:text-ui-green1"
