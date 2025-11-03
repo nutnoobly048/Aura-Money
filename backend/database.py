@@ -470,9 +470,9 @@ def DataForGraph(data):
     for key in expense:
         total_expense += expense[key]
     for key in income:
-        info_income[key] = (income[key]/total_income)*100
+        info_income[key] = [(income[key]/total_income)*100 , income[key]]
     for key in expense:
-        info_expense[key] = (expense[key]/total_expense)*100
+        info_expense[key] = [(expense[key]/total_expense)*100 , expense[key]]
     return [info_income, info_expense]
 
 def get_iore_for_graph(user_id , month):

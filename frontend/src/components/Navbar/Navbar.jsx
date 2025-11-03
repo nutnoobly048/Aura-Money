@@ -86,13 +86,13 @@ export default function Navbar({ setPageOpen }) {
         <FontAwesomeIcon size="xl" icon={faChartSimple} />
         <p className="text-xl">Stats</p>
       </button>
-      <button
+      {/* <button
         onClick={() => setPageOpen("More")}
         className="hidden w-full sm:flex! items-center gap-x-2 font-bold text-white pr-3 py-2.5 cursor-pointer"
       >
         <FontAwesomeIcon size="xl" icon={faEllipsis} />
         <p className="text-xl">More</p>
-      </button>
+      </button> */}
 
       <div ref={ProfileContextMenuRef}>
         <motion.div

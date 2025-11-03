@@ -33,7 +33,7 @@ function Stats() {
   return (
     <div className="flex flex-col items-center justify-center p-4 gap-y-3">
       <MonthSelector monthNum={monthNum} setMonthNum={setMonthNum} />
-      <IoreSelectBtn type={type} setType={setType} />
+      <IoreSelectBtn data={data} type={type} setType={setType} />
       <Chart data={data} type={type} />
     </div>
   );
@@ -48,11 +48,13 @@ const Chart = ({ data, type }) => {
 
   const sortedIncome = Object.entries(data[0]).sort((a, b) => b[1] - a[1]);
   const incomeKeys = sortedIncome.map((x) => x[0]);
-  const incomeValues = sortedIncome.map((x) => x[1]);
-
+  const incomeValues = sortedIncome.map((x) => x[1][0]);
+  const incomeAll = sortedIncome.map((x) => x[1][1]);
+  
   const sortedExpense = Object.entries(data[1]).sort((a, b) => b[1] - a[1]);
   const expenseKeys = sortedExpense.map((x) => x[0]);
-  const expenseValues = sortedExpense.map((x) => x[1]);
+  const expenseValues = sortedExpense.map((x) => x[1][0]);
+  const expenseAll = sortedExpense.map((x) => x[1][1]);
 
   const colorGreen = ["#007341", "#70aa82", "#c1ff72"];
   const colorRed = ["#8B002E", "#D56A7A", "#FF8F72"];
@@ -98,26 +100,26 @@ const Chart = ({ data, type }) => {
   };
 
   return (
-    <div className="h-full w-full flex-1 flex-col items-center justify-center border-2 border-zinc-300 rounded-2xl p-4">
+    <div className="h-full w-full flex-1 flex-col items-center justify-center border-2 border-zinc-300 rounded-2xl p-4 lg:w-1/2! lg:h-1/2!">
       <Pie
         data={type == "income" ? incomeData : expenseData}
         options={options}
       />
 
       {type == 'income' ? (
-        <div className="flex-1 flex flex-col border border-zinc-300 p-2 rounded-xl divide-y divide-zinc-300">
+        <div className="flex-1 flex flex-col  border border-zinc-300 p-2 rounded-xl divide-y divide-zinc-300">
           {incomeValues.map((item, index) => (
             <div key={index} className="flex justify-between py-2">
               <div className="flex-1/2 flex gap-x-2">
                 <p
-                  className="text-white rounded-xl w-1/4 text-center"
+                  className="text-white rounded-sm w-1/4 text-center sm:text-sm! sm:rounded-sm"
                   style={{backgroundColor:  colorGreen[index % colorGreen.length]}}
                 >
                   {item.toFixed(2)}%
                 </p>
                 <p>{incomeKeys[index]}</p>
               </div>
-              <p>xxxx.xx฿</p>
+              <p>{FormatNumber(incomeAll[index])}฿</p>
             </div>
           ))}
         </div>
@@ -127,14 +129,14 @@ const Chart = ({ data, type }) => {
             <div key={index} className="flex justify-between py-2">
               <div className="flex-1/2 flex gap-x-2">
                 <p
-                  className="text-white rounded-xl w-1/4 text-center"
+                  className="text-white rounded-sm w-1/4 text-center sm:text-sm! sm:rounded-sm"
                   style={{backgroundColor:  colorRed[index % colorRed.length]}}
                 >
                   {item.toFixed(2)}%
                 </p>
                 <p>{expenseKeys[index]}</p>
               </div>
-              <p>xxxx.xx฿</p>
+              <p>{FormatNumber(expenseAll[index])}฿</p>
             </div>
           ))}
         </div>
@@ -213,8 +215,12 @@ const MonthSelector = ({ monthNum, setMonthNum }) => {
   );
 };
 
-const IoreSelectBtn = ({ type, setType }) => {
-  const { iore } = useContext(APIContext);
+const IoreSelectBtn = ({ data, type, setType }) => {
+  if (!data?.[0]) return;
+  const sortedIncome = Object.entries(data[0]).sort((a, b) => b[1] - a[1]);
+  const sortedExpense = Object.entries(data[1]).sort((a, b) => b[1] - a[1]);
+  const incomeAll = sortedIncome.map((x) => x[1][1]);
+  const expenseAll = sortedExpense.map((x) => x[1][1]);
   const sumArray = (arr) => {
     let sum = 0;
     arr?.forEach((item) => {
@@ -222,12 +228,8 @@ const IoreSelectBtn = ({ type, setType }) => {
     });
     return sum;
   };
-  const incomeSum = sumArray(
-    iore?.map((item) => (item.types == "income" ? item.amount : 0))
-  );
-  const expenseSum = sumArray(
-    iore?.map((item) => (item.types == "expense" ? item.amount : 0))
-  );
+  const incomeSum = sumArray(incomeAll);
+  const expenseSum = sumArray(expenseAll);
   return (
     <div
       className="relative w-full flex bg-white border border-zinc-300 rounded-xl shadow-md py-1 font-semibold
@@ -257,3 +259,12 @@ const IoreSelectBtn = ({ type, setType }) => {
     </div>
   );
 };
+
+const FormatNumber = (num) => {
+  return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // explain /\B(?=(\d{3})+(?!\d))/g
+  // /..../g (g) make global
+  // (?=..) like condition
+  // (\d{3}) group 3 digit (d = digit)
+  // (?!\d) loop by front condition
+}

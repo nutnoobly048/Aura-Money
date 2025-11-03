@@ -70,7 +70,7 @@ function MobileSideBar({ setPageOpen, isMSBOpen, setMSBOpen}) {
             <p className="font-semibold">Stats</p>
           </motion.button>
 
-          <motion.button
+          {/* <motion.button
             variants={itemVariants}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -79,7 +79,7 @@ function MobileSideBar({ setPageOpen, isMSBOpen, setMSBOpen}) {
           >
             <FontAwesomeIcon size="xl" icon={faEllipsis} className="text-ui-green2" />
             <p className="font-semibold">More</p>
-          </motion.button>
+          </motion.button> */}
 
 
           <motion.div variants={itemVariants} className="m-2">
