@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
+import { SquarePen } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import { APIContext } from '../APIProvider';
@@ -47,7 +46,7 @@ export default function AccountSetting({ pageOpen, data }) {
             <div className="flex flex-col p-1 divide-y divide-zinc-300 border-zinc-300 border rounded-2xl">
                 <p className="py-6 pl-1.5 pr-5 flex justify-between items-center ">
                 Account Name : {currentData.account_name}
-                <FontAwesomeIcon icon={faPenToSquare} className='cursor-pointer'
+                <SquarePen size={16} className='cursor-pointer'
                   onClick={() => {
                     setIsEditPopup(true);
                     setEditSelect("account_name");
@@ -56,7 +55,7 @@ export default function AccountSetting({ pageOpen, data }) {
                 </p>
                 <p className="py-6 pl-1.5 pr-5 flex justify-between items-center ">
                 จำนวนเงิน : {currentData.balance}฿
-                <FontAwesomeIcon icon={faPenToSquare} className='cursor-pointer'
+                <SquarePen size={16} className='cursor-pointer'
                   onClick={() => {
                     setIsEditPopup(true);
                     setEditSelect("balance");

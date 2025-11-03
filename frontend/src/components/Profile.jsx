@@ -1,9 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faSlash } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import { APIContext } from "./APIProvider";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { SquarePen } from 'lucide-react';
 
 export default function Profile() {
   const { userData, fetchUser } = useContext(APIContext);
@@ -91,8 +90,7 @@ export default function Profile() {
           >
             {item.name.charAt(0).toUpperCase() + item.name.slice(1)} :{" "}
             {item.fetch}
-            <FontAwesomeIcon
-              icon={faPenToSquare}
+            <SquarePen size={16}
               onClick={() => {
                 setPopupOpen(true);
                 setEditSelect([item.name, item.type]);
@@ -103,8 +101,7 @@ export default function Profile() {
 
         <p className="py-3 pl-1.5 pr-7 flex justify-between items-center">
           Change Password
-          <FontAwesomeIcon
-            icon={faPenToSquare}
+          <SquarePen size={16} 
             onClick={() => {
               setPopupEditPasswordOpen(true);
             }}
