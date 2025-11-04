@@ -7,6 +7,7 @@ export const APIProvider = ({ children }) => {
   const [accountList, setAccountList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [userData, setUserData] = useState();
+  const [transfer, setTransfer] = useState();
   const [iore, setIore] = useState();
 
   const fetchAccount = async () => {
@@ -40,11 +41,17 @@ export const APIProvider = ({ children }) => {
     setIore(receive.data);
   };
 
+  const fetchTransfer = async () => { 
+    const receive = await axios.get("http://localhost:5000/get_transfer");
+    setTransfer(receive.data);
+  };
+
   useEffect(() => {
     fetchAccount();
     fetchCategory();
     fetchUser();
     fetchIore();
+    fetchTransfer();
   }, []);
 
   return (
@@ -57,7 +64,9 @@ export const APIProvider = ({ children }) => {
         userData,
         fetchUser,
         iore,
-        fetchIore
+        fetchIore,
+        transfer,
+        fetchTransfer,
       }}
     >
       {children}

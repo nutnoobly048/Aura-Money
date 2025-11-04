@@ -15,8 +15,8 @@ function TransferAccContainer({ setPopupOpen }) {
   const [amount, setAmount] = useState(0);
   const [data, setData] = useState({
     date: new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16),
-    from_account_id: "",
-    to_account_id: "",
+    from_account_id: selectingFrom,
+    to_account_id: selectingTo,
     amount: amount,
   });
   const amountAddBtn = ["-10", "-5", "-1", "+1", "+5", "+10"];
@@ -33,7 +33,6 @@ function TransferAccContainer({ setPopupOpen }) {
     console.log("Transfer successfully");
     setPopupOpen(false);
   };
-  
   useEffect(() => {setData(prev => ({...prev, amount: amount}))}, [amount]);
   useEffect(() => {console.log(data)}, [data]);
   return (

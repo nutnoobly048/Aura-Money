@@ -5,7 +5,7 @@ import {
   CircleX,
   Pencil,
 } from "lucide-react";
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useRef, useEffect, use } from "react";
 import { APIContext } from "../APIProvider";
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -13,16 +13,23 @@ import CategoryContainer from "./PopupComponents/CategoryContainer";
 import AccountContainer from "./PopupComponents/AccountContainer";
 
 export default function AccountBoard({ pageOpen }) {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isPopupOpenIore, setisPopupOpenIoreIore] = useState(false);
+  const [isPopupOpenTransfer, setisPopupOpenTransfer] = useState(false);
   const nowMonth = new Date().getMonth();
-  const { iore } = useContext(APIContext);
+  const { iore, transfer } = useContext(APIContext);
   const [monthNum, setMonthNum] = useState(nowMonth);
   const [currentData, setCurrentData] = useState([]);
+  const [currentDataTransfer, setCurrentDataTransfer] = useState([]);
   const [selectedItem, setSelectItem] = useState(null);
 
-  const handleItemClick = (item) => {
+  const handleItemClickIore = (item) => {
     setSelectItem(item);
-    setIsPopupOpen(true);
+    setisPopupOpenIoreIore(true);
+  };
+
+  const handleItemClickTransfer = (item) => {
+    setSelectItem(item);
+    setisPopupOpenTransfer(true);
   };
 
   useEffect(() => {
@@ -34,8 +41,21 @@ export default function AccountBoard({ pageOpen }) {
       return Number(monthDataNum) === Number(monthNum + 1);
     });
     setCurrentData(filterMonthData);
+    // console.log(filterMonthData);
+    
   }, [monthNum, iore]);
 
+  useEffect(() => {
+    if (!transfer) return;
+    const filterMonthData = transfer.filter((item) => {
+      const monthDataNum = new Date(item?.date)
+        .toLocaleDateString("en-GB")
+        .split("/")[1];
+      return Number(monthDataNum) === Number(monthNum + 1);
+    });
+    setCurrentDataTransfer(filterMonthData);
+    console.log(filterMonthData);
+  }, [monthNum, transfer]);
   return (
     <div
       className={`h-full overflow-y-auto flex flex-col p-4 gap-y-2 ${
@@ -46,11 +66,17 @@ export default function AccountBoard({ pageOpen }) {
         <MonthSelector monthNum={monthNum} setMonthNum={setMonthNum} />
       </div>
       <SummationBoard iore={currentData} />
-      <HistoryBoard iore={currentData} onEdit={handleItemClick} />
-      {isPopupOpen && (
+      <HistoryBoard iore={currentData} onEdit={handleItemClickIore} transfer={currentDataTransfer} onEditTransfer={handleItemClickTransfer}/>
+      {isPopupOpenIore && (
         <div>
-          <EditPopup setPopupOpen={setIsPopupOpen} data={selectedItem} />
-          <Bgdark setPopupOpen={setIsPopupOpen} />
+          <EditPopupIore setPopupOpen={setisPopupOpenIoreIore} data={selectedItem} />
+          <Bgdark setPopupOpen={setisPopupOpenIoreIore} />
+        </div>
+      )}
+      {isPopupOpenTransfer && (
+        <div>
+          <EditPopupTransfer setPopupOpen={setisPopupOpenTransfer} data={selectedItem} />
+          <Bgdark setPopupOpen={setisPopupOpenTransfer} />
         </div>
       )}
     </div>
@@ -107,7 +133,7 @@ const MonthSelector = ({ monthNum, setMonthNum }) => {
   );
 };
 
-const HistoryBoard = ({ iore, onEdit }) => {
+const HistoryBoard = ({ iore, onEdit, transfer, onEditTransfer }) => {
   return (
     <div className="overflow-y-auto flex flex-col px-4 py-4 border-2 border-zinc-300 rounded-2xl space-y-2">
       {iore.length == 0 ? (
@@ -115,6 +141,13 @@ const HistoryBoard = ({ iore, onEdit }) => {
       ) : (
         iore?.map((item) => (
           <HistoryItem key={item?.track_id} item={item} onEdit={onEdit} />
+        ))
+      )}
+      {transfer.length == 0 ? (
+        <Nodata />
+      ) : (
+        transfer?.map((item) => (
+          <HistoryItem key={item?.transfer_id} item={item} onEdit={onEditTransfer} />
         ))
       )}
     </div>
@@ -129,7 +162,7 @@ const HistoryItem = ({ item, onEdit }) => {
   useEffect(() => {
     if (!isMenuOpen) return;
     const handler = (e) => {
-      if (!elementArea.current.contains(e.target)) {
+      if (elementArea.current && !elementArea.current.contains(e.target)) {
         setMenuOpen(false);
       }
     };
@@ -145,18 +178,63 @@ const HistoryItem = ({ item, onEdit }) => {
         track_id: id,
       });
       await fetchIore();
-      // console.log('deleted', id);
     } catch (error) {
       console.log(error);
     }
   };
 
-  return (
+  const handleDeleteTransfer = async (id) => {
+    try {
+      await axios.post("http://localhost:5000/delete_transfer", {
+        transfer_id: id,
+      });
+      await fetchIore();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return item?.transfer_id ? (
+    <div
+      ref={elementArea}
+      key={item?.transfer_id}
+      onClick={() => setMenuOpen((p) => !p)}
+      className="relative w-full flex justify-between items-center border-2 border-zinc-200 shadow-sm rounded-xl px-4 py-2"
+    >
+      {isMenuOpen && (
+        <div className="absolute top-0 left-0 w-full h-full bg-black/60 flex items-center justify-center rounded-xl z-10">
+          <Trash
+            onClick={() => handleDeleteTransfer(item?.transfer_id)}
+            className="size-8 text-white bg-red-500 rounded-full p-1 cursor-pointer"
+          />
+          <Pencil
+            className="size-8 bg-ui-green1 rounded-full px-1 text-white cursor-pointer mx-2"
+            onClick={() => onEdit(item)}
+          />
+        </div>
+      )}
+
+      <p className="text-xl">Transfer from <span className="font-bold">{item?.from_account_name}</span> to <span className="font-bold">{item?.to_account_name}</span></p>
+
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center">
+        <p>{item?.account_name}</p>
+        <p>{new Date(item?.date).toLocaleDateString("en-GB")}</p>
+      </div>
+
+      <p
+        className={`${
+          item?.types === "expense" ? "text-red-500" : "text-green-700"
+        } text-xl`}
+      >
+        {`${item?.types === "expense" ? "-" : ""}${item?.amount} ฿`}
+      </p>
+    </div>
+  ) : (
     <div
       ref={elementArea}
       key={item?.track_id}
       onClick={() => setMenuOpen((p) => !p)}
-      className="relative w-full flex justify-between items-center border-2 border-zinc-200 shadow-sm rounded-xl px-4 py-2  "
+      className="relative w-full flex justify-between items-center border-2 border-zinc-200 shadow-sm rounded-xl px-4 py-2"
     >
       {isMenuOpen && (
         <div className="absolute top-0 left-0 w-full h-full bg-black/60 flex items-center justify-center rounded-xl z-10">
@@ -166,27 +244,29 @@ const HistoryItem = ({ item, onEdit }) => {
           />
           <Pencil
             className="size-8 bg-ui-green1 rounded-full px-1 text-white cursor-pointer mx-2"
-            onClick={() => {
-              onEdit(item);
-            }}
+            onClick={() => onEdit(item)}
           />
         </div>
       )}
+
       <p className="text-xl">{item?.category_name}</p>
+
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center">
         <p>{item?.account_name}</p>
         <p>{new Date(item?.date).toLocaleDateString("en-GB")}</p>
       </div>
+
       <p
         className={`${
-          item?.types == "expense" ? "text-red-500" : "text-green-700"
+          item?.types === "expense" ? "text-red-500" : "text-green-700"
         } text-xl`}
       >
-        {`${item?.types == "expense" ? "-" : ""}${item?.amount} ฿`}
+        {`${item?.types === "expense" ? "-" : ""}${item?.amount} ฿`}
       </p>
     </div>
   );
 };
+
 
 const Nodata = () => {
   return (
@@ -254,7 +334,7 @@ const Bgdark = ({ setPopupOpen }) => {
   );
 };
 
-const EditPopup = ({ setPopupOpen, data }) => {
+const EditPopupIore = ({ setPopupOpen, data }) => {
   const { fetchIore } = useContext(APIContext);
   const [isCategoryOpen, setCategoryOpen] = useState(false);
   const catRef = useRef();
@@ -458,4 +538,195 @@ const toInputDate = (v) => {
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+};
+
+const EditPopupTransfer = ({ setPopupOpen, data }) => {
+  const { fetchTransfer } = useContext(APIContext);
+  const [isFromAccountOpen, setFromAccountOpen] = useState(false);
+  const [isToAccountOpen, setToAccountOpen] = useState(false);
+  const accountToRef = useRef();
+  const accountFromRef = useRef();
+  useEffect(() => {
+    if (!isFromAccountOpen && !isToAccountOpen) return;
+    const handler = (e) => {
+      if (!accountToRef.current.contains(e.target)) {
+        setToAccountOpen(false);
+      }
+      if (!accountFromRef.current.contains(e.target)) {
+        setFromAccountOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  }, [isFromAccountOpen, isToAccountOpen]);
+  const [tempToAccount, setTempToAccount] = useState({
+    account_id: "",
+    account: "",
+  });
+  const [tempFromAccount, setTempFromAccount] = useState({
+    account_id: "",
+    account: "",
+  });
+  const [categoryAccount, setCategoryAccount] = useState({
+    from_account_name: "",
+    from_account_id: "",
+    to_account_name: "",
+    to_account_id: "",
+    amount: "",
+  });
+  const [currentData, setCurrentData] = useState({
+    to_account_id: data?.to_account_id,
+    to_account_name: data?.to_account_name,
+    from_account_id: data?.from_account_id,
+    from_account_name: data?.from_account_name,
+    amount: data?.amount,
+    date: toInputDate(data?.date),
+    transfer_id: data?.transfer_id,
+  });
+  useEffect(() => {
+    setCurrentData({
+      to_account_id: data?.to_account_id,
+      to_account_name: data?.to_account_name,
+      from_account_id: data?.from_account_id,
+      from_account_name: data?.from_account_name,
+      amount: data?.amount,
+      date: toInputDate(data?.date),
+      transfer_id: data?.transfer_id,
+    });
+    
+  }, [data]);
+
+  useEffect(() => {
+    setCategoryAccount((prev) => ({
+      ...prev,
+      from_account_id: tempFromAccount.account_id,
+      from_account_name: tempFromAccount.account,
+    }));
+    setCategoryAccount((prev) => ({
+      ...prev,
+      to_account_id: tempToAccount.account_id,
+      to_account_name: tempToAccount.account,
+    }));
+    
+  }, [tempFromAccount, tempToAccount]);
+
+  const handleSubmit = async () => {
+    try {
+      const update = {
+        ...currentData,
+        to_account_id:
+          categoryAccount.to_account_id && categoryAccount.to_account_id !== ""
+            ? categoryAccount.to_account_id
+            : currentData.to_account_id,
+        to_account_name:
+          categoryAccount.to_account_name && categoryAccount.to_account_name !== ""
+            ? categoryAccount.to_account_name
+            : currentData.to_account_name,
+        from_account_id:
+          categoryAccount.from_account_id && categoryAccount.from_account_id !== ""
+            ? categoryAccount.from_account_id
+            : currentData.from_account_id,
+        from_account_name:
+          categoryAccount.from_account_name && categoryAccount.from_account_name !== ""
+            ? categoryAccount.from_account_name
+            : currentData.from_account_name,
+      };
+      setCurrentData(update);
+      const data = await axios.post("http://localhost:5000/update_transfer", {
+        transfer_id: update.transfer_id,
+        date: update.date,
+        from_account_id: update.from_account_id,
+        to_account_id: update.to_account_id,
+        amount: update.amount,
+      });
+      fetchTransfer();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleOnChange = (value, name) => {
+    setCurrentData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    console.log(currentData);
+  };
+  return (
+    <div className="w-3/4 sm:w-1/3! fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center border border-zinc-200 bg-white rounded-xl shadow-xl p-2 gap-2 z-10">
+      <p className="text-xl">Edit Transfer</p>
+      <label
+        ref={accountFromRef}
+        onClick={() => setFromAccountOpen(true)}
+        className="relative w-full flex p-2 border border-ui-green1 rounded-lg"
+      >
+        From Account :
+        <div className="flex-1 pl-3">
+          {categoryAccount.from_account_name
+            ? categoryAccount.from_account_name
+            : currentData.from_account_name}
+        </div>
+        <AccountContainer
+          isAccountOpen={isFromAccountOpen}
+          setData={setTempFromAccount}
+        />
+      </label>
+      <p className="text-sm">Date :</p>
+      <input
+        type="date"
+        value={toInputDate(currentData?.date)}
+        onChange={(e) => {
+          handleOnChange(toInputDate(e.target.value), "date");
+        }}
+        className="w-full border border-ui-green1 focus:outline-none pl-1 rounded-lg"
+      />
+      <p className="text-sm">Amount :</p>
+      <input
+        type="text"
+        defaultValue={currentData?.amount}
+        onChange={(e) => {
+          handleOnChange(Number(e.target.value), "amount");
+        }}
+        className="w-full border border-ui-green1 focus:outline-none pl-1 rounded-lg"
+      />
+      <label
+        ref={accountToRef}
+        onClick={() => setToAccountOpen(true)}
+        className="relative w-full flex p-2 border border-ui-green1 rounded-lg"
+      >
+        To Account :
+        <div className="flex-1 pl-3">
+          {categoryAccount.to_account_name
+            ? categoryAccount.to_account_name
+            : currentData.to_account_name}
+        </div>
+        <AccountContainer
+          isAccountOpen={isToAccountOpen}
+          setData={setTempToAccount}
+        />
+      </label>
+      <div className="w-full flex items-center gap-x-2 mt-2">
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setPopupOpen(false)}
+          className="w-1/2 border border-zinc-200 rounded-lg"
+        >
+          Cancel
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          className="w-1/2 bg-ui-green1 text-white rounded-lg"
+          onClick={() => {
+            handleSubmit();
+            setPopupOpen(false);
+          }}
+        >
+          Save
+        </motion.button>
+      </div>
+    </div>
+  );
 };

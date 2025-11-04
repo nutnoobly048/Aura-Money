@@ -329,11 +329,12 @@ def delete_transfer():
 def update_transfer():
     try:
         data = request.get_json()
+        date = data.get("date")
         transfer_id = data.get("transfer_id")
         from_account_id = data.get("from_account_id")
         to_account_id = data.get("to_account_id")
         amount = data.get("amount")
-        result = database.update_transfer(transfer_id, from_account_id, to_account_id, amount)
+        result = database.update_transfer(transfer_id, date, from_account_id, to_account_id, amount)
         return result
     except Exception as err:
         traceback.print_exc()

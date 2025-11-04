@@ -349,8 +349,9 @@ def delete_transfer(transfer_id):
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
-def update_transfer(transfer_id, from_account_id, to_account_id, amount):
+def update_transfer(transfer_id, date, from_account_id, to_account_id, amount):
     try:
+        print(transfer_id, "transfer_id")
         amount = float(amount)
         db = ConnectorMysql()
         cursor = db.cursor()
@@ -359,8 +360,8 @@ def update_transfer(transfer_id, from_account_id, to_account_id, amount):
         diff = amount - float(result[0][0])
         update_account_balance(from_account_id, "expense", diff)
         update_account_balance(to_account_id, "income", diff)
-        stmt = "UPDATE account SET from_account_id=%s, to_account_id=%s, amount=%s WHERE transfer_id=%s"
-        payload = (from_account_id, to_account_id, amount, transfer_id)
+        stmt = "UPDATE transfer SET date=%s, from_account_id=%s, to_account_id=%s, amount=%s WHERE transfer_id=%s"
+        payload = (date, from_account_id, to_account_id, amount, transfer_id)
         cursor.execute(stmt,payload)
         db.commit()
         return jsonify({"message": "update transfer successfully"}), 200
