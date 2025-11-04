@@ -42,48 +42,6 @@ def hello_world():
     """
     return f"API is working on PORT {port}"
 
-@app.route("/get_user" , methods=["GET"])
-@jwt_required()
-def get_user():
-    try:
-        user_id = get_jwt_identity()
-        result = database.get_user(user_id)
-        return result
-    except Exception as err:
-        traceback.print_exc()
-        return jsonify({"error": str(err)}), 500
-
-@app.route("/reset_password" , methods=["POST"])
-def reset_password():
-    try:
-        data = request.get_json()
-        email = data.get("email")
-        new_password = data.get("new_password")
-        result = database.forgetPassword(email, new_password)
-        return result
-    except Exception as err:
-        traceback.print_exc()
-        return jsonify({"error": str(err)}), 500
-
-@app.route("/update_profile" , methods=["POST"])
-@jwt_required()
-def update_profile():
-    try:
-        user_id = get_jwt_identity()
-        data = request.get_json()
-        email = data.get("email")
-        username = data.get("username")
-        new_password = data.get("new_password")
-        old_password = data.get("old_password")
-        birthday = data.get("birthday")
-        gender = data.get("gender")
-        profile_img = data.get("profile_img")
-        result = database.update_profile_user(user_id, username, email, old_password, new_password, birthday, gender, profile_img)
-        return result
-    except Exception as err:
-        traceback.print_exc()
-        return jsonify({"error": str(err)}), 500
-
 # Register API use function register_db from ./database.py (finished)
 @app.route('/register', methods=["POST"])
 def register():
@@ -129,35 +87,6 @@ def login():
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
 
-# This function code by chatgpt
-@app.route("/auth", methods=["GET"])
-@jwt_required()
-def auth():
-    """
-    Auth method use function get_from_email from ./database.py
-    """
-    try:
-        user_id = get_jwt_identity()
-        if not user_id:
-            return jsonify({"authenticated": False}), 200
-        return jsonify({"authenticated": True, "user": user_id}), 200
-    except Exception as err:
-        traceback.print_exc()
-        return jsonify({"error": str(err)}), 500
-
-# Logout method
-@app.route("/logout", methods=["GET"])
-def logout():
-    """
-    Logout method
-    """
-    try:
-        response = jsonify({"msg": "logout successful"})
-        unset_jwt_cookies(response)
-        return response
-    except Exception as err:
-        traceback.print_exc()
-        return jsonify({"error": str(err)}), 500
 
 @app.route("/google")
 def google():
@@ -201,6 +130,79 @@ def google_auth():
     except Exception as err:
         traceback.print_exc()
         return jsonify({"error": str(err)}), 500
+
+# This function code by chatgpt
+@app.route("/auth", methods=["GET"])
+@jwt_required()
+def auth():
+    """
+    Auth method use function get_from_email from ./database.py
+    """
+    try:
+        user_id = get_jwt_identity()
+        if not user_id:
+            return jsonify({"authenticated": False}), 200
+        return jsonify({"authenticated": True, "user": user_id}), 200
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+# Logout method
+@app.route("/logout", methods=["GET"])
+def logout():
+    """
+    Logout method
+    """
+    try:
+        response = jsonify({"msg": "logout successful"})
+        unset_jwt_cookies(response)
+        return response
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route("/get_user" , methods=["GET"])
+@jwt_required()
+def get_user():
+    try:
+        user_id = get_jwt_identity()
+        result = database.get_user(user_id)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route("/reset_password" , methods=["POST"])
+def reset_password():
+    try:
+        data = request.get_json()
+        email = data.get("email")
+        new_password = data.get("new_password")
+        result = database.forgetPassword(email, new_password)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
+@app.route("/update_profile" , methods=["POST"])
+@jwt_required()
+def update_profile():
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+        email = data.get("email")
+        username = data.get("username")
+        new_password = data.get("new_password")
+        old_password = data.get("old_password")
+        birthday = data.get("birthday")
+        gender = data.get("gender")
+        profile_img = data.get("profile_img")
+        result = database.update_profile_user(user_id, username, email, old_password, new_password, birthday, gender, profile_img)
+        return result
+    except Exception as err:
+        traceback.print_exc()
+        return jsonify({"error": str(err)}), 500
+
 
 @app.route('/create_category', methods=["POST"])
 @jwt_required()
