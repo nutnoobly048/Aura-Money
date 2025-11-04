@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 import bcrypt
 import os
 
+load_dotenv()
+
 # db connector
 def ConnectorMysql():
     try:
@@ -13,6 +15,8 @@ def ConnectorMysql():
                 user=os.getenv("SQL_USER"),
                 passwd=os.getenv("SQL_PASSWORD"),
                 database=os.getenv("DATABASE_NAME"),
+                port=int(os.getenv("DB_PORT" , 3306)),
+                auth_plugin='mysql_native_password',
         )
         return db
     except Exception as err:

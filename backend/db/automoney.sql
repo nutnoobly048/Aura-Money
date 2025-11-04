@@ -25,7 +25,7 @@ CREATE TABLE `iore` (
 
 CREATE TABLE `transfer` (
   `transfer_id` int(11) NOT NULL,
-  `date` date NOT NULL,
+  `date` varchar(255) NOT NULL,
   `from_account_id` int(255) NOT NULL,
   `to_account_id` int(255) NOT NULL,
   `amount` float NOT NULL,
