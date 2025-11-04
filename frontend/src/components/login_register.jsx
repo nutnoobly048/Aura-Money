@@ -38,7 +38,7 @@ function login_register() {
       const { data } = await axios.post(`${import.meta.env.VITE_URL_API}/login`, {
         email: values.email,
         password: values.password,
-      });
+      } , { withCredentials: true });
       navigate("/");
     } catch (error) {
       console.log(error);
@@ -85,7 +85,7 @@ function login_register() {
         username: registerValues.username,
         email: registerValues.email,
         password: registerValues.password,
-      });
+      }, { withCredentials: true });
       navigate("/");
     } catch (error) {
       console.log(error);
