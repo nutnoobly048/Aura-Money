@@ -12,7 +12,7 @@ function App() {
   const navigate = useNavigate()
   const auth = async () => {
     try{
-      const result = await axios.get("http://localhost:5000/auth");
+      const result = await axios.get(`${import.meta.env.VITE_URL_API}/auth`);
       if (result.status == 200){
         navigate("/")
       }

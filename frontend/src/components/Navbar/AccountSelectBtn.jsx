@@ -29,7 +29,7 @@ export const AccountSelectBtn = ({ setPageOpen, setData, className }) => {
     }
 
     setPopupState({status: true, text: 'Created New Account.', color: 'bg-ui-green1'})
-    await axios.post("http://localhost:5000/create_account", {
+    await axios.post(`${import.meta.env.VITE_URL_API}/create_account`, {
       account_name: createAccName,
       balance: 0,
     })
@@ -38,7 +38,7 @@ export const AccountSelectBtn = ({ setPageOpen, setData, className }) => {
   }
 
   const handleDeleteAcc = async (id) => {
-    await axios.post("http://localhost:5000/delete_account", {account_id: id})
+    await axios.post(`${import.meta.env.VITE_URL_API}/delete_account`, {account_id: id})
     await fetchAccount();
   }
 

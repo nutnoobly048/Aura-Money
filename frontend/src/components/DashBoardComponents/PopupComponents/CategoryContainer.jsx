@@ -71,7 +71,7 @@ const CreateNewCat = ({ filter }) => {
   const { fetchCategory } = useContext(APIContext);
   const handleCreateCategory = async() => {
     try {
-        await axios.post("http://localhost:5000/create_category", {
+        await axios.post(`${import.meta.env.VITE_URL_API}/create_category`, {
           category_name: filter
         });
         fetchCategory()

@@ -11,7 +11,7 @@ export const APIProvider = ({ children }) => {
   const [iore, setIore] = useState();
   const [selectingAcc, setSelectingAcc] = useState();
   const fetchAccount = async () => {
-    const receive = await axios.get("http://localhost:5000/get_account");
+    const receive = await axios.get(`${import.meta.env.VITE_URL_API}/get_account`);
     setAccountList(
       receive.data.map((item) => ({
         name: item.account_name,
@@ -22,7 +22,7 @@ export const APIProvider = ({ children }) => {
   };
 
   const fetchCategory = async () => {
-    const receive = await axios.get("http://localhost:5000/get_category");
+    const receive = await axios.get(`${import.meta.env.VITE_URL_API}/get_category`);
     setCategoryList(
       receive.data.map((item) => ({
         category_name: item.category_name,
@@ -32,17 +32,17 @@ export const APIProvider = ({ children }) => {
   };
 
   const fetchUser = async () => {
-    const receive = await axios.get("http://localhost:5000/get_user");
+    const receive = await axios.get(`${import.meta.env.VITE_URL_API}/get_user`);
     setUserData(receive.data[0]);
   };
 
   const fetchIore = async () => {
-    const receive = await axios.get("http://localhost:5000/get_iore");
+    const receive = await axios.get(`${import.meta.env.VITE_URL_API}/get_iore`);
     setIore(receive.data);
   };
 
   const fetchTransfer = async () => { 
-    const receive = await axios.get("http://localhost:5000/get_transfer");
+    const receive = await axios.get(`${import.meta.env.VITE_URL_API}/get_transfer`);
     setTransfer(receive.data);
   };
 

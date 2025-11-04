@@ -31,7 +31,7 @@ export default function AccountSetting({ pageOpen, data }) {
 
   const pushData = async (update) => {
     try {
-      await axios.post("http://localhost:5000/update_account", update);
+      await axios.post(`${import.meta.env.VITE_URL_API}/update_account`, update);
       await fetchAccount();
     } catch (error) {
       console.log(error);

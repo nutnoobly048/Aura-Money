@@ -24,7 +24,7 @@ function TransferAccContainer({ setPopupOpen }) {
   const handlePostData = () => {
     const postData = async () => {
       try {
-        await axios.post("http://localhost:5000/create_transfer", data)
+        await axios.post(`${import.meta.env.VITE_URL_API}/create_transfer`, data)
       } catch (error) {
         console.log(error);
       }

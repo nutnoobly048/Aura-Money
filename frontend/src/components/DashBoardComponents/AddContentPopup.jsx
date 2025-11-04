@@ -53,7 +53,7 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
 
   const handlePostData = async () => {
     try {
-      await axios.post("http://localhost:5000/create_iore", data)
+      await axios.post(`${import.meta.env.VITE_URL_API}/create_iore`, data)
       setIsSuccess(true);
       setSend(true);
       setTimeout(() => {

@@ -35,7 +35,7 @@ function login_register() {
 
   const loginform = async () => {
     try {
-      const { data } = await axios.post("http://localhost:5000/login", {
+      const { data } = await axios.post(`${import.meta.env.VITE_URL_API}/login`, {
         email: values.email,
         password: values.password,
       });
@@ -67,7 +67,7 @@ function login_register() {
   };
 
   const googleLogin = () => {
-    window.location.href = "http://localhost:5000/google";
+    window.location.href = `${import.meta.env.VITE_URL_API}/google`;
   };
 
   const [isLoginPasswordVisible, setLoginPasswordVisible] = useState(false);
@@ -81,7 +81,7 @@ function login_register() {
   
   const registerForm = async () => {
     try {
-      const { data } = await axios.post("http://localhost:5000/register", {
+      const { data } = await axios.post(`${import.meta.env.VITE_URL_API}/register`, {
         username: registerValues.username,
         email: registerValues.email,
         password: registerValues.password,

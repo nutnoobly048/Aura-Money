@@ -8,7 +8,7 @@ const ProfileContextMenu = ({ setPageOpen, setMBProfileOpen }) => {
   const navigate = useNavigate();
   const Logout = async () => {
     try {
-      const data = await axios.get("http://localhost:5000/logout");
+      const data = await axios.get(`${import.meta.env.VITE_URL_API}/logout`);
       navigate("/login_register");
     } catch (error) {
       console.log(error);

@@ -182,7 +182,7 @@ const HistoryItem = ({ item, onEdit }) => {
 
   const handleDeleteIore = async (id) => {
     try {
-      await axios.post("http://localhost:5000/delete_iore", {
+      await axios.post(`${import.meta.env.VITE_URL_API}/delete_iore`, {
         track_id: id,
       });
       await fetchIore();
@@ -193,7 +193,7 @@ const HistoryItem = ({ item, onEdit }) => {
 
   const handleDeleteTransfer = async (id) => {
     try {
-      await axios.post("http://localhost:5000/delete_transfer", {
+      await axios.post(`${import.meta.env.VITE_URL_API}/delete_transfer`, {
         transfer_id: id,
       });
       await fetchTransfer();
@@ -423,7 +423,7 @@ const EditPopupIore = ({ setPopupOpen, data }) => {
             : currentData.account_name,
       };
       setCurrentData(update);
-      const data = await axios.post("http://localhost:5000/update_iore", {
+      const data = await axios.post(`${import.meta.env.VITE_URL_API}/update_iore`, {
         track_id: update.track_id,
         date: update.date,
         types: update.types,
@@ -653,7 +653,7 @@ const EditPopupTransfer = ({ setPopupOpen, data }) => {
             : currentData.from_account_name,
       };
       setCurrentData(update);
-      const data = await axios.post("http://localhost:5000/update_transfer", {
+      const data = await axios.post(`${import.meta.env.VITE_URL_API}/update_transfer`, {
         transfer_id: update.transfer_id,
         date: update.date,
         from_account_id: update.from_account_id,

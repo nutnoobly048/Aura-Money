@@ -20,7 +20,7 @@ function Stats() {
 
   useEffect(() => {
     const fetchRecord = async () => {
-      const receive = await axios.post("http://localhost:5000/get_info", {
+      const receive = await axios.post(`${import.meta.env.VITE_URL_API}/get_info`, {
         month: monthNum + 1,
       });
       setData(receive.data);
