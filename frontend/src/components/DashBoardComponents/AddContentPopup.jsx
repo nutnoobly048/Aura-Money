@@ -152,7 +152,7 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
             Date :
             <input
               type="datetime-local"
-              value={nowTime}
+              value={data.date}
               onChange={(e) => setData(prev => ({...prev, date: e.target.value}))}
               className="flex-1 pl-3 focus:outline-none"
             />
