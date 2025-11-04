@@ -13,13 +13,12 @@ export const AccountSelectBtn = ({ setPageOpen, setData, className }) => {
   const [createAccName, setCreateAccName] = useState("");
   const areaRef = useRef();
   const [popupState, setPopupState] = useState({status: false, text: '', color: ''});
-  const [selectingAcc, setSelectingAcc] = useState();
 
-  const { accountList, fetchAccount } = useContext(APIContext);
+  const { accountList, fetchAccount, setSelectingAcc, selectingAcc } = useContext(APIContext);
 
   useEffect(() => {
     setSelectingAcc(accountList[0]?.name);
-  }, [accountList]);
+  }, [accountList, setSelectingAcc]);
 
   const handleSendNewAcc = async () => {
     if (!createAccName) {
@@ -142,7 +141,7 @@ const AccountList = ({ isAccountListOpen, setData, setPageOpen, accountList, han
           <div className="flex gap-x-1.5">
             <button
               onClick={(e) => {
-                console.log("clicked at", item.name, 'id:', item.id);
+                // console.log("clicked at", item.name, 'id:', item.id);
                 handleDeleteAcc(item.id);
                 e.stopPropagation();
               }}
@@ -153,7 +152,7 @@ const AccountList = ({ isAccountListOpen, setData, setPageOpen, accountList, han
 
             <button
               onClick={(e) => {
-                console.log("clicked at", item.name, 'id:', item.id);
+                // console.log("clicked at", item.name, 'id:', item.id);
                 setPageOpen("accountSetting")
                 setData(item)
                 e.stopPropagation();

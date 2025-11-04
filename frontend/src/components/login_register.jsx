@@ -50,7 +50,7 @@ function login_register() {
     e.preventDefault();
     const newErrors = {};
 
-    console.log(values);
+    // console.log(values);
 
     if (!values.email) {
       newErrors.email = "Email / username is required!";
@@ -62,7 +62,7 @@ function login_register() {
 
     if (!newErrors.email && !newErrors.password) {
       loginform();
-      console.log("logged in.");
+      // console.log("logged in.");
     }
   };
 
@@ -105,7 +105,7 @@ function login_register() {
     e.preventDefault();
     const newErrors = {};
 
-    console.log(registerValues);
+    // console.log(registerValues);
 
     // ----------check if inputs are filled or not--------
     if (!registerValues.username) {
@@ -140,7 +140,7 @@ function login_register() {
 
     if (!newErrors.email && !newErrors.username && !newErrors.password && !newErrors.confirmPassword) {
       registerForm();
-      console.log("Registered.");
+      // console.log("Registered.");
     }
   };
 

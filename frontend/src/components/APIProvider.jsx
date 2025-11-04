@@ -9,7 +9,7 @@ export const APIProvider = ({ children }) => {
   const [userData, setUserData] = useState();
   const [transfer, setTransfer] = useState();
   const [iore, setIore] = useState();
-
+  const [selectingAcc, setSelectingAcc] = useState();
   const fetchAccount = async () => {
     const receive = await axios.get("http://localhost:5000/get_account");
     setAccountList(
@@ -67,6 +67,8 @@ export const APIProvider = ({ children }) => {
         fetchIore,
         transfer,
         fetchTransfer,
+        setSelectingAcc,
+        selectingAcc,
       }}
     >
       {children}

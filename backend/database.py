@@ -31,7 +31,7 @@ def get_user(user_id):
         result = cursor.fetchone()
         cursor.close()
         data = []
-        print(result , "result")
+        # print(result , "result")
         if result:
             arr = {
                 "user_id": result[0],
@@ -351,7 +351,7 @@ def delete_transfer(transfer_id):
 
 def update_transfer(transfer_id, date, from_account_id, to_account_id, amount):
     try:
-        print(transfer_id, "transfer_id")
+        # print(transfer_id, "transfer_id")
         amount = float(amount)
         db = ConnectorMysql()
         cursor = db.cursor()

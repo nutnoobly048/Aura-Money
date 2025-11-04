@@ -11,12 +11,13 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import CategoryContainer from "./PopupComponents/CategoryContainer";
 import AccountContainer from "./PopupComponents/AccountContainer";
+import { useEffectEvent } from "react";
 
 export default function AccountBoard({ pageOpen }) {
   const [isPopupOpenIore, setisPopupOpenIoreIore] = useState(false);
   const [isPopupOpenTransfer, setisPopupOpenTransfer] = useState(false);
   const nowMonth = new Date().getMonth();
-  const { iore, transfer } = useContext(APIContext);
+  const { iore, transfer, selectingAcc } = useContext(APIContext);
   const [monthNum, setMonthNum] = useState(nowMonth);
   const [currentData, setCurrentData] = useState([]);
   const [currentDataTransfer, setCurrentDataTransfer] = useState([]);
@@ -41,7 +42,6 @@ export default function AccountBoard({ pageOpen }) {
       return Number(monthDataNum) === Number(monthNum + 1);
     });
     setCurrentData(filterMonthData);
-    // console.log(filterMonthData);
     
   }, [monthNum, iore]);
 
@@ -54,7 +54,7 @@ export default function AccountBoard({ pageOpen }) {
       return Number(monthDataNum) === Number(monthNum + 1);
     });
     setCurrentDataTransfer(filterMonthData);
-    console.log(filterMonthData);
+    // console.log(filterMonthData);
   }, [monthNum, transfer]);
   return (
     <div
@@ -65,8 +65,8 @@ export default function AccountBoard({ pageOpen }) {
       <div className="flex items-center gap-x-1">
         <MonthSelector monthNum={monthNum} setMonthNum={setMonthNum} />
       </div>
-      <SummationBoard iore={currentData} />
-      <HistoryBoard iore={currentData} onEdit={handleItemClickIore} transfer={currentDataTransfer} onEditTransfer={handleItemClickTransfer}/>
+      <SummationBoard iore={currentData} transfer={transfer} selectingAcc={selectingAcc}/>
+      <HistoryBoard iore={currentData} onEdit={handleItemClickIore} transfer={currentDataTransfer} onEditTransfer={handleItemClickTransfer} selectingAcc={selectingAcc}/>
       {isPopupOpenIore && (
         <div>
           <EditPopupIore setPopupOpen={setisPopupOpenIoreIore} data={selectedItem} />
@@ -133,21 +133,31 @@ const MonthSelector = ({ monthNum, setMonthNum }) => {
   );
 };
 
-const HistoryBoard = ({ iore, onEdit, transfer, onEditTransfer }) => {
+const HistoryBoard = ({ iore, onEdit, transfer, onEditTransfer, selectingAcc }) => {
   return (
     <div className="overflow-y-auto flex flex-col px-4 py-4 border-2 border-zinc-300 rounded-2xl space-y-2">
-      {iore.length == 0 ? (
-        <Nodata />
-      ) : (
-        iore?.map((item) => (
-          <HistoryItem key={item?.track_id} item={item} onEdit={onEdit} />
+      {iore.length === 0 ? (
+      <Nodata />
+    ) : (
+      iore
+        ?.filter((item) => item?.account_name === selectingAcc)
+        .map((item) => (
+          <HistoryItem
+            key={item?.track_id}
+            item={item}
+            onEdit={onEdit}
+          />
         ))
-      )}
-      {transfer.length != 0 && ((
-        transfer?.map((item) => (
-          <HistoryItem key={item?.transfer_id} item={item} onEdit={onEditTransfer} />
-        )))
-      )}
+    )}
+
+    {transfer.length !== 0 &&
+      transfer?.map((item) => (
+        <HistoryItem
+          key={item?.transfer_id}
+          item={item}
+          onEdit={onEditTransfer}
+        />
+      ))}
     </div>
   );
 };
@@ -275,7 +285,7 @@ const Nodata = () => {
   );
 };
 
-const SummationBoard = ({ iore }) => {
+const SummationBoard = ({ iore, transfer, selectingAcc }) => {
   const sumArray = (arr) => {
     let sum = 0;
     arr?.forEach((item) => {
@@ -284,13 +294,18 @@ const SummationBoard = ({ iore }) => {
     return sum;
   };
   const incomeSum = sumArray(
-    iore?.map((item) => (item.types == "income" ? item.amount : 0))
+    iore?.map((item) => (item.types == "income" && item.account_name === selectingAcc ? item.amount : 0))
   );
   const expenseSum = sumArray(
-    iore?.map((item) => (item.types == "expense" ? item.amount : 0))
+    iore?.map((item) => (item.types == "expense" && item.account_name === selectingAcc ? item.amount : 0))
   );
-  const total = incomeSum + expenseSum;
-  const balance = incomeSum - expenseSum;
+  const transferInSum = sumArray(
+    transfer?.map((item) => ((item.from_account_name === selectingAcc ? item.amount : 0)))
+  );
+  // console.log(transfer);
+  
+  const total = incomeSum + expenseSum + transferInSum;
+  const balance = incomeSum - expenseSum - transferInSum;
   return (
     <div className="flex justify-evenly border-2 border-zinc-200 rounded-2xl p-1">
       <div className="flex flex-col justify-center items-center text-green-600 font-semibold">
@@ -418,7 +433,7 @@ const EditPopupIore = ({ setPopupOpen, data }) => {
         note: update.note,
       });
       fetchIore();
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -429,7 +444,7 @@ const EditPopupIore = ({ setPopupOpen, data }) => {
       ...prev,
       [name]: value,
     }));
-    console.log(currentData);
+    // console.log(currentData);
   };
   return (
     <div className="w-3/4 sm:w-1/3! fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center border border-zinc-200 bg-white rounded-xl shadow-xl p-2 gap-2 z-10">
@@ -646,7 +661,7 @@ const EditPopupTransfer = ({ setPopupOpen, data }) => {
         amount: update.amount,
       });
       fetchTransfer();
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -657,7 +672,7 @@ const EditPopupTransfer = ({ setPopupOpen, data }) => {
       ...prev,
       [name]: value,
     }));
-    console.log(currentData);
+    // console.log(currentData);
   };
   return (
     <div className="w-3/4 sm:w-1/3! fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center border border-zinc-200 bg-white rounded-xl shadow-xl p-2 gap-2 z-10">

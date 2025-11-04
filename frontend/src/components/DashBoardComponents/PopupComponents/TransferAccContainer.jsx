@@ -30,11 +30,11 @@ function TransferAccContainer({ setPopupOpen }) {
       }
     }
     postData();
-    console.log("Transfer successfully");
+    // console.log("Transfer successfully");
     setPopupOpen(false);
   };
   useEffect(() => {setData(prev => ({...prev, amount: amount}))}, [amount]);
-  useEffect(() => {console.log(data)}, [data]);
+  // useEffect(() => {console.log(data)}, [data]);
   return (
     <div className="h-[310px] flex flex-col justify-between items-center divide-y-2 divide-zinc-300">
       <div className="w-full flex items-center gap-x-3 p-3">
