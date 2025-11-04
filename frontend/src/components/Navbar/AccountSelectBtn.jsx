@@ -136,7 +136,7 @@ const AccountList = ({ isAccountListOpen, setData, setPageOpen, accountList, han
           }`}
           onClick={() => setSelectingAcc(item.name)}
         >
-          <div className=" ">{item.name}</div>
+          <div className="truncate">{item.name}</div>
 
           <div className="flex gap-x-1.5">
             <button
