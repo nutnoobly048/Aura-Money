@@ -188,7 +188,7 @@ def google_auth():
         token = oauth.google.authorize_access_token()
         nonce = session.pop('google_nonce', None)   # get stored nonce
         user = oauth.google.parse_id_token(token, nonce=nonce)
-        if not database.check_user(user["email"]):
+        if not database.check_email(user["email"]):
             result = database.register_db(user["name"], user["sub"], user["email"])
         result = database.login_db(user["email"], user["sub"])
         if result[1] == 200:
