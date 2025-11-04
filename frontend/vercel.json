@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/:path*", "destination": "https://aura-money-api.vercel.app/:path*" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
