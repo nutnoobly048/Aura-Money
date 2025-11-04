@@ -106,7 +106,7 @@ def google():
             }
         )
         # Redirect to google_auth function
-        redirect_uri = url_for('google_auth', _external=True)
+        redirect_uri = f"{url_web}/api/google/auth"
         return oauth.google.authorize_redirect(redirect_uri)
     except Exception as err:
         traceback.print_exc()
