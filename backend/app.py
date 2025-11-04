@@ -14,21 +14,21 @@ from flask_jwt_extended import (
 )
 
 port = 5000
-url_web = "http://localhost:5173"
+url_web = os.getenv("URL_WEB")
 app = Flask(__name__)
 
 CORS(
     app,
-    resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173" , os.getenv("URL_WEB")]}},
+    resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173" , url_web]}},
     supports_credentials=True,
 )  # this cors code by chatgpt
 
 app.secret_key = os.getenv("SECRET_KEY")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")
-app.config["JWT_COOKIE_SECURE"] = False
+app.config["JWT_COOKIE_SECURE"] = True
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
-app.config["JWT_COOKIE_SAMESITE"] = "Lax"  # code by chatgpt
+app.config["JWT_COOKIE_SAMESITE"] = "None"  # code by chatgpt
 app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 jwt = JWTManager(app)
