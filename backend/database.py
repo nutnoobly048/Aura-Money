@@ -341,7 +341,7 @@ def delete_transfer(transfer_id):
         cursor.execute("SELECT from_account_id, to_account_id, amount FROM transfer WHERE transfer_id=%s",(transfer_id,))
         result = cursor.fetchall()
         update_account_balance(result[0][0], "income", result[0][2])
-        update_account_balance(result[0][2], "expense", result[0][2])
+        update_account_balance(result[0][1], "expense", result[0][2])
         stmt = "DELETE FROM transfer WHERE transfer_id=%s"
         cursor.execute(stmt,(transfer_id,))
         db.commit()

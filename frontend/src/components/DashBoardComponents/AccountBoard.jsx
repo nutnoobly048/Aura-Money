@@ -143,7 +143,7 @@ const HistoryBoard = ({ iore, onEdit, transfer, onEditTransfer }) => {
           <HistoryItem key={item?.track_id} item={item} onEdit={onEdit} />
         ))
       )}
-      {transfer.length && ((
+      {transfer.length != 0 && ((
         transfer?.map((item) => (
           <HistoryItem key={item?.transfer_id} item={item} onEdit={onEditTransfer} />
         )))
@@ -155,7 +155,7 @@ const HistoryBoard = ({ iore, onEdit, transfer, onEditTransfer }) => {
 const HistoryItem = ({ item, onEdit }) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const elementArea = useRef(null);
-  const { fetchIore } = useContext(APIContext);
+  const { fetchIore, fetchTransfer } = useContext(APIContext);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -186,7 +186,7 @@ const HistoryItem = ({ item, onEdit }) => {
       await axios.post("http://localhost:5000/delete_transfer", {
         transfer_id: id,
       });
-      await fetchIore();
+      await fetchTransfer();
     } catch (error) {
       console.log(error);
     }
@@ -539,11 +539,17 @@ const toInputDate = (v) => {
 };
 
 const EditPopupTransfer = ({ setPopupOpen, data }) => {
-  const { fetchTransfer } = useContext(APIContext);
+  const { fetchTransfer, accountList } = useContext(APIContext);
   const [isFromAccountOpen, setFromAccountOpen] = useState(false);
   const [isToAccountOpen, setToAccountOpen] = useState(false);
   const accountToRef = useRef();
   const accountFromRef = useRef();
+  const [selectingFrom, setSelectingFrom] = useState(
+    data?.from_account_id
+  );
+  const [selectingTo, setSelectingTo] = useState(
+    data?.to_account_id
+  );
   useEffect(() => {
     if (!isFromAccountOpen && !isToAccountOpen) return;
     const handler = (e) => {
@@ -656,22 +662,6 @@ const EditPopupTransfer = ({ setPopupOpen, data }) => {
   return (
     <div className="w-3/4 sm:w-1/3! fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center border border-zinc-200 bg-white rounded-xl shadow-xl p-2 gap-2 z-10">
       <p className="text-xl">Edit Transfer</p>
-      <label
-        ref={accountFromRef}
-        onClick={() => setFromAccountOpen(true)}
-        className="relative w-full flex p-2 border border-ui-green1 rounded-lg"
-      >
-        From Account :
-        <div className="flex-1 pl-3">
-          {categoryAccount.from_account_name
-            ? categoryAccount.from_account_name
-            : currentData.from_account_name}
-        </div>
-        <AccountContainer
-          isAccountOpen={isFromAccountOpen}
-          setData={setTempFromAccount}
-        />
-      </label>
       <p className="text-sm">Date :</p>
       <input
         type="date"
@@ -690,22 +680,48 @@ const EditPopupTransfer = ({ setPopupOpen, data }) => {
         }}
         className="w-full border border-ui-green1 focus:outline-none pl-1 rounded-lg"
       />
-      <label
-        ref={accountToRef}
-        onClick={() => setToAccountOpen(true)}
-        className="relative w-full flex p-2 border border-ui-green1 rounded-lg"
-      >
-        To Account :
-        <div className="flex-1 pl-3">
-          {categoryAccount.to_account_name
-            ? categoryAccount.to_account_name
-            : currentData.to_account_name}
+      <div className="w-full flex items-center gap-x-3 p-3">
+        <p>From:</p>
+        <div className="flex overflow-x-auto gap-x-3">
+          {accountList.map((item) => (
+            <div
+              key={item.id}
+              onClick={() => {
+                setSelectingFrom(item.id);
+                setTempFromAccount((prev) => ({ ...prev, account_id: item.id , account: item.name }));
+              }}
+              className={`${
+                selectingFrom == item.id
+                  ? "text-white bg-gradient-to-r from-[#62b79c] to-[#afd1a1]"
+                  : "text-ui-green1 bg-white"
+              }  border border-zinc-100 drop-shadow-md rounded-lg py-1 px-2 cursor-pointer`}
+            >
+              {item.name}
+            </div>
+          ))}
         </div>
-        <AccountContainer
-          isAccountOpen={isToAccountOpen}
-          setData={setTempToAccount}
-        />
-      </label>
+      </div>
+      <div className="w-full flex items-center gap-x-3 p-3">
+        <p className="w-10">To:</p>
+        <div className="flex overflow-x-auto gap-x-3">
+          {accountList.map((item) => (
+            <div
+              key={item.id}
+              onClick={() => {
+                setSelectingTo(item.id);
+                setTempToAccount((prev) => ({ ...prev, account_id: item.id , account: item.name }));
+              }}
+              className={`${
+                selectingTo == item.id
+                  ? "text-white bg-gradient-to-r from-[#62b79c] to-[#afd1a1]"
+                  : "text-ui-green1 bg-white"
+              }  border border-zinc-100 drop-shadow-md rounded-lg py-1 px-2 cursor-pointer`}
+            >
+              {item.name}
+            </div>
+          ))}
+        </div>
+      </div>
       <div className="w-full flex items-center gap-x-2 mt-2">
         <motion.button
           whileTap={{ scale: 0.95 }}
