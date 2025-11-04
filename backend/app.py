@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, make_response, url_for, redirect, session
-from datetime import timedelta
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -12,6 +11,8 @@ from flask_jwt_extended import (
     JWTManager, create_access_token, jwt_required,
     get_jwt_identity, set_access_cookies, unset_jwt_cookies
 )
+
+load_dotenv()
 
 port = 5000
 url_web = os.getenv("URL_WEB")
