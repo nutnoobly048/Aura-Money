@@ -143,12 +143,10 @@ const HistoryBoard = ({ iore, onEdit, transfer, onEditTransfer }) => {
           <HistoryItem key={item?.track_id} item={item} onEdit={onEdit} />
         ))
       )}
-      {transfer.length == 0 ? (
-        <Nodata />
-      ) : (
+      {transfer.length && ((
         transfer?.map((item) => (
           <HistoryItem key={item?.transfer_id} item={item} onEdit={onEditTransfer} />
-        ))
+        )))
       )}
     </div>
   );
