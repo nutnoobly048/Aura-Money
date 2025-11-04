@@ -151,7 +151,7 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
           <label className="w-full flex p-3">
             Date :
             <input
-              type="datetime-local"
+              type="datetime"
               value={nowTime}
               onChange={(e) => setData(prev => ({...prev, date: e.target.value}))}
               className="flex-1 pl-3 focus:outline-none"
