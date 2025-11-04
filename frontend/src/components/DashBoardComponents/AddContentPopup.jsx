@@ -5,6 +5,7 @@ import StatusPopup from "./PopupComponents/StatusPopup";
 import { motion, AnimatePresence } from "framer-motion";
 import { APIContext } from "../APIProvider";
 import axios from "axios";
+import TransferAccContainer from "./PopupComponents/TransferAccContainer";
 
 export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
   const [addContentType, setAddContentType] = useState("Expense");
@@ -145,83 +146,92 @@ export default function AddContentPopup({ isPopupOpen, setPopupOpen }) {
       </nav>
 
       <h1 className="text-2xl font-bold text-center p-2">{addContentType}</h1>
-      <div className="flex flex-col justify-center items-center p-3 divide-y-2 divide-zinc-300">
-        <label className="w-full flex p-3">
-          Date :
-          <input
-            type="datetime-local"
-            value={nowTime}
-            onChange={(e) => setData(prev => ({...prev, date: e.target.value}))}
-            className="flex-1 pl-3 focus:outline-none"
-          />
-        </label>
-
-        <label className="w-full flex items-center justify-between p-3">
-          <div>
-            Amount :
+      {['Income', 'Expense'].includes(addContentType) && (
+        <div className="flex flex-col justify-center items-center p-3 divide-y-2 divide-zinc-300">
+          <label className="w-full flex p-3">
+            Date :
             <input
-              type="number"
-              className="ml-2 w-1/2 sm:w-auto! focus:outline-none"
-              onChange={(e) => setAmount(Number(e.target.value))}
-              value={data.amount}
+              type="datetime-local"
+              value={nowTime}
+              onChange={(e) => setData(prev => ({...prev, date: e.target.value}))}
+              className="flex-1 pl-3 focus:outline-none"
             />
-          </div>
-          <div className="flex gap-x-1 flex-wrap">
-            {amountAddBtn.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => setAmount((p) => p + Number(item) >= 0 ? p + Number(item) : 0)}
-                className=" bg-gradient-to-br from-[#62b79c] to-[#afd1a1] border border-zinc-200 text-white font-semibold rounded-md shadow-lg px-2 py-0.5"
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-        </label>
+          </label>
 
-        <label
-          ref={catRef}
-          onClick={() => setCategoryOpen(true)}
-          className="relative w-full flex p-3"
-        >
-          Category :<div className="flex-1 pl-3">{data.category}</div>
-          <CategoryContainer
-            isCategoryOpen={isCategoryOpen}
-            setData={setData}
-          />
-        </label>
+          <label className="w-full flex items-center justify-between p-3">
+            <div>
+              Amount :
+              <input
+                type="number"
+                min='0'
+                className="ml-2 w-1/2 sm:w-auto! focus:outline-none"
+                onChange={(e) => setAmount(Number(e.target.value))}
+                value={data.amount}
+              />
+            </div>
+            <div className="flex gap-x-1 flex-wrap">
+              {amountAddBtn.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => setAmount((p) => p + Number(item) >= 0 ? p + Number(item) : 0)}
+                  className=" bg-gradient-to-br from-[#62b79c] to-[#afd1a1] border border-zinc-200 text-white font-semibold rounded-md shadow-lg px-2 py-0.5"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </label>
 
-        <label
-          ref={accountRef}
-          onClick={() => setAccountOpen(true)}
-          className="relative w-full flex p-3"
-        >
-          Account :<div className="flex-1 pl-3">{data.account}</div>
-          <AccountContainer isAccountOpen={isAccountOpen} setData={setData} />
-        </label>
-
-        <label className="w-full flex p-3">
-          Note :
-          <input type="text" onChange={(e) => setData(prev => ({...prev, note: e.target.value}))} className="flex-1 pl-3 focus:outline-none" />
-        </label>
-
-        <div className="w-full flex justify-center items-center gap-x-2 m-1 mt-4">
-          <motion.button
-            whileTap={{scale: 0.95}}
-            onClick={handlePostData}
-            className="flex-1 bg-gradient-to-r from-[#62b79c] to-[#afd1a1] text-white font-bold rounded-2xl py-1"
+          <label
+            ref={catRef}
+            onClick={() => setCategoryOpen(true)}
+            className="relative w-full flex p-3"
           >
-            Save
-          </motion.button>
-          <motion.button
-            whileTap={{scale: 0.95}}
-            onClick={() => setPopupOpen(false)}
-            className="flex-1 border rounded-2xl py-1"
+            Category :<div className="flex-1 pl-3">{data.category}</div>
+            <CategoryContainer
+              isCategoryOpen={isCategoryOpen}
+              setData={setData}
+            />
+          </label>
+
+          <label
+            ref={accountRef}
+            onClick={() => setAccountOpen(true)}
+            className="relative w-full flex p-3"
           >
-            Cancel
-          </motion.button>
+            Account :<div className="flex-1 pl-3">{data.account}</div>
+            <AccountContainer isAccountOpen={isAccountOpen} setData={setData} />
+          </label>
+
+          <label className="w-full flex p-3">
+            Note :
+            <input type="text" onChange={(e) => setData(prev => ({...prev, note: e.target.value}))} className="flex-1 pl-3 focus:outline-none" />
+          </label>
+
+          <div className="w-full flex justify-center items-center gap-x-2 m-1 mt-4">
+            <motion.button
+              whileTap={{scale: 0.95}}
+              onClick={handlePostData}
+              className="flex-1 bg-gradient-to-r from-[#62b79c] to-[#afd1a1] text-white font-bold rounded-2xl py-1"
+            >
+              Save
+            </motion.button>
+            <motion.button
+              whileTap={{scale: 0.95}}
+              onClick={() => setPopupOpen(false)}
+              className="flex-1 border rounded-2xl py-1"
+            >
+              Cancel
+            </motion.button>
+          </div>
         </div>
-      </div>
+      )}
+
+      {addContentType == 'Transfer' && (
+        <div className="bg-white p-3 rounded-b-2xl">
+          <TransferAccContainer setPopupOpen={setPopupOpen} />
+        </div>
+      )}
     </div>
   );
 }
