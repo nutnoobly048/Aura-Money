@@ -74,8 +74,8 @@ Aura Money ถูกออกแบบมาเพื่อช่วยให้
 
 ## 👨‍💻 ผู้พัฒนา
 
-- นาย นัธทวัฒน์ ทุมสา — 68070082  (Frontend Developer)
-- นาย ติณณภัทร์ สัตยา — 68070048  (Backend Developer)
-- นาย ชยากร อารีย์ — 68070026  (Backend Developer)
-- นาย จิรสิน เหมาะตัว — 68070015  (Frontend Developer)
-- นาย นัศรุน เจ๊ะหมะ — 68070084  (UX/UI & Frontend Developer)
+- นาย นัธทวัฒน์ ทุมสา — 68070082  (Frontend Developer) (Github : [captainin3rdcompany](https://github.com/captainin3rdcompany))
+- นาย ติณณภัทร์ สัตยา — 68070048  (Backend Developer) (Github : [nutnoobly048](https://github.com/nutnoobly048))
+- นาย ชยากร อารีย์ — 68070026  (Backend Developer) (Github : [ChayakornAree](https://github.com/ChayakornAree))
+- นาย จิรสิน เหมาะตัว — 68070015  (Frontend Developer) (Github : [Guy-Jirasin](https://github.com/Guy-Jirasin))
+- นาย นัศรุน เจ๊ะหมะ — 68070084  (UX/UI & Frontend Developer) (Github : [Nuszuuu](https://github.com/Nuszuuu))
